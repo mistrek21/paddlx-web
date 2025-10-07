@@ -1,3 +1,5 @@
+// src/app/_components/JoinSection.tsx
+
 import { MapPin, Users, Megaphone, Smartphone } from 'lucide-react';
 import Link from 'next/link';
 

@@ -1,3 +1,5 @@
+// src/app/_components/FeaturedCourtsSection.tsx
+
 import { Building2, Grid3x3, Minus } from 'lucide-react';
 
 const courts = [

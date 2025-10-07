@@ -1,3 +1,5 @@
+// src/app/_components/LearnToPlaySection.tsx
+
 import { ArrowRight, Play } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';

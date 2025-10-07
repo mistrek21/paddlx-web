@@ -1,3 +1,5 @@
+// src/app/_components/GamesSection.tsx
+
 'use client';
 
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';

@@ -1,3 +1,5 @@
+// /src/app/_components/CommunityStatsSection.tsx
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -74,24 +76,44 @@ function AnimatedStat({
 	return (
 		<div
 			ref={ref}
-			className={`text-center px-8 py-6 transition-opacity duration-700 ${
-				isVisible ? 'opacity-100' : 'opacity-0'
-			} ${
-				index < stats.length - 1
-					? 'lg:border-r-2 lg:border-dotted lg:border-divider'
-					: ''
-			}`}
+			className={`text-center px-6 py-6 transition-opacity duration-700 
+                ${isVisible ? 'opacity-100' : 'opacity-0'} 
+                ${
+																	index < stats.length - 1
+																		? 'lg:border-r-2 lg:border-dotted lg:border-divider'
+																		: ''
+																}
+                flex flex-col items-center justify-center
+            `}
 			style={{ transitionDelay: `${index * 150}ms` }}
 		>
-			<div className="text-5xl lg:text-6xl font-black text-teal mb-2">
+			<div
+				className="
+                    font-black text-teal mb-2
+                    leading-none
+                    max-w-full 
+                    overflow-hidden
+                "
+				style={{
+					fontSize: 'clamp(2rem, 6vw, 3.5rem)', // responsive min/max
+					textOverflow: 'ellipsis',
+					whiteSpace: 'nowrap',
+					maxWidth: '12ch',
+				}}
+			>
 				{formatNumber(count)}
 			</div>
 
-			<div className="text-xl lg:text-2xl font-semibold text-teal mb-4 capitalize">
+			<div className="text-lg lg:text-2xl font-semibold text-teal mb-3 capitalize truncate max-w-xs">
 				{stat.label}
 			</div>
 
-			<p className="text-slate-gray leading-relaxed text-sm lg:text-base max-w-xs mx-auto">
+			<p
+				className="
+                text-slate-gray leading-relaxed text-sm lg:text-base max-w-xs mx-auto
+                break-words
+            "
+			>
 				{stat.description}
 			</p>
 		</div>

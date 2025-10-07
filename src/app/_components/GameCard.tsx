@@ -1,3 +1,5 @@
+// src/app/_components/GameCard.tsx
+
 import Image from 'next/image';
 
 interface GameCardProps {

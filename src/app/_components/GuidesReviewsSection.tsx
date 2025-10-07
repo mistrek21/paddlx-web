@@ -1,3 +1,5 @@
+// src/app/_components/GuidesReviewsSection.tsx
+
 'use client';
 
 import { useState } from 'react';

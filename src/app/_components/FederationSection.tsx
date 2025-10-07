@@ -1,3 +1,5 @@
+// src/app/_components/FederationSection.tsx
+
 import Image from 'next/image';
 
 export function FederationSection() {
