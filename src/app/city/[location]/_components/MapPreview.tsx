@@ -1,4 +1,3 @@
-// src/app/city/[location]/_components/MapPreview.tsx
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -22,7 +21,6 @@ export default function MapPreview({
 	useEffect(() => {
 		if (!mapContainerRef.current || mapRef.current) return;
 
-		// Initialize map
 		const map = L.map(mapContainerRef.current, {
 			center: [latitude, longitude],
 			zoom: 13,
@@ -32,13 +30,11 @@ export default function MapPreview({
 
 		mapRef.current = map;
 
-		// Add tile layer with modern styling
 		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			attribution: '© OpenStreetMap contributors',
 			maxZoom: 19,
 		}).addTo(map);
 
-		// Custom icon
 		const customIcon = L.divIcon({
 			className: 'custom-marker',
 			html: `
@@ -49,7 +45,7 @@ export default function MapPreview({
                     border-radius: 50% 50% 50% 0;
                     transform: rotate(-45deg);
                     border: 3px solid white;
-                    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4);
+                    box-shadow: 0 4px 12px rgba(20,184,166,0.4);
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -66,7 +62,6 @@ export default function MapPreview({
 			iconAnchor: [20, 40],
 		});
 
-		// Add marker
 		L.marker([latitude, longitude], { icon: customIcon })
 			.addTo(map)
 			.bindPopup(
@@ -81,7 +76,6 @@ export default function MapPreview({
 			)
 			.openPopup();
 
-		// Add circle overlay
 		L.circle([latitude, longitude], {
 			color: '#14b8a6',
 			fillColor: '#14b8a6',
@@ -99,7 +93,7 @@ export default function MapPreview({
 		<div
 			ref={mapContainerRef}
 			className="w-full h-full rounded-b-2xl"
-			style={{ minHeight: '320px' }}
+			style={{ minHeight: '320px', overflow: 'hidden' }}
 		/>
 	);
 }

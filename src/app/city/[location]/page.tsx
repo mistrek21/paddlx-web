@@ -219,7 +219,7 @@ async function fetchAIDescription(city: CityData): Promise<Partial<CityData>> {
 
 		// Optionally save enhanced data back to database
 		if (aiContent.metaTitle || aiContent.description) {
-			await fetch(`/api/web/cities/${city.id}/enhance`, {
+			await fetch(`${config.API_BASE_URL}/api/web/cities/${city.id}/enhance`, {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(aiContent),
