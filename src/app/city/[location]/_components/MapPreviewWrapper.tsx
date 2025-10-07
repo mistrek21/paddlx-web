@@ -1,11 +1,9 @@
-// src/app/city/[location]/_components/MapPreviewWrapper.tsx
-
+// src/app/city/[location]/_components/MapPreviewClient.tsx
 'use client';
 
 import dynamic from 'next/dynamic';
 import { MapPin } from 'lucide-react';
 
-// Dynamically import your MapPreview (Leaflet) with ssr:false
 const MapPreview = dynamic(() => import('./MapPreview'), {
 	ssr: false,
 	loading: () => (
@@ -15,7 +13,7 @@ const MapPreview = dynamic(() => import('./MapPreview'), {
 	),
 });
 
-export default function MapPreviewWrapper(props: {
+export default function MapPreviewClient(props: {
 	latitude: number;
 	longitude: number;
 	cityName: string;
