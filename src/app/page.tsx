@@ -1,10 +1,10 @@
+// src/app/page.tsx
+
 import { FederationSection } from './_components/FederationSection';
 import { GamesSection } from './_components/GamesSection';
 import { HeroSection } from './_components/HeroSection';
 import { JoinSection } from './_components/JoinSection';
-import { Navigation } from './_components/Navigation';
 import { RoundRobinSection } from './_components/RoundRobinSection';
-import { TopBanner } from './_components/TopBanner';
 import { GuidesReviewsSection } from './_components/GuidesReviewsSection';
 import { NewsletterSection } from './_components/NewsletterSection';
 import { LearnToPlaySection } from './_components/LearnToPlaySection';
@@ -16,8 +16,6 @@ import { CommunityStatsSection } from './_components/CommunityStatsSection';
 export default function Home() {
 	return (
 		<div className="min-h-screen">
-			<TopBanner />
-			<Navigation />
 			<HeroSection />
 			<FederationSection />
 			<GamesSection />

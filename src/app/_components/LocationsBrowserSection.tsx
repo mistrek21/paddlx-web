@@ -1,3 +1,5 @@
+// src/app/_components/LocationsBrowserSection.tsx
+
 'use client';
 
 import { ChevronRight } from 'lucide-react';
