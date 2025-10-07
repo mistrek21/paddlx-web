@@ -29,30 +29,10 @@ interface SearchResults {
 	courts: Court[];
 }
 
-// Mock data for fallback display
-const MOCK_RESULTS: SearchResults = {
-	places: [
-		{ id: '1', name: 'Mandaluyong', country: 'Philippines', type: 'city' },
-		{ id: '2', name: 'Makati', country: 'Philippines', type: 'city' },
-		{ id: '3', name: 'Taguig', country: 'Philippines', type: 'city' },
-	],
-	courts: [
-		{
-			id: '101',
-			name: 'Greenfield Pickleball Court',
-			distance: 2.3,
-			location: 'Mandaluyong',
-			city: 'Mandaluyong',
-		},
-		{
-			id: '102',
-			name: 'Ayala Malls Court',
-			distance: 4.0,
-			location: 'Makati',
-			city: 'Makati',
-		},
-	],
-};
+interface UserLocation {
+	latitude: number;
+	longitude: number;
+}
 
 // Custom debounce hook
 function useDebounce<T>(value: T, delay: number): T {
@@ -78,14 +58,21 @@ const axiosInstance = axios.create({
 });
 
 // Search API function
-const searchPlaces = async (query: string): Promise<SearchResults> => {
+const searchPlaces = async (
+	query: string,
+	userLocation?: UserLocation
+): Promise<SearchResults> => {
 	if (!query || query.trim().length < 2) {
 		return { places: [], courts: [] };
 	}
 
-	const { data } = await axiosInstance.get<SearchResults>(
-		`/api/web/search?q=${encodeURIComponent(query)}`
-	);
+	let url = `/api/web/search?q=${encodeURIComponent(query)}`;
+
+	if (userLocation) {
+		url += `&lat=${userLocation.latitude}&lon=${userLocation.longitude}`;
+	}
+
+	const { data } = await axiosInstance.get<SearchResults>(url);
 	return data;
 };
 
@@ -156,8 +143,26 @@ export function HeroSection() {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [isFocused, setIsFocused] = useState(false);
+	const [userLocation, setUserLocation] = useState<UserLocation | undefined>();
 	const searchRef = useRef<HTMLDivElement>(null);
 	const router = useRouter();
+
+	// Get user's location on mount
+	useEffect(() => {
+		if ('geolocation' in navigator) {
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					setUserLocation({
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude,
+					});
+				},
+				(error) => {
+					console.log('Geolocation error:', error.message);
+				}
+			);
+		}
+	}, []);
 
 	// Debounce search query
 	const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -168,8 +173,8 @@ export function HeroSection() {
 		isLoading,
 		isFetching,
 	} = useQuery({
-		queryKey: ['search', debouncedSearchQuery],
-		queryFn: () => searchPlaces(debouncedSearchQuery),
+		queryKey: ['search', debouncedSearchQuery, userLocation],
+		queryFn: () => searchPlaces(debouncedSearchQuery, userLocation),
 		enabled: debouncedSearchQuery.trim().length >= 2,
 		staleTime: 5 * 60 * 1000,
 		gcTime: 10 * 60 * 1000,
@@ -208,16 +213,18 @@ export function HeroSection() {
 	const handleSelectPlace = (place: Place) => {
 		setSearchQuery(`${place.name}, ${place.country}`);
 		setShowDropdown(false);
+		// Route to city page instead of search
 		router.push(
-			`/search?location=${encodeURIComponent(
-				place.name
-			)}&country=${encodeURIComponent(place.country)}`
+			`/city/${encodeURIComponent(place.name)}?country=${encodeURIComponent(
+				place.country
+			)}`
 		);
 	};
 
 	const handleSelectCourt = (court: Court) => {
 		setSearchQuery(court.name);
 		setShowDropdown(false);
+		// Route to individual court page
 		router.push(`/court/${court.id}`);
 	};
 
@@ -238,7 +245,7 @@ export function HeroSection() {
 					/>
 				</div>
 				<h3 className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
-					{results?.places.length ? 'Places' : 'Popular Near You'}
+					Places
 				</h3>
 			</div>
 			<div className="space-y-1">
@@ -295,7 +302,7 @@ export function HeroSection() {
 					/>
 				</div>
 				<h3 className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
-					{results?.courts.length ? 'Courts Nearby' : 'Featured Courts'}
+					Courts Nearby
 				</h3>
 			</div>
 			<div className="space-y-1">
@@ -306,7 +313,7 @@ export function HeroSection() {
 						className="relative flex items-center px-3 py-2 rounded-xl cursor-pointer transition-all duration-200 group overflow-hidden hover:bg-gradient-to-r hover:from-blue-50 hover:via-blue-50/50 hover:to-transparent"
 						style={{
 							animation: `slideIn 0.25s ease-out ${
-								(index + (results?.places.length || 3)) * 0.04
+								(index + (results?.places.length || 0)) * 0.04
 							}s both`,
 						}}
 					>
@@ -329,18 +336,20 @@ export function HeroSection() {
 								}}
 							/>
 							<div className="flex items-center gap-1.5 mt-0.5">
-								<div className="inline-flex items-center gap-1 bg-gray-100 group-hover:bg-blue-100 px-1.5 py-0.5 rounded-md transition-colors">
-									<svg
-										className="w-2.5 h-2.5 text-gray-600 group-hover:text-blue-600 transition-colors"
-										fill="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-									</svg>
-									<span className="text-[11px] font-bold text-gray-700 group-hover:text-blue-700 transition-colors">
-										{court.distance}mi
-									</span>
-								</div>
+								{userLocation && court.distance > 0 && (
+									<div className="inline-flex items-center gap-1 bg-gray-100 group-hover:bg-blue-100 px-1.5 py-0.5 rounded-md transition-colors">
+										<svg
+											className="w-2.5 h-2.5 text-gray-600 group-hover:text-blue-600 transition-colors"
+											fill="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+										</svg>
+										<span className="text-[11px] font-bold text-gray-700 group-hover:text-blue-700 transition-colors">
+											{court.distance}mi
+										</span>
+									</div>
+								)}
 								<span className="text-xs text-gray-400 truncate">{court.location}</span>
 							</div>
 						</div>
@@ -359,11 +368,6 @@ export function HeroSection() {
 
 	const hasResults =
 		results && (results.places.length > 0 || results.courts.length > 0);
-	const showMockResults =
-		!isLoading &&
-		!isFetching &&
-		!hasResults &&
-		debouncedSearchQuery.trim().length >= 2;
 
 	return (
 		<>
@@ -516,12 +520,14 @@ export function HeroSection() {
 												{results.places.length > 0 && renderPlaces(results.places)}
 												{results.courts.length > 0 && renderCourts(results.courts)}
 											</>
-										) : showMockResults ? (
-											<>
-												{renderPlaces(MOCK_RESULTS.places)}
-												{renderCourts(MOCK_RESULTS.courts)}
-											</>
-										) : null}
+										) : (
+											<div className="text-center py-8">
+												<p className="text-sm text-gray-500">No results found</p>
+												<p className="text-xs text-gray-400 mt-1">
+													Try a different search term
+												</p>
+											</div>
+										)}
 									</div>
 								</div>
 							</div>
