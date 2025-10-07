@@ -1,3 +1,5 @@
+// src/app/city/[location]/_components/MapPreview.tsx
+
 'use client';
 
 import { useEffect, useRef } from 'react';

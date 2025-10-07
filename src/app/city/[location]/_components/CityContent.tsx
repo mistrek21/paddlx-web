@@ -1,7 +1,6 @@
 // src/app/city/[location]/_components/CityContent.tsx
 
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import CityStats from './CityStats';
 import {
 	Clock,
@@ -17,16 +16,12 @@ import {
 	Compass,
 } from 'lucide-react';
 import CourtCard from './CourtCard';
-import {
-	CityFeature,
-	CityPageProps,
-	Court,
-	getCityDataEnhanced,
-} from '../page';
+import { CityFeature, CityPageProps, Court } from '../page';
 import Image from 'next/image';
 import InfoCard from './InfoCard';
 import CityFeatureCard from './CityFeatureCard';
-import MapPreview from './MapPreview';
+import { getCityDataEnhanced } from './fetch/fetch';
+import MapPreviewWrapper from './MapPreviewWrapper';
 
 async function CityContent({ params, searchParams }: CityPageProps) {
 	const { location } = await params;
@@ -99,7 +94,7 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 									</div>
 								</div>
 							)}
-							{cityData.totalFacilities > 0 && (
+							{/* {cityData.totalFacilities > 0 && (
 								<div className="flex items-center gap-2 text-white/90">
 									<div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
 										<Navigation className="w-5 h-5" />
@@ -122,7 +117,7 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 										<div className="text-sm text-white/70">Avg Rating</div>
 									</div>
 								</div>
-							)}
+							)} */}
 						</div>
 					</div>
 				</div>
@@ -207,7 +202,7 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 
 							{/* Interactive Map Preview */}
 							<div className="h-80 relative">
-								<MapPreview
+								<MapPreviewWrapper
 									latitude={cityData.latitude}
 									longitude={cityData.longitude}
 									cityName={cityData.name}
