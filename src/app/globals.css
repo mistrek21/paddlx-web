@@ -1,26 +1,78 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme {
+  /* Primary color and variants */
+  --color-primary: #2A9DB0;
+  --color-primary-dark: #1A8DA0;
+  --color-primary-light: #4DB5C7;
+  --color-primary-soft: #7BC9D6;
+  --color-primary-super-soft: #B8DCE8;
+  --color-primary-ultra-soft: #E6F7F9;
+  
+  /* Accent colors */
+  --color-accent: #FF6B4A;
+  --color-accent-dark: #E55A3A;
+  --color-accent-light: #FF8B6B;
+  
+  /* Dark shade */
+  --color-dark: #0F172A;
+  
+  /* Text colors */
+  --color-dark-slate: #0F172A;
+  --color-slate-gray: #64748B;
+  --color-light-slate: #475569;
+  
+  /* Background shades */
+  --color-light-blue-1: #E6F7F9;
+  --color-light-blue-2: #C7EDF2;
+  --color-light-blue-3: #F0FAFB;
+  --color-light-blue-4: #F8FCFD;
+  --color-pale-blue: #F0F9FF;
+  
+  /* Utility colors */
+  --color-light-gray: #9CA3AF;
+  --color-medium-gray: #64748B;
+  
+  /* Semantic colors */
+  --color-purple: #8E8EEA;
+  --color-orange: #FF6B4A;
+  --color-green: #22C55E;
+  --color-yellow: #FBBF24;
+  --color-red: #EF4444;
+  --color-light-red: #F87171;
+  --color-teal: #2A9DB0;
+  --color-pink-button: #FF2D55;
+  
+  /* Complementary colors */
+  --color-coral: #FF7A6B;
+  --color-mint: #4ECDC4;
+  --color-sunset: #FFB347;
+  --color-ocean: #006B7D;
+  --color-cream: #FFF8F0;
+  --color-lavender: #B8A9FF;
+  --color-light-lavender: #E5E0FF;
+  --color-sage: #87A96B;
+  --color-rose: #FF9FB2;
+  --color-gold: #FFD23F;
+  --color-slate: #485563;
+  
+  /* Enhanced utilities */
+  --color-cool-gray: #F1F5F9;
+  --color-gray-text: #64748B;
+  --color-warm-gray-100: #F5F5F4;
+  --color-border: #E5E7EB;
+  --color-divider: #D1D5DB;
+  --color-text: #000;
+  --color-text-secondary: #64748B;
+  
+  /* State colors */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #F87171;
+  --color-info: #3B82F6;
+  --color-success-light: #D1FAE5;
+  --color-warning-light: #FEF3C7;
+  --color-error-light: #FEE2E2;
+  --color-light-gray-2: #F8FAFC;
+  --color-background: #FEFEFE;
 }
