@@ -23,29 +23,37 @@ import {
 	Globe,
 	Mountain,
 } from 'lucide-react';
-import CourtCard from './CourtCard';
-import { CityFeature, CityPageProps, Court } from '../page';
+
+import { CityFeature, CityPageProps } from '../page';
 import Image from 'next/image';
 import InfoCard from './InfoCard';
 import CityFeatureCard from './CityFeatureCard';
-import { getCityDataEnhanced } from './fetch/fetch';
+import { getCityDataCached } from './fetch/fetch';
 import MapPreviewWrapper from './MapPreviewWrapper';
 import WeatherCard from './WeatherCard';
 import { Suspense } from 'react';
 import CourtsSectionSkeleton from './CourtsSectionSkeleton';
 import CourtsSection from './CourtsSection';
+import DynamicCityStats from './DynamicCityStats';
+import CityStatsSkeleton from './CityStatsSkeleton';
+
+export const experimental_ppr = true; // Enable PPR for this route
 
 async function CityContent({ params, searchParams }: CityPageProps) {
 	const { location } = await params;
 	const { country } = await searchParams;
 	const decodedLocation = decodeURIComponent(location);
-	const cityData = await getCityDataEnhanced(decodedLocation, country);
+
+	// Fetch CACHED data for hero and static sections (1 hour cache)
+	const cityData = await getCityDataCached(decodedLocation, country);
 
 	console.log('Location:', decodedLocation, 'Country:', country);
 
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-cool-gray via-slate-50 to-cool-gray">
-			{/* Enhanced Hero Section with Overlay Gradient */}
+			{/* ========================================== */}
+			{/* CACHED: Enhanced Hero Section              */}
+			{/* ========================================== */}
 			<div className="relative h-[32rem] overflow-hidden">
 				{(cityData.coverImageUrl || cityData.imageUrl) && (
 					<>
@@ -56,14 +64,13 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 							className="object-cover"
 							priority
 						/>
-						{/* <div className="absolute inset-0 bg-gradient-to-br from-primary/60 via-primary-dark/70 to-dark-slate/80" /> */}
 					</>
 				)}
 				{!(cityData.coverImageUrl || cityData.imageUrl) && (
 					<div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-dark to-dark-slate" />
 				)}
 
-				{/* Hero Content */}
+				{/* Hero Content - Uses CACHED cityData */}
 				<div className="relative container mx-auto px-4 h-full flex flex-col justify-center">
 					<div className="max-w-4xl">
 						{/* Badges */}
@@ -111,7 +118,7 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 							</p>
 						)}
 
-						{/* Quick Stats Bar */}
+						{/* Quick Stats Bar - Uses CACHED data */}
 						<div className="flex flex-wrap gap-6 mt-8">
 							{cityData.totalCourts > 0 && (
 								<div className="flex items-center gap-2 text-white/90">
@@ -165,9 +172,13 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 			</div>
 
 			<div className="container mx-auto px-4 -mt-12 relative z-10">
-				{/* Enhanced Stats Cards */}
+				{/* ========================================== */}
+				{/* DYNAMIC: Fresh Stats (No Cache)           */}
+				{/* ========================================== */}
 				<div className="mb-12">
-					<CityStats data={cityData} />
+					<Suspense fallback={<CityStatsSkeleton />}>
+						<DynamicCityStats location={decodedLocation} country={country} />
+					</Suspense>
 				</div>
 
 				{/* Main Content Grid */}

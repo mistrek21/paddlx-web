@@ -33,6 +33,9 @@ const nextConfig: NextConfig = {
 	turbopack: {
 		root: '/Users/mata/Desktop/proyectos/ahorroVip/paddlx-web',
 	},
+	// experimental: {
+	// 	ppr: 'incremental',
+	// },
 };
 
 export default nextConfig;

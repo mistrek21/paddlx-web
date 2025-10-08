@@ -1,7 +1,5 @@
 // src/app/city/[location]/_components/CityStats.tsx
 
-'use client';
-
 import React from 'react';
 import {
 	Calendar,
@@ -14,7 +12,20 @@ import {
 	ArrowDownRight,
 	Zap,
 } from 'lucide-react';
-import { CityData } from '../page';
+
+export interface CityStatsData {
+	totalCourts: number;
+	totalClubs: number;
+	totalActiveSessions: number;
+	totalActiveTournaments: number;
+	totalCoaches: number;
+	totalPlayers: number;
+	totalGroups: number;
+	activityScore: number;
+	isPopularDestination: boolean;
+	isTrendingCity: boolean;
+	upcomingSessionsCount: number;
+}
 
 interface Badge {
 	text: string;
@@ -118,7 +129,7 @@ function StatCard({
 	);
 }
 
-function CityStats({ data }: { data: CityData }) {
+function CityStats({ data }: { data: CityStatsData }) {
 	const stats: StatCardProps[] = [
 		{
 			icon: MapPin,

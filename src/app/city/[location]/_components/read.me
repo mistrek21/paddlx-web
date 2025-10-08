@@ -1,0 +1,76 @@
+┌─────────────────────────────────────────────────────────────┐
+│  User visits: /city/Makati%20City?country=Philippines       │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│  CityContent Component Renders                               │
+│  1. getCityDataCached() → CACHED (1 hour)                   │
+│  2. DynamicCityStats (Suspense) → FRESH (no cache)          │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│  Two Fetch Calls to SAME API Route                          │
+│                                                              │
+│  Call 1 (Cached):                                           │
+│  GET /api/web/cities/Makati%20City?country=Philippines      │
+│  Cache: revalidate: 3600                                    │
+│                                                              │
+│  Call 2 (Fresh):                                            │
+│  GET /api/web/cities/Makati%20City?country=Philippines      │
+│  Cache: no-store                                            │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│  Your API Route Handler                                      │
+│  /app/api/web/cities/[id]/route.ts                          │
+│                                                              │
+│  Processes BOTH requests identically:                        │
+│  1. Extracts id: "Makati City"                              │
+│  2. Extracts country: "Philippines"                          │
+│  3. Queries database                                         │
+│  4. Returns full CityData JSON                               │
+└─────────────────────────────────────────────────────────────┘
+                          ↓
+┌─────────────────────────────────────────────────────────────┐
+│  Response Handling                                           │
+│                                                              │
+│  Call 1 → getCityDataCached() returns full CityData         │
+│           Used for hero, description, images, etc.          │
+│                                                              │
+│  Call 2 → getCityStatsOnly() extracts ONLY stats fields    │
+│           Used for CityStats component                      │
+└─────────────────────────────────────────────────────────────┘
+
+
+# First request (CACHED - for hero section)
+📦 Fetching CACHED city data
+🔍 Looking for city: Makati City, country: Philippines
+✅ City data found: Makati City (AI Generated: true)
+→ Result cached for 1 hour
+
+# Second request (FRESH - for stats component)
+⚡ Fetching FRESH stats data
+🔍 Looking for city: Makati City, country: Philippines  
+✅ City data found: Makati City (AI Generated: true)
+→ Result NOT cached, always fresh
+
+// Page load sequence:
+
+// 1. Hero section renders (uses cached data)
+const cityData = await getCityDataCached("Makati City", "Philippines");
+// → Hits API, caches for 1 hour
+// → Returns: { id, name, description, imageUrl, totalCourts, ... }
+
+// 2. Stats section renders inside Suspense (uses fresh data)
+const stats = await getCityStatsOnly("Makati City", "Philippines");
+// → Hits API again, NO cache
+// → Returns: { totalCourts, totalClubs, totalPlayers, ... }
+
+app/
+├── api/
+│   └── web/
+│       └── cities/
+│           └── [id]/
+│               ├── route.ts          // Full data (cached)
+│               └── stats/
+│                   └── route.ts      // Stats only (fresh)
