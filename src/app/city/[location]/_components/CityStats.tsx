@@ -244,7 +244,7 @@ function CityStats({ data }: { data: CityData }) {
 		<section className="mb-20">
 			{/* Animated Gradient Header */}
 			<div className="mb-10">
-				<div className="relative flex items-center gap-4 mb-4 animate-headerPop">
+				<div className="relative flex items-center gap-4 mb-4 animate-[headerPop_0.7s_cubic-bezier(0.6,0,0.3,1)_both]">
 					{/* Icon Hero Accent */}
 					<div className="flex items-center justify-center h-12 w-12 rounded-2xl bg-gradient-to-br from-teal-500 via-blue-500 to-fuchsia-600 shadow-lg ring-4 ring-white/40">
 						<svg width="32" height="32" fill="none" viewBox="0 0 32 32">
@@ -270,12 +270,12 @@ function CityStats({ data }: { data: CityData }) {
 							</defs>
 						</svg>
 					</div>
-					<h2 className="text-3xl md:text-4xl font-extrabold text-dark-slate tracking-tight drop-shadow-xl">
+					<h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight drop-shadow-xl">
 						Community Overview
 					</h2>
 				</div>
 				<div className="pl-16 -mt-2">
-					<p className="text-lg text-slate-500 font-medium animate-subFade">
+					<p className="text-lg text-slate-500 font-medium animate-[subFade_1.1s_ease_both]">
 						Your window into the pulse of local pickleball
 					</p>
 				</div>
@@ -294,10 +294,10 @@ function CityStats({ data }: { data: CityData }) {
 							relative 
 							overflow-hidden
 							group
-							animate-cardUp
+							animate-[cardUp_0.8s_cubic-bezier(0.6,0,0.3,1)_both]
 						"
 						style={{
-							minHeight: '130px', // for equal height
+							minHeight: '130px',
 						}}
 					>
 						{/* Dynamic Animated Glow Accent */}
@@ -306,7 +306,6 @@ function CityStats({ data }: { data: CityData }) {
 						{/* Stat Content */}
 						<div className="relative z-10 p-6 flex flex-col h-full justify-between">
 							<div className="flex items-center gap-2 mb-4">
-								{/* Icon as SVG, fallback to stat.icon if you have one */}
 								{stat.icon && (
 									<span className="inline-flex items-center justify-center h-9 w-9 rounded-lg bg-teal-100 text-teal-700 shadow-sm">
 										<stat.icon className="w-6 h-6" />
@@ -315,69 +314,18 @@ function CityStats({ data }: { data: CityData }) {
 
 								<span className="text-lg font-bold text-teal-700">{stat.label}</span>
 							</div>
-							<div className="text-3xl md:text-4xl font-black text-dark-slate">
+							<div className="text-3xl md:text-4xl font-black text-slate-900">
 								{stat.value}
 							</div>
 							<div className="text-xs text-slate-400 mt-2">{stat.subtitle}</div>
 						</div>
 						{/* Shimmer on hover */}
 						<div className="absolute inset-0 pointer-events-none">
-							<div className="h-full w-full opacity-0 group-hover:opacity-40 transition-opacity duration-300 animate-shimmer-card bg-gradient-to-r from-transparent via-white/80 to-transparent" />
+							<div className="h-full w-full opacity-0 group-hover:opacity-40 transition-opacity duration-300 animate-[shimmerCard_2.7s_linear_infinite] bg-gradient-to-r from-transparent via-white/80 to-transparent" />
 						</div>
 					</div>
 				))}
 			</div>
-
-			<style jsx>{`
-				@keyframes headerPop {
-					0% {
-						opacity: 0;
-						transform: scale(0.93) translateY(20px);
-					}
-					100% {
-						opacity: 1;
-						transform: scale(1) translateY(0);
-					}
-				}
-				@keyframes subFade {
-					from {
-						opacity: 0;
-					}
-					to {
-						opacity: 1;
-					}
-				}
-				@keyframes cardUp {
-					from {
-						opacity: 0;
-						transform: translateY(32px) scale(0.95);
-					}
-					to {
-						opacity: 1;
-						transform: translateY(0) scale(1);
-					}
-				}
-				@keyframes shimmerCard {
-					0% {
-						transform: translateX(-100%);
-					}
-					100% {
-						transform: translateX(100%);
-					}
-				}
-				.animate-headerPop {
-					animation: headerPop 0.7s cubic-bezier(0.6, 0, 0.3, 1) both;
-				}
-				.animate-subFade {
-					animation: subFade 1.1s ease both;
-				}
-				.animate-cardUp {
-					animation: cardUp 0.8s cubic-bezier(0.6, 0, 0.3, 1) both;
-				}
-				.animate-shimmer-card {
-					animation: shimmerCard 2.7s linear infinite;
-				}
-			`}</style>
 		</section>
 	);
 }
