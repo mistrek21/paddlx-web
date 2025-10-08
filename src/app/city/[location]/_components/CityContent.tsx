@@ -716,10 +716,10 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 							href={`/search?location=${encodeURIComponent(decodedLocation)}${
 								country ? `&country=${encodeURIComponent(country)}` : ''
 							}`}
-							className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+							className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-dark font-medium text-sm transition-all shadow hover:shadow-md active:scale-95"
 						>
-							View All ({cityData.totalCourts})
-							<Navigation className="w-5 h-5" />
+							<span>View All</span>
+							<Navigation className="w-4 h-4" />
 						</Link>
 					</div>
 

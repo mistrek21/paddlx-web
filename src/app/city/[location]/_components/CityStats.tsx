@@ -199,7 +199,7 @@ function CityStats({ data }: { data: CityData }) {
 				<div className="absolute -bottom-2 -right-6 w-16 h-16 bg-primary-super-soft rounded-full blur-lg opacity-50 animate-pulse delay-1000" />
 
 				{/* Main header container */}
-				<div className="relative max-w-4xl mx-auto text-center">
+				<div className="relative max-w-4xl mx-auto text-center mt-6 md:mt-2">
 					{/* Glass panel with enhanced styling */}
 					<div className="rounded-3xl border border-cool-gray shadow-xl bg-background/95 backdrop-blur-xl px-10 py-8 relative overflow-hidden">
 						{/* Subtle gradient overlay */}
@@ -207,10 +207,10 @@ function CityStats({ data }: { data: CityData }) {
 
 						{/* Content */}
 						<div className="relative z-10">
-							{/* Icon accent */}
-							<div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary shadow-lg mb-4 ring-4 ring-primary-ultra-soft">
+							{/* Icon accent - smaller on mobile */}
+							<div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-primary shadow-lg mb-3 md:mb-4 ring-2 md:ring-4 ring-primary-ultra-soft">
 								<svg
-									className="w-8 h-8 text-white"
+									className="w-6 h-6 md:w-8 md:h-8 text-white"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
@@ -224,32 +224,32 @@ function CityStats({ data }: { data: CityData }) {
 								</svg>
 							</div>
 
-							{/* Main headline */}
-							<h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-dark-slate mb-4 leading-tight">
+							{/* Main headline - more compact on mobile */}
+							<h2 className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight text-dark-slate mb-2 md:mb-4 leading-tight">
 								Community Overview
 							</h2>
 
-							{/* Enhanced accent bar */}
-							<div className="flex items-center justify-center gap-2 mb-4">
-								<div className="h-1 w-12 bg-gradient-to-r from-primary to-primary-light rounded-full" />
-								<div className="w-2 h-2 bg-primary rounded-full opacity-60" />
-								<div className="h-1 w-8 bg-gradient-to-l from-primary to-primary-light rounded-full" />
+							{/* Enhanced accent bar - smaller on mobile */}
+							<div className="flex items-center justify-center gap-1.5 md:gap-2 mb-3 md:mb-4">
+								<div className="h-0.5 md:h-1 w-8 md:w-12 bg-gradient-to-r from-primary to-primary-light rounded-full" />
+								<div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full opacity-60" />
+								<div className="h-0.5 md:h-1 w-6 md:w-8 bg-gradient-to-l from-primary to-primary-light rounded-full" />
 							</div>
 
-							{/* Subtitle */}
-							<p className="text-lg md:text-xl text-slate-gray font-medium max-w-2xl mx-auto leading-relaxed">
+							{/* Subtitle - smaller text on mobile */}
+							<p className="text-base md:text-lg lg:text-xl text-slate-gray font-medium max-w-2xl mx-auto leading-relaxed mb-4 md:mb-0">
 								Your window into the pulse of local pickleball
 							</p>
 
-							{/* Stats preview pills */}
-							<div className="flex items-center justify-center gap-3 mt-6">
-								<span className="px-3 py-1.5 bg-primary-ultra-soft text-primary-dark text-sm font-semibold rounded-full">
+							{/* Stats preview pills - stack on small screens */}
+							<div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mt-4 md:mt-6">
+								<span className="px-2.5 py-1 md:px-3 md:py-1.5 bg-primary-ultra-soft text-primary-dark text-xs md:text-sm font-semibold rounded-full">
 									Live Data
 								</span>
-								<span className="px-3 py-1.5 bg-success-light text-success text-sm font-semibold rounded-full">
+								<span className="px-2.5 py-1 md:px-3 md:py-1.5 bg-success-light text-success text-xs md:text-sm font-semibold rounded-full">
 									Verified
 								</span>
-								<span className="px-3 py-1.5 bg-primary-ultra-soft text-primary-dark text-sm font-semibold rounded-full">
+								<span className="px-2.5 py-1 md:px-3 md:py-1.5 bg-primary-ultra-soft text-primary-dark text-xs md:text-sm font-semibold rounded-full">
 									Real-time
 								</span>
 							</div>
