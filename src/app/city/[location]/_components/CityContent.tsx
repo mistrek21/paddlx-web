@@ -31,6 +31,9 @@ import CityFeatureCard from './CityFeatureCard';
 import { getCityDataEnhanced } from './fetch/fetch';
 import MapPreviewWrapper from './MapPreviewWrapper';
 import WeatherCard from './WeatherCard';
+import { Suspense } from 'react';
+import CourtsSectionSkeleton from './CourtsSectionSkeleton';
+import CourtsSection from './CourtsSection';
 
 async function CityContent({ params, searchParams }: CityPageProps) {
 	const { location } = await params;
@@ -719,25 +722,16 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 							<Navigation className="w-5 h-5" />
 						</Link>
 					</div>
-					{cityData.courts.length > 0 ? (
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-							{cityData.courts.slice(0, 6).map((court: Court) => (
-								<CourtCard key={court.id} court={court} />
-							))}
-						</div>
-					) : (
-						<div className="text-center py-20 bg-gradient-to-br from-white to-cool-gray rounded-2xl shadow-xl border border-slate-100">
-							<div className="bg-primary-ultra-soft w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-								<MapPin className="w-12 h-12 text-primary" />
-							</div>
-							<h3 className="text-2xl font-bold text-dark-slate mb-3">
-								No courts found
-							</h3>
-							<p className="text-slate-gray text-lg">
-								Check back soon for new courts in {cityData.name}
-							</p>
-						</div>
-					)}
+
+					{/* Courts Section with Fresh Data */}
+
+					<Suspense fallback={<CourtsSectionSkeleton />}>
+						<CourtsSection cityId={cityData.id} cityName={cityData.name} />
+					</Suspense>
+
+					{/* <div>
+						<pre>{JSON.stringify(cityData.courts, null, 2)}</pre>
+					</div> */}
 				</div>
 
 				{/* SEO Schema Section (hidden, for search engines) */}

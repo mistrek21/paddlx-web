@@ -2,7 +2,11 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
 	images: {
-		domains: ['images.unsplash.com'], // add this line
+		domains: [
+			'images.unsplash.com',
+			'xthalpppenobrkpnscrf.supabase.co',
+			'fastly.picsum.photos',
+		], // add this line
 	},
 	remotePatterns: [
 		{
@@ -13,7 +17,18 @@ const nextConfig: NextConfig = {
 			protocol: 'https',
 			hostname: 'paddle-api.vercel.app',
 		},
-		// Add other image domains you use
+		{
+			protocol: 'https',
+			hostname: 'fastly.picsum.photos',
+			port: '',
+			pathname: '/**',
+		},
+		{
+			protocol: 'https',
+			hostname: 'xthalpppenobrkpnscrf.supabase.co',
+			port: '',
+			pathname: '/storage/v1/object/public/**',
+		},
 	],
 	turbopack: {
 		root: '/Users/mata/Desktop/proyectos/ahorroVip/paddlx-web',
