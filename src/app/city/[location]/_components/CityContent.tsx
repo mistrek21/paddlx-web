@@ -38,6 +38,8 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 	const decodedLocation = decodeURIComponent(location);
 	const cityData = await getCityDataEnhanced(decodedLocation, country);
 
+	console.log('Location:', decodedLocation, 'Country:', country);
+
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-cool-gray via-slate-50 to-cool-gray">
 			{/* Enhanced Hero Section with Overlay Gradient */}

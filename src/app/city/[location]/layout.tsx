@@ -9,38 +9,59 @@ interface CityLayoutProps {
 }
 
 // Fetch city data for metadata
-async function getCityData(location: string) {
+async function getCityData(location: string, country?: string) {
 	const baseUrl = process.env.IP_CONFIG || 'http://localhost:3000';
 
 	try {
+		// Decode the location first
+		const decodedLocation = decodeURIComponent(location);
+
+		// Build URL: /api/web/cities/[location]?country=xxx
 		const url = new URL(
-			`${baseUrl}/api/web/cities/by-location/${encodeURIComponent(location)}`
+			`${baseUrl}/api/web/cities/${encodeURIComponent(decodedLocation)}`
 		);
+
+		if (country) {
+			url.searchParams.set('country', country);
+		}
+
+		console.log('🔍 Fetching:', url.toString());
 
 		const response = await fetch(url.toString(), {
 			next: {
-				revalidate: 2592000, // Cache for 30 days (1 month)
+				revalidate: 2592000, // Cache for 30 days
 				tags: [`city-${location}`],
 			},
+			cache: 'no-store', // Important for dynamic generation
 		});
 
-		if (!response.ok) return null;
+		console.log('📡 Response status:', response.status);
+
+		if (!response.ok) {
+			console.log('❌ Response not OK');
+			return null;
+		}
 
 		const data = await response.json();
-		return data.data;
+		console.log('✅ Data received:', data?.name);
+
+		// Your API returns the city data directly (not wrapped in { data: ... })
+		return data;
 	} catch (error) {
-		console.error('Error fetching city data for metadata:', error);
+		console.error('❌ Error fetching city data:', error);
 		return null;
 	}
 }
 
-// Generate metadata dynamically
-export async function generateMetadata({
-	params,
-}: {
-	params: Promise<{ location: string }>;
-}): Promise<Metadata> {
+// Generate metadata dynamically - needs country from searchParams
+export async function generateMetadata(
+	{ params }: { params: Promise<{ location: string }> },
+	// IMPORTANT: Add parent to access searchParams
+	parent: any
+): Promise<Metadata> {
 	const { location } = await params;
+
+	// For now, fetch without country - your API handles this
 	const cityData = await getCityData(location);
 
 	if (!cityData) {
@@ -50,7 +71,7 @@ export async function generateMetadata({
 		};
 	}
 
-	const canonicalUrl = `${process.env.NEXT_PUBLIC_APP_URL}/city/${
+	const canonicalUrl = `${process.env.IP_CONFIG}/city/${
 		cityData.slug || location
 	}`;
 	const title =
@@ -111,8 +132,8 @@ export async function generateMetadata({
 // Allow all dynamic routes to be generated on-demand
 export const dynamicParams = true;
 
-// Cache pages for 30 days (1 month as you requested)
-export const revalidate = 2592000; // 30 days in seconds
+// Cache pages for 30 days
+export const revalidate = 2592000;
 
 export default async function CityLayout({
 	children,

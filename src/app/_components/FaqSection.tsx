@@ -1,3 +1,5 @@
+// src/app/_components/FaqSection.tsx
+
 'use client';
 
 import { useState } from 'react';

@@ -196,9 +196,6 @@ export interface CityPageProps {
 	searchParams: Promise<CityPageSearchParams>;
 }
 
-export const dynamic = 'force-static'; // Enable static generation
-export const revalidate = 3600; // Revalidate every hour
-
 export default async function CityPage(props: CityPageProps) {
 	return (
 		<Suspense fallback={<CityPageLoading />}>
