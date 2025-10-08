@@ -224,7 +224,7 @@ export function HeroSection() {
 	const handleSelectCourt = (court: Court) => {
 		setSearchQuery(court.name);
 		setShowDropdown(false);
-		// Route to individual court page
+		// Use the slug (or ID as fallback) from the API
 		router.push(`/court/${court.id}`);
 	};
 
