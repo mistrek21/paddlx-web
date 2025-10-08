@@ -1,5 +1,4 @@
 // src/app/city/[location]/_components/CityContent.tsx
-
 import Link from 'next/link';
 import CityStats from './CityStats';
 import {
@@ -14,6 +13,15 @@ import {
 	DollarSign,
 	Award,
 	Compass,
+	Sun,
+	CloudRain,
+	Activity,
+	Target,
+	Sparkles,
+	Flag,
+	Image as ImageIcon,
+	Globe,
+	Mountain,
 } from 'lucide-react';
 import CourtCard from './CourtCard';
 import { CityFeature, CityPageProps, Court } from '../page';
@@ -22,11 +30,11 @@ import InfoCard from './InfoCard';
 import CityFeatureCard from './CityFeatureCard';
 import { getCityDataEnhanced } from './fetch/fetch';
 import MapPreviewWrapper from './MapPreviewWrapper';
+import WeatherCard from './WeatherCard';
 
 async function CityContent({ params, searchParams }: CityPageProps) {
 	const { location } = await params;
 	const { country } = await searchParams;
-
 	const decodedLocation = decodeURIComponent(location);
 	const cityData = await getCityDataEnhanced(decodedLocation, country);
 
@@ -35,16 +43,20 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 			{/* Enhanced Hero Section with Overlay Gradient */}
 			<div className="relative h-[32rem] overflow-hidden">
 				{(cityData.coverImageUrl || cityData.imageUrl) && (
-					<Image
-						src={cityData.coverImageUrl || cityData.imageUrl!}
-						fill
-						alt={`${cityData.name} banner`}
-						className="object-cover"
-						style={{ opacity: 0.3 }}
-						priority
-					/>
+					<>
+						<Image
+							src={cityData.coverImageUrl || cityData.imageUrl!}
+							fill
+							alt={`${cityData.name} banner`}
+							className="object-cover"
+							priority
+						/>
+						{/* <div className="absolute inset-0 bg-gradient-to-br from-primary/60 via-primary-dark/70 to-dark-slate/80" /> */}
+					</>
 				)}
-				<div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-dark to-dark-slate opacity-90" />
+				{!(cityData.coverImageUrl || cityData.imageUrl) && (
+					<div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-dark to-dark-slate" />
+				)}
 
 				{/* Hero Content */}
 				<div className="relative container mx-auto px-4 h-full flex flex-col justify-center">
@@ -61,6 +73,12 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 								<div className="bg-accent/20 backdrop-blur-sm border border-accent/30 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
 									<TrendingUp className="w-4 h-4" />
 									Trending
+								</div>
+							)}
+							{cityData.isPopularDestination && (
+								<div className="bg-purple-500/20 backdrop-blur-sm border border-purple-400/30 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
+									<Sparkles className="w-4 h-4" />
+									Popular Destination
 								</div>
 							)}
 							{cityData.popularityRank && (
@@ -81,6 +99,13 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 								`${cityData.state ? `${cityData.state}, ` : ''}${cityData.country}`}
 						</p>
 
+						{/* Community Vibe */}
+						{cityData.communityVibe && (
+							<p className="text-lg text-white/85 mb-6 drop-shadow-lg italic max-w-2xl">
+								"{cityData.communityVibe}"
+							</p>
+						)}
+
 						{/* Quick Stats Bar */}
 						<div className="flex flex-wrap gap-6 mt-8">
 							{cityData.totalCourts > 0 && (
@@ -94,27 +119,38 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 									</div>
 								</div>
 							)}
-							{(cityData.totalCourts ?? 0) > 0 && (
+							{cityData.totalClubs > 0 && (
 								<div className="flex items-center gap-2 text-white/90">
 									<div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
 										<Navigation className="w-5 h-5" />
 									</div>
 									<div>
-										<div className="text-2xl font-bold">{cityData.totalFacilities}</div>
-										<div className="text-sm text-white/70">Facilities</div>
+										<div className="text-2xl font-bold">{cityData.totalClubs}</div>
+										<div className="text-sm text-white/70">Clubs</div>
 									</div>
 								</div>
 							)}
-							{cityData?.averageRating && (
+							{cityData.totalPlayers > 0 && (
 								<div className="flex items-center gap-2 text-white/90">
 									<div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
-										<Award className="w-5 h-5" />
+										<Users className="w-5 h-5" />
+									</div>
+									<div>
+										<div className="text-2xl font-bold">{cityData.totalPlayers}</div>
+										<div className="text-sm text-white/70">Players</div>
+									</div>
+								</div>
+							)}
+							{cityData.activityScore > 0 && (
+								<div className="flex items-center gap-2 text-white/90">
+									<div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
+										<Activity className="w-5 h-5" />
 									</div>
 									<div>
 										<div className="text-2xl font-bold">
-											{cityData.averageRating.toFixed(1)}
+											{cityData.activityScore.toFixed(1)}
 										</div>
-										<div className="text-sm text-white/70">Avg Rating</div>
+										<div className="text-sm text-white/70">Activity Score</div>
 									</div>
 								</div>
 							)}
@@ -149,6 +185,84 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 							</div>
 						</div>
 
+						{/* Playing Conditions Card */}
+						{cityData.playingConditions && (
+							<div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-xl p-8 border border-blue-100 hover:shadow-2xl transition-shadow duration-300">
+								<div className="flex items-center gap-3 mb-4">
+									<div className="bg-blue-500 p-3 rounded-xl">
+										<Sun className="w-6 h-6 text-white" />
+									</div>
+									<h3 className="text-2xl font-bold text-dark-slate">
+										Playing Conditions
+									</h3>
+								</div>
+								<p className="text-slate-gray text-lg leading-relaxed">
+									{cityData.playingConditions}
+								</p>
+							</div>
+						)}
+
+						{/* Best Time to Visit */}
+						{cityData.bestTimeToVisit && (
+							<div className="bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-xl p-6 border border-green-100">
+								<div className="flex items-center gap-3 mb-3">
+									<div className="bg-green p-2.5 rounded-xl">
+										<Calendar className="w-5 h-5 text-white" />
+									</div>
+									<h4 className="text-xl font-bold text-dark-slate">
+										Best Time to Visit
+									</h4>
+								</div>
+								<p className="text-slate-gray text-lg">{cityData.bestTimeToVisit}</p>
+							</div>
+						)}
+
+						{/* Nearby Attractions */}
+						{cityData.nearbyAttractions && cityData.nearbyAttractions.length > 0 ? (
+							<section className="bg-gradient-to-br from-white to-purple-50 rounded-2xl shadow-2xl p-8 border border-purple-100 hover:shadow-3xl transition-shadow duration-300">
+								<header className="flex items-center gap-4 mb-6">
+									<div className="bg-purple-500/10 p-3 rounded-xl flex items-center justify-center">
+										<Flag className="w-7 h-7 text-purple-600" />
+									</div>
+									<div>
+										<h3 className="text-2xl font-bold text-dark-slate mb-1">
+											Nearby Attractions
+										</h3>
+										<p className="text-sm text-purple-700 opacity-75">
+											Discover places you’ll love around this city
+										</p>
+									</div>
+								</header>
+								<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+									{cityData.nearbyAttractions.map((attraction: string, idx: number) => (
+										<div
+											key={idx}
+											tabIndex={0}
+											className="group flex items-center gap-3 p-4 bg-white rounded-xl border border-purple-100 cursor-pointer transition-all shadow hover:shadow-lg hover:bg-purple-50 focus:ring-2 focus:ring-purple-300 outline-none"
+											style={{ animation: `fadeInUp .3s ease ${idx * 0.1 + 0.2}s both` }}
+										>
+											<span className="bg-purple-100 group-hover:bg-purple-200 transition-colors rounded-lg p-2">
+												<Target className="w-6 h-6 text-purple-700" />
+											</span>
+											<span className="text-dark-slate font-semibold text-base group-hover:text-purple-800 transition-colors">
+												{attraction}
+											</span>
+										</div>
+									))}
+								</div>
+							</section>
+						) : (
+							<div className="flex flex-col items-center justify-center bg-gradient-to-r from-white to-purple-50 rounded-2xl shadow-xl p-8 border border-purple-100">
+								<Flag className="w-10 h-10 mb-4 text-purple-400" />
+								<h4 className="text-lg font-bold text-purple-900 mb-1">
+									No Attractions Listed
+								</h4>
+								<p className="text-purple-600 text-sm">
+									We don’t have nearby attractions for this city yet.
+								</p>
+							</div>
+						)}
+
 						{/* Location Map Card */}
 						<div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 hover:shadow-2xl transition-shadow duration-300">
 							<div className="p-6 bg-gradient-to-r from-primary-ultra-soft to-slate-50 border-b border-slate-100">
@@ -175,8 +289,6 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 									</Link>
 								</div>
 							</div>
-
-							{/* Interactive Map Preview */}
 							<div className="h-80 relative">
 								<MapPreviewWrapper
 									latitude={cityData.latitude}
@@ -190,13 +302,12 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 						<div className="bg-white/95 rounded-2xl shadow-lg border border-slate-100 backdrop-blur-xl p-7">
 							<div className="flex items-center mb-6 gap-3">
 								<span className="rounded-xl bg-slate-100 p-2 shadow">
-									<MapIcon className="w-6 h-6 text-primary" />
+									<Globe className="w-6 h-6 text-primary" />
 								</span>
 								<h4 className="text-2xl font-bold text-slate-900">
 									Geographic Details
 								</h4>
 							</div>
-							{/* Accent bar / divider */}
 							<div className="w-14 h-1 bg-slate-100 mb-4 rounded-full" />
 							<div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 								{cityData.timezone && (
@@ -207,9 +318,9 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 										color="gray"
 									/>
 								)}
-								{cityData.elevation && (
+								{cityData.elevation !== null && cityData.elevation !== undefined && (
 									<InfoCard
-										icon={MapPin}
+										icon={Mountain}
 										label="Elevation"
 										value={`${cityData.elevation}m`}
 										color="gray"
@@ -225,17 +336,33 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 								)}
 								{cityData.climateType && (
 									<InfoCard
-										icon={Thermometer}
+										icon={CloudRain}
 										label="Climate"
 										value={cityData.climateType}
 										color="orange"
+									/>
+								)}
+								{cityData.countryCode && (
+									<InfoCard
+										icon={Flag}
+										label="Country Code"
+										value={cityData.countryCode}
+										color="blue"
+									/>
+								)}
+								{cityData.stateCode && (
+									<InfoCard
+										icon={MapPin}
+										label="State Code"
+										value={cityData.stateCode}
+										color="blue"
 									/>
 								)}
 							</div>
 						</div>
 
 						{/* Demographics Card */}
-						{(cityData.population || cityData.areaKm2) && (
+						{(cityData.population || cityData.areaKm2 || cityData.populationYear) && (
 							<div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-100">
 								<h4 className="text-xl font-bold text-dark-slate mb-6 flex items-center gap-2">
 									<Users className="w-5 h-5 text-primary" />
@@ -243,18 +370,25 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 								</h4>
 								<div className="grid md:grid-cols-2 gap-4">
 									{cityData.population && (
-										<InfoCard
-											icon={Users}
-											label="Population"
-											value={cityData.population.toLocaleString()}
-											color="blue"
-										/>
+										<div className="space-y-1">
+											<InfoCard
+												icon={Users}
+												label="Population"
+												value={cityData.population.toLocaleString()}
+												color="blue"
+											/>
+											{cityData.populationYear && (
+												<p className="text-xs text-slate-gray text-center">
+													as of {cityData.populationYear}
+												</p>
+											)}
+										</div>
 									)}
 									{cityData.areaKm2 && (
 										<InfoCard
 											icon={MapIcon}
 											label="Area"
-											value={`${cityData.areaKm2} km²`}
+											value={`${cityData.areaKm2.toLocaleString()} km²`}
 											color="green"
 										/>
 									)}
@@ -265,10 +399,149 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 
 					{/* Right Sidebar */}
 					<div className="space-y-6">
+						{/* City Images Showcase */}
+						{(cityData.thumbnailUrl || cityData.imageUrl) && (
+							<div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+								<div className="p-4 bg-gradient-to-r from-primary-ultra-soft to-slate-50 border-b border-slate-100">
+									<div className="flex items-center gap-2">
+										<ImageIcon className="w-5 h-5 text-primary" />
+										<h4 className="font-bold text-dark-slate">City Gallery</h4>
+									</div>
+								</div>
+								{cityData.thumbnailUrl && (
+									<div className="relative h-48">
+										<Image
+											src={cityData.thumbnailUrl}
+											fill
+											alt={`${cityData.name} thumbnail`}
+											className="object-cover"
+										/>
+									</div>
+								)}
+							</div>
+						)}
+
+						{/* Activity Statistics */}
+						{cityData.totalActiveSessions > 0 ||
+							cityData.totalCompletedSessions > 0 ||
+							cityData.totalActiveTournaments > 0 ||
+							(cityData.totalCompletedTournaments > 0 && (
+								<div className="bg-gradient-to-br from-primary-ultra-soft to-white rounded-2xl shadow-xl p-6 border border-primary-soft">
+									<div className="flex items-center gap-3 mb-6">
+										<div className="bg-primary p-2.5 rounded-xl">
+											<Activity className="w-5 h-5 text-white" />
+										</div>
+										<h4 className="font-bold text-dark-slate text-lg">Activity Stats</h4>
+									</div>
+									<div className="space-y-3">
+										{cityData.totalActiveSessions > 0 && (
+											<div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+												<span className="text-slate-gray font-medium">
+													Active Sessions:
+												</span>
+												<span className="font-bold text-primary text-lg">
+													{cityData.totalActiveSessions}
+												</span>
+											</div>
+										)}
+										{cityData.totalCompletedSessions > 0 && (
+											<div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+												<span className="text-slate-gray font-medium">
+													Completed Sessions:
+												</span>
+												<span className="font-bold text-dark-slate text-lg">
+													{cityData.totalCompletedSessions}
+												</span>
+											</div>
+										)}
+										{cityData.totalActiveTournaments > 0 && (
+											<div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+												<span className="text-slate-gray font-medium">
+													Active Tournaments:
+												</span>
+												<span className="font-bold text-primary text-lg">
+													{cityData.totalActiveTournaments}
+												</span>
+											</div>
+										)}
+										{cityData.totalCompletedTournaments > 0 && (
+											<div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+												<span className="text-slate-gray font-medium">
+													Completed Tournaments:
+												</span>
+												<span className="font-bold text-dark-slate text-lg">
+													{cityData.totalCompletedTournaments}
+												</span>
+											</div>
+										)}
+										{cityData.totalCoaches > 0 && (
+											<div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+												<span className="text-slate-gray font-medium">Coaches:</span>
+												<span className="font-bold text-dark-slate text-lg">
+													{cityData.totalCoaches}
+												</span>
+											</div>
+										)}
+										{cityData.totalGroups > 0 && (
+											<div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+												<span className="text-slate-gray font-medium">Groups:</span>
+												<span className="font-bold text-dark-slate text-lg">
+													{cityData.totalGroups}
+												</span>
+											</div>
+										)}
+									</div>
+								</div>
+							))}
+
+						{/* Upcoming Events */}
+						{(cityData.upcomingSessionsCount > 0 ||
+							cityData.upcomingTournamentsCount > 0) && (
+							<div className="bg-gradient-to-br from-accent/10 to-white rounded-2xl shadow-xl p-6 border border-accent/20">
+								<div className="flex items-center gap-3 mb-4">
+									<div className="bg-accent p-2.5 rounded-lg">
+										<Calendar className="w-5 h-5 text-white" />
+									</div>
+									<h4 className="font-bold text-dark-slate text-lg">Upcoming Events</h4>
+								</div>
+								<div className="space-y-3">
+									{cityData.upcomingSessionsCount > 0 && (
+										<div className="p-4 bg-white rounded-lg shadow-sm">
+											<div className="flex justify-between items-center mb-2">
+												<span className="text-slate-gray font-medium">Sessions:</span>
+												<span className="font-bold text-accent text-xl">
+													{cityData.upcomingSessionsCount}
+												</span>
+											</div>
+											{cityData.nextSessionDate && (
+												<p className="text-xs text-slate-gray">
+													Next: {new Date(cityData.nextSessionDate).toLocaleDateString()}
+												</p>
+											)}
+										</div>
+									)}
+									{cityData.upcomingTournamentsCount > 0 && (
+										<div className="p-4 bg-white rounded-lg shadow-sm">
+											<div className="flex justify-between items-center mb-2">
+												<span className="text-slate-gray font-medium">Tournaments:</span>
+												<span className="font-bold text-accent text-xl">
+													{cityData.upcomingTournamentsCount}
+												</span>
+											</div>
+											{cityData.nextTournamentDate && (
+												<p className="text-xs text-slate-gray">
+													Next: {new Date(cityData.nextTournamentDate).toLocaleDateString()}
+												</p>
+											)}
+										</div>
+									)}
+								</div>
+							</div>
+						)}
+
 						{/* Best Play Months */}
 						{cityData.bestPlayMonths && cityData.bestPlayMonths.length > 0 && (
 							<div className="bg-background rounded-2xl shadow-lg border border-cool-gray p-7 hover:shadow-2xl transition-all duration-300">
-								{/* Header Row */}
 								<div className="flex items-center gap-4 mb-5">
 									<div className="rounded-xl bg-primary p-3 shadow">
 										<Calendar className="w-6 h-6 text-white" />
@@ -277,9 +550,7 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 										Best Months to Play
 									</h4>
 								</div>
-								{/* Accent divider */}
 								<div className="h-1 w-11 bg-primary-super-soft rounded-full mb-2" />
-								{/* Month Pills */}
 								<div className="flex flex-wrap gap-2">
 									{cityData.bestPlayMonths.map((month: string) => (
 										<span
@@ -294,7 +565,7 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 						)}
 
 						{/* Pricing Info */}
-						{(cityData.averageSessionPrice || cityData.averageCourtRental) && (
+						{cityData.averageSessionPrice || cityData.averageCourtRental ? (
 							<div className="bg-gradient-to-br from-white to-green-50 rounded-2xl shadow-xl p-6 border border-green-100 hover:shadow-2xl transition-all duration-300">
 								<div className="flex items-center gap-3 mb-4">
 									<div className="bg-green p-2.5 rounded-lg">
@@ -310,7 +581,7 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 										<div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
 											<span className="text-slate-gray font-medium">Session:</span>
 											<span className="font-bold text-dark-slate text-lg">
-												{cityData.currencyUsed} {cityData.averageSessionPrice}
+												{cityData.currencyUsed} {cityData.averageSessionPrice.toFixed(2)}
 											</span>
 										</div>
 									)}
@@ -318,74 +589,81 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 										<div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
 											<span className="text-slate-gray font-medium">Court Rental:</span>
 											<span className="font-bold text-dark-slate text-lg">
-												{cityData.currencyUsed} {cityData.averageCourtRental}
+												{cityData.currencyUsed} {cityData.averageCourtRental.toFixed(2)}
 											</span>
 										</div>
 									)}
 								</div>
 							</div>
+						) : (
+							<div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl p-6 border border-gray-100">
+								<div className="flex items-center gap-3 mb-4">
+									<div className="bg-gray-400 p-2.5 rounded-lg">
+										<DollarSign className="w-5 h-5 text-white" />
+									</div>
+									<div>
+										<h4 className="font-bold text-dark-slate text-lg">Average Pricing</h4>
+										<p className="text-xs text-slate-gray">{cityData.currencyUsed}</p>
+									</div>
+								</div>
+								<p className="text-slate-gray text-center py-4">
+									Not enough data available yet
+								</p>
+							</div>
 						)}
 
-						{/* Data Quality */}
-						<div
-							className="bg-background rounded-2xl shadow-lg border border-cool-gray backdrop-blur-md p-8 
-    hover:shadow-2xl transition-all duration-300 max-w-xl mx-auto relative"
-						>
-							{/* Header Row */}
-							<div className="flex items-center gap-4 mb-6">
-								<span className="rounded-xl bg-primary-ultra-soft p-3 shadow">
-									<Award className="w-6 h-6 text-primary" />
-								</span>
-								<h4 className="font-bold text-2xl text-dark-slate">Data Information</h4>
-							</div>
-							{/* Accent Bar */}
-							<div className="h-1 w-12 bg-primary-super-soft rounded-full mb-3" />
-
-							{/* Meta Info Grid */}
-							<div className="space-y-4">
-								{/* Data Quality Row */}
-								<div className="flex justify-between items-center p-3 rounded-lg bg-cool-gray border border-border shadow-sm">
-									<span className="text-slate-gray text-sm font-medium">Quality:</span>
-									<span
-										className={`font-semibold text-sm px-3 py-1 rounded-full
-                    ${
-																					cityData.dataQuality === 'VERIFIED'
-																						? 'bg-success-light text-success border border-success/30'
-																						: cityData.dataQuality === 'COMPLETE'
-																						? 'bg-primary-ultra-soft text-primary-dark border border-primary/30'
-																						: 'bg-light-gray-2 text-slate-gray border border-border'
-																				}`}
-									>
-										{cityData.dataQuality}
-									</span>
+						{/* SEO Keywords */}
+						{cityData.keywords && cityData.keywords.length > 0 && (
+							<div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl shadow-xl border border-slate-100 p-6 hover:shadow-2xl transition-shadow duration-300">
+								<h4 className="font-bold text-dark-slate mb-4 flex items-center gap-2">
+									<div className="bg-primary/10 p-1.5 rounded-lg">
+										<Target className="w-5 h-5 text-primary" />
+									</div>
+									Popular Searches
+								</h4>
+								<div className="flex flex-wrap gap-2.5">
+									{cityData.keywords.map((keyword: string, idx: number) => (
+										<span
+											key={idx}
+											className="group px-4 py-2 bg-slate-100 text-slate-600 rounded-full text-sm border border-slate-200 cursor-pointer transition-all duration-200 hover:bg-primary hover:text-white hover:border-primary hover:shadow-md hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 active:scale-95"
+											tabIndex={0}
+											role="button"
+											style={{ animation: `fadeInScale 0.3s ease ${idx * 0.05}s both` }}
+										>
+											{keyword}
+										</span>
+									))}
 								</div>
-								{/* External Source Row */}
-								{cityData.externalDataSource && (
-									<div className="flex justify-between items-center p-3 rounded-lg bg-cool-gray border border-border shadow-sm">
-										<span className="text-slate-gray text-sm font-medium">Source:</span>
-										<span className="font-medium text-dark-slate text-sm">
-											{cityData.externalDataSource}
-										</span>
-									</div>
-								)}
-								{/* Last Update Row */}
-								{cityData.lastStatsUpdate && (
-									<div className="flex justify-between items-center p-3 rounded-lg bg-cool-gray border border-border shadow-sm">
-										<span className="text-slate-gray text-sm font-medium">Updated:</span>
-										<span className="font-medium text-dark-slate text-sm">
-											{new Date(cityData.lastStatsUpdate).toLocaleDateString()}
-										</span>
-									</div>
-								)}
 							</div>
-						</div>
+						)}
+
+						{/* Current Weather */}
+						<WeatherCard
+							latitude={cityData.latitude}
+							longitude={cityData.longitude}
+							cityName={cityData.name}
+						/>
+
+						{/* Has Active Clubs Badge */}
+						{cityData.hasActiveClubs && (
+							<div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg border border-green-200 p-6 text-center">
+								<div className="inline-flex items-center justify-center w-12 h-12 bg-green rounded-full mb-3">
+									<Activity className="w-6 h-6 text-white" />
+								</div>
+								<h4 className="font-bold text-green-900 text-lg mb-1">
+									Active Community
+								</h4>
+								<p className="text-green-700 text-sm">
+									This city has verified active pickleball clubs
+								</p>
+							</div>
+						)}
 					</div>
 				</div>
 
 				{/* City Features */}
 				{cityData.features.length > 0 && (
 					<section className="mb-16">
-						{/* Enhanced Header */}
 						<div className="text-center mb-12">
 							<div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-50 to-slate-100 shadow-lg mb-4">
 								<svg
@@ -410,8 +688,6 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 								Discover the unique features of this pickleball destination
 							</p>
 						</div>
-
-						{/* Enhanced Grid */}
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 							{cityData.features
 								.sort((a: CityFeature, b: CityFeature) => b.priority - a.priority)
@@ -441,7 +717,6 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 							<Navigation className="w-5 h-5" />
 						</Link>
 					</div>
-
 					{cityData.courts.length > 0 ? (
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 							{cityData.courts.slice(0, 6).map((court: Court) => (
@@ -462,6 +737,31 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 						</div>
 					)}
 				</div>
+
+				{/* SEO Schema Section (hidden, for search engines) */}
+				{cityData.slug && (
+					<script
+						type="application/ld+json"
+						dangerouslySetInnerHTML={{
+							__html: JSON.stringify({
+								'@context': 'https://schema.org',
+								'@type': 'City',
+								'name': cityData.name,
+								'description': cityData.description,
+								'geo': {
+									'@type': 'GeoCoordinates',
+									'latitude': cityData.latitude,
+									'longitude': cityData.longitude,
+								},
+								...(cityData.population && { population: cityData.population }),
+								...(cityData.areaKm2 && { areaServed: `${cityData.areaKm2} km²` }),
+								...(cityData.timezone && { timeZone: cityData.timezone }),
+								...(cityData.imageUrl && { image: cityData.imageUrl }),
+								'url': `https://yoursite.com/city/${cityData.slug}`,
+							}),
+						}}
+					/>
+				)}
 			</div>
 		</div>
 	);

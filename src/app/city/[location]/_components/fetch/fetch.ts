@@ -3,56 +3,48 @@
 import { config } from '@/lib/config';
 import { CityData } from '../../page';
 
-async function fetchAIDescription(city: CityData): Promise<Partial<CityData>> {
+// Trigger AI enhancement for a city (only if not already generated)
+async function enhanceCity(cityId: string): Promise<boolean> {
 	try {
+		console.log(`🤖 Triggering enhancement for city: ${cityId}`);
+
 		const response = await fetch(
-			`${config.API_BASE_URL}/api/web/ai/generate-city-content`,
+			`${config.API_BASE_URL}/api/web/cities/${cityId}/enhance`,
 			{
-				method: 'POST',
+				method: 'GET',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					name: city.name,
-					country: city.country,
-					state: city.state,
-					population: city.population,
-					totalClubs: city.totalClubs,
-					totalCourts: city.totalCourts,
-					totalPlayers: city.totalPlayers,
-					climateType: city.climateType,
-					averageTemp: city.averageTemp,
-					activityScore: city.activityScore,
-					isPopularDestination: city.isPopularDestination,
-				}),
 			}
 		);
 
-		if (!response.ok) return {};
-		const aiContent = await response.json();
-
-		// Optionally save enhanced data back to database
-		if (aiContent.metaTitle || aiContent.description) {
-			await fetch(`${config.API_BASE_URL}/api/web/cities/${city.id}/enhance`, {
-				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(aiContent),
-			}).catch(console.error);
+		if (!response.ok) {
+			console.warn('Enhancement failed:', response.status);
+			return false;
 		}
 
-		return aiContent;
+		const result = await response.json();
+
+		if (result.alreadyGenerated) {
+			console.log(`✅ City already enhanced on ${result.aiGeneratedAt}`);
+		} else {
+			console.log(
+				`✅ City enhanced with ${result.fieldsUpdated} fields and ${result.featuresCreated} features`
+			);
+		}
+
+		return result.success;
 	} catch (error) {
-		console.error('AI enhancement failed', error);
-		return {};
+		console.error('AI enhancement failed:', error);
+		return false;
 	}
 }
 
-// Fetch city data, then fill missing fields from AI if needed
+// Fetch city data, enhance if needed
 export async function getCityDataEnhanced(
 	location: string,
 	country?: string
 ): Promise<CityData> {
 	try {
 		const params = new URLSearchParams();
-		params.set('location', location);
 		if (country) params.set('country', country);
 
 		// Use the location as the id parameter
@@ -72,27 +64,49 @@ export async function getCityDataEnhanced(
 		if (!response.ok) throw new Error('Failed to fetch city data');
 		const data: CityData = await response.json();
 
-		// Enhance with AI if critical fields are missing
-		if (
+		// Check if city needs AI enhancement
+		const needsEnhancement =
+			!data.isAiGenerated ||
 			!data.description ||
 			!data.metaTitle ||
 			!data.metaDescription ||
-			!data.bestPlayMonths?.length
-		) {
-			const aiEnhancements = await fetchAIDescription(data);
-			return { ...data, ...aiEnhancements };
+			!data.bestPlayMonths?.length ||
+			!data.imageUrl ||
+			!data.timezone ||
+			!data.elevation;
+
+		if (needsEnhancement) {
+			console.log(`🚀 City needs enhancement, triggering now...`);
+
+			// Trigger enhancement (this will update the database)
+			await enhanceCity(data.id);
+
+			// Fetch the updated data
+			const updatedResponse = await fetch(url, {
+				cache: 'no-store',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			if (updatedResponse.ok) {
+				const updatedData: CityData = await updatedResponse.json();
+				console.log('✅ Fetched enhanced city data');
+				return updatedData;
+			}
 		}
 
 		return data;
 	} catch (error) {
 		console.error('Error fetching city data:', error);
 
+		// Fallback mock data
 		return {
 			id: 'mock',
 			name: location,
 			country: country || 'Philippines',
-			latitude: 0,
-			longitude: 0,
+			latitude: 14.5995,
+			longitude: 120.9842,
 			totalClubs: 12,
 			totalCourts: 45,
 			totalActiveSessions: 8,
@@ -115,6 +129,71 @@ export async function getCityDataEnhanced(
 			keywords: [],
 			features: [],
 			courts: [],
+			isAiGenerated: false,
 		};
+	}
+}
+
+// Optional: Function to check if city needs enhancement without fetching full data
+export async function checkCityEnhancementStatus(cityId: string): Promise<{
+	isEnhanced: boolean;
+	enhancedAt?: string;
+}> {
+	try {
+		const response = await fetch(
+			`${config.API_BASE_URL}/api/web/cities/${cityId}`,
+			{
+				cache: 'no-store',
+			}
+		);
+
+		if (!response.ok) return { isEnhanced: false };
+
+		const data = await response.json();
+		return {
+			isEnhanced: data.isAiGenerated || false,
+			enhancedAt: data.aiGeneratedAt,
+		};
+	} catch (error) {
+		console.error('Error checking enhancement status:', error);
+		return { isEnhanced: false };
+	}
+}
+
+// Optional: Simpler version using autoEnhance flag (background enhancement)
+export async function getCityDataWithAutoEnhance(
+	location: string,
+	country?: string
+): Promise<CityData> {
+	try {
+		const params = new URLSearchParams();
+		params.set('autoEnhance', 'true'); // Enable background enhancement
+		if (country) params.set('country', country);
+
+		const url = `${config.API_BASE_URL}/api/web/cities/${encodeURIComponent(
+			location
+		)}?${params.toString()}`;
+
+		console.log('🔍 Fetching city data with auto-enhance:', url);
+
+		const response = await fetch(url, {
+			cache: 'no-store',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if (!response.ok) throw new Error('Failed to fetch city data');
+
+		const data: CityData = await response.json();
+
+		// Note: If city wasn't enhanced yet, it will be enhanced in the background
+		// The current response will have whatever data exists in DB
+		// On next page load, it will have the enhanced data
+
+		return data;
+	} catch (error) {
+		console.error('Error fetching city data:', error);
+		throw error;
 	}
 }
