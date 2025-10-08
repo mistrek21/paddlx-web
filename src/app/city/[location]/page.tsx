@@ -127,6 +127,12 @@ export interface CityData {
 	// Optional relationship data (if you want to include them)
 	nearbyCities?: CityData[];
 	featuredClubs?: Court[]; // or create a separate Club interface
+
+	// AI Content Fields (MISSING - Add these)
+	aiContent?: AIContentResponse;
+
+	totalFacilities?: number; // Add this optional property
+	averageRating?: number;
 }
 
 // Additional types for better type safety
