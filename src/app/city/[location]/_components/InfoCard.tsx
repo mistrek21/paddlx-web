@@ -6,13 +6,14 @@ interface InfoCardProps {
 	icon: React.ElementType;
 	label: string;
 	value: string | number;
-	color?: 'gray' | 'orange' | 'blue';
+	color?: 'gray' | 'orange' | 'blue' | 'green';
 }
 
 const colorMap = {
 	gray: 'bg-slate-100 text-slate-600',
 	orange: 'bg-orange-50 text-orange-700',
 	blue: 'bg-blue-50 text-blue-700',
+	green: 'bg-green-50 text-green-700',
 };
 
 function InfoCard({ icon: Icon, label, value, color = 'gray' }: InfoCardProps) {
