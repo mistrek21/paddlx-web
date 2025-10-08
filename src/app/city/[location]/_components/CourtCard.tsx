@@ -1,3 +1,5 @@
+// src/app/city/[location]/_components/CourtCard.tsx
+
 import { MapPin, Navigation, Star } from 'lucide-react';
 import Link from 'next/link';
 import { Court } from '../page';

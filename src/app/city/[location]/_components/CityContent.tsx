@@ -94,7 +94,7 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 									</div>
 								</div>
 							)}
-							{/* {cityData.totalFacilities > 0 && (
+							{cityData.totalFacilities > 0 && (
 								<div className="flex items-center gap-2 text-white/90">
 									<div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
 										<Navigation className="w-5 h-5" />
@@ -117,33 +117,9 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 										<div className="text-sm text-white/70">Avg Rating</div>
 									</div>
 								</div>
-							)} */}
+							)}
 						</div>
 					</div>
-				</div>
-
-				{/* Bottom Wave */}
-				<div className="absolute bottom-0 left-0 right-0">
-					<svg
-						viewBox="0 0 1200 120"
-						preserveAspectRatio="none"
-						className="w-full h-16 md:h-20"
-					>
-						<path
-							d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
-							opacity=".25"
-							className="fill-cool-gray"
-						></path>
-						<path
-							d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
-							opacity=".5"
-							className="fill-cool-gray"
-						></path>
-						<path
-							d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
-							className="fill-cool-gray"
-						></path>
-					</svg>
 				</div>
 			</div>
 
@@ -211,12 +187,18 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 						</div>
 
 						{/* Geographic Info Grid */}
-						<div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-100">
-							<h4 className="text-xl font-bold text-dark-slate mb-6 flex items-center gap-2">
-								<MapIcon className="w-5 h-5 text-primary" />
-								Geographic Details
-							</h4>
-							<div className="grid md:grid-cols-2 gap-4">
+						<div className="bg-white/95 rounded-2xl shadow-lg border border-slate-100 backdrop-blur-xl p-7">
+							<div className="flex items-center mb-6 gap-3">
+								<span className="rounded-xl bg-slate-100 p-2 shadow">
+									<MapIcon className="w-6 h-6 text-primary" />
+								</span>
+								<h4 className="text-2xl font-bold text-slate-900">
+									Geographic Details
+								</h4>
+							</div>
+							{/* Accent bar / divider */}
+							<div className="w-14 h-1 bg-slate-100 mb-4 rounded-full" />
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 								{cityData.timezone && (
 									<InfoCard
 										icon={Clock}
@@ -285,20 +267,24 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 					<div className="space-y-6">
 						{/* Best Play Months */}
 						{cityData.bestPlayMonths && cityData.bestPlayMonths.length > 0 && (
-							<div className="bg-gradient-to-br from-white to-primary-ultra-soft rounded-2xl shadow-xl p-6 border border-primary/10 hover:shadow-2xl transition-all duration-300">
-								<div className="flex items-center gap-3 mb-4">
-									<div className="bg-primary p-2.5 rounded-lg">
-										<Calendar className="w-5 h-5 text-white" />
+							<div className="bg-background rounded-2xl shadow-lg border border-cool-gray p-7 hover:shadow-2xl transition-all duration-300">
+								{/* Header Row */}
+								<div className="flex items-center gap-4 mb-5">
+									<div className="rounded-xl bg-primary p-3 shadow">
+										<Calendar className="w-6 h-6 text-white" />
 									</div>
-									<h4 className="font-bold text-dark-slate text-lg">
+									<h4 className="font-bold text-xl text-dark-slate">
 										Best Months to Play
 									</h4>
 								</div>
+								{/* Accent divider */}
+								<div className="h-1 w-11 bg-primary-super-soft rounded-full mb-2" />
+								{/* Month Pills */}
 								<div className="flex flex-wrap gap-2">
 									{cityData.bestPlayMonths.map((month: string) => (
 										<span
 											key={month}
-											className="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200"
+											className="px-4 py-2 rounded-full bg-primary-ultra-soft border border-primary-soft text-primary-dark font-semibold text-sm shadow transition-all hover:bg-primary-super-soft hover:-translate-y-[2px] hover:shadow-lg"
 										>
 											{month}
 										</span>
@@ -341,38 +327,50 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 						)}
 
 						{/* Data Quality */}
-						<div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-100 hover:shadow-2xl transition-all duration-300">
-							<div className="flex items-center gap-3 mb-4">
-								<div className="bg-info-soft p-2.5 rounded-lg">
-									<Award className="w-5 h-5 text-info" />
-								</div>
-								<h4 className="font-bold text-dark-slate text-lg">Data Information</h4>
+						<div
+							className="bg-background rounded-2xl shadow-lg border border-cool-gray backdrop-blur-md p-8 
+    hover:shadow-2xl transition-all duration-300 max-w-xl mx-auto relative"
+						>
+							{/* Header Row */}
+							<div className="flex items-center gap-4 mb-6">
+								<span className="rounded-xl bg-primary-ultra-soft p-3 shadow">
+									<Award className="w-6 h-6 text-primary" />
+								</span>
+								<h4 className="font-bold text-2xl text-dark-slate">Data Information</h4>
 							</div>
-							<div className="space-y-3">
-								<div className="flex justify-between items-center p-3 bg-cool-gray rounded-lg">
+							{/* Accent Bar */}
+							<div className="h-1 w-12 bg-primary-super-soft rounded-full mb-3" />
+
+							{/* Meta Info Grid */}
+							<div className="space-y-4">
+								{/* Data Quality Row */}
+								<div className="flex justify-between items-center p-3 rounded-lg bg-cool-gray border border-border shadow-sm">
 									<span className="text-slate-gray text-sm font-medium">Quality:</span>
 									<span
-										className={`font-semibold text-sm px-3 py-1 rounded-full ${
-											cityData.dataQuality === 'VERIFIED'
-												? 'bg-green/20 text-green'
-												: cityData.dataQuality === 'COMPLETE'
-												? 'bg-info/20 text-info'
-												: 'bg-slate-200 text-slate-gray'
-										}`}
+										className={`font-semibold text-sm px-3 py-1 rounded-full
+                    ${
+																					cityData.dataQuality === 'VERIFIED'
+																						? 'bg-success-light text-success border border-success/30'
+																						: cityData.dataQuality === 'COMPLETE'
+																						? 'bg-primary-ultra-soft text-primary-dark border border-primary/30'
+																						: 'bg-light-gray-2 text-slate-gray border border-border'
+																				}`}
 									>
 										{cityData.dataQuality}
 									</span>
 								</div>
+								{/* External Source Row */}
 								{cityData.externalDataSource && (
-									<div className="flex justify-between items-center p-3 bg-cool-gray rounded-lg">
+									<div className="flex justify-between items-center p-3 rounded-lg bg-cool-gray border border-border shadow-sm">
 										<span className="text-slate-gray text-sm font-medium">Source:</span>
 										<span className="font-medium text-dark-slate text-sm">
 											{cityData.externalDataSource}
 										</span>
 									</div>
 								)}
+								{/* Last Update Row */}
 								{cityData.lastStatsUpdate && (
-									<div className="flex justify-between items-center p-3 bg-cool-gray rounded-lg">
+									<div className="flex justify-between items-center p-3 rounded-lg bg-cool-gray border border-border shadow-sm">
 										<span className="text-slate-gray text-sm font-medium">Updated:</span>
 										<span className="font-medium text-dark-slate text-sm">
 											{new Date(cityData.lastStatsUpdate).toLocaleDateString()}
@@ -386,23 +384,42 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 
 				{/* City Features */}
 				{cityData.features.length > 0 && (
-					<div className="mb-12">
-						<div className="text-center mb-8">
-							<h3 className="text-4xl font-bold text-dark-slate mb-3">
+					<section className="mb-16">
+						{/* Enhanced Header */}
+						<div className="text-center mb-12">
+							<div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-50 to-slate-100 shadow-lg mb-4">
+								<svg
+									className="w-8 h-8 text-teal-600"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69l1.519-4.674z"
+									/>
+								</svg>
+							</div>
+							<h3 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">
 								What Makes {cityData.name} Special
 							</h3>
-							<p className="text-slate-gray text-lg">
+							<div className="w-20 h-1 bg-blue-100 rounded-full mx-auto mb-4" />
+							<p className="text-slate-500 text-lg font-medium max-w-2xl mx-auto leading-relaxed">
 								Discover the unique features of this pickleball destination
 							</p>
 						</div>
-						<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+						{/* Enhanced Grid */}
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 							{cityData.features
 								.sort((a: CityFeature, b: CityFeature) => b.priority - a.priority)
-								.map((feature: CityFeature) => (
-									<CityFeatureCard key={feature.id} feature={feature} />
+								.map((feature: CityFeature, index: number) => (
+									<CityFeatureCard key={feature.id} feature={feature} index={index} />
 								))}
 						</div>
-					</div>
+					</section>
 				)}
 
 				{/* Courts Section */}

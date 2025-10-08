@@ -1,3 +1,5 @@
+// src/app/city/[location]/_components/InfoRow.tsx
+
 function InfoRow({
 	label,
 	value,

@@ -1,3 +1,5 @@
+// src/app/city/[location]/_components/MapPreviewWrapper.tsx
+
 'use client';
 
 import dynamic from 'next/dynamic';
