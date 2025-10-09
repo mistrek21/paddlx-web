@@ -27,10 +27,10 @@ export function Navigation({ offset = 0, compact }: NavigationProps) {
 				position: 'fixed',
 				width: '100%',
 				left: 0,
-				zIndex: 40,
+				// zIndex: 9999,
 			}}
 			className={`
-        transition-all duration-300
+        transition-all duration-300 z-[9999]
         ${
 									compact
 										? 'bg-white border-b shadow-sm py-2'

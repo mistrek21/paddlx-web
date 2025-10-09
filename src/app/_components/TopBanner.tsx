@@ -14,7 +14,7 @@ export function TopBanner({ onClose, fixed, compact }: Props) {
 	return (
 		<div
 			className={`
-      ${fixed ? 'fixed w-full left-0 z-50' : ''}
+      ${fixed ? 'fixed w-full left-0 z-[9999]' : ''}
       bg-primary-ultra-soft border-b border-primary-soft text-dark-slate
       ${compact ? 'py-0 h-9' : 'py-2 h-12'}
       px-4 flex items-center justify-between shadow-sm

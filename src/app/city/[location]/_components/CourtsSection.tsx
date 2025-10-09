@@ -30,6 +30,7 @@ interface Court {
 	reviewCount: number;
 	rating?: number;
 	distance: number;
+	slug: string;
 }
 
 export default async function CourtsSection({
@@ -41,7 +42,7 @@ export default async function CourtsSection({
 	try {
 		// Always fetch fresh court data from API (no cache)
 		const response = await fetch(
-			`${baseUrl}/api/web/cities/${cityId}/courts?limit=6`,
+			`${baseUrl}/api/web/cities/${cityId}/courts?limit=60`,
 			{
 				cache: 'no-store', // Always fresh!
 			}
