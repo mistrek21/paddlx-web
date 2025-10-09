@@ -1,21 +1,77 @@
-// src/app/court/[slug]/page.tsx
 import { Suspense } from 'react';
 import { notFound, redirect } from 'next/navigation';
-import {
-	MapPin,
-	Phone,
-	Clock,
-	Star,
-	Navigation,
-	Calendar,
-	MessageSquare,
-	ThumbsUp,
-	User,
-	BadgeCheck,
-} from 'lucide-react';
-import Link from 'next/link';
-
 import { Metadata } from 'next';
+import CourtHero from './_components/CourtHero';
+import CourtContent from './_components/CourtContent';
+import CourtSessions from './_components/CourtSessions';
+import CourtGroups from './_components/CourtGroups';
+import CourtArticles from './_components/CourtArticles';
+import CourtReviews from './_components/CourtReviews';
+import CourtDetailLoading from './_components/CourtDetailLoading';
+import CourtMapWrapper from './_components/CourtMapWrapper';
+import CourtWeatherCard from './_components/CourtWeatherCard';
+
+// -------- New Interfaces --------
+
+export interface CityDetail {
+	id: string;
+	name: string;
+	country: string;
+	countryCode?: string | null;
+	state?: string | null;
+	slug: string;
+	description?: string | null;
+	imageUrl?: string | null;
+	thumbnailUrl?: string | null;
+	latitude: number;
+	longitude: number;
+	population?: number | null;
+	timezone?: string | null;
+
+	// CALCULATED STATS
+	totalClubs: number;
+	totalCourts: number;
+	totalActiveSessions: number;
+	totalActiveTournaments: number;
+	totalPlayers: number;
+	totalGroups: number;
+	totalCoaches: number;
+	activityScore: number;
+	isPopularDestination: boolean;
+	isTrendingCity: boolean;
+	upcomingSessionsCount: number;
+	totalGamesPlayed: number;
+
+	// Pricing & Climate
+	averageSessionPrice?: number | null;
+	averageCourtRental?: number | null;
+	currencyUsed: string;
+	averageTemp?: number | null;
+	climateType?: string | null;
+	bestPlayMonths: string[];
+
+	// AI Content
+	nearbyAttractions: string[];
+	playingConditions?: string | null;
+	communityVibe?: string | null;
+	bestTimeToVisit?: string | null;
+
+	// SEO
+	metaTitle?: string | null;
+	metaDescription?: string | null;
+	keywords?: string[];
+
+	features: CityFeature[];
+}
+
+export interface CityFeature {
+	id: string;
+	featureType: string;
+	title: string;
+	description?: string | null;
+	icon?: string | null;
+	priority: number;
+}
 
 interface Author {
 	id: string;
@@ -26,10 +82,10 @@ interface Author {
 interface Comment {
 	id: string;
 	text: string;
-	createdAt: Date;
-	updatedAt: Date;
+	createdAt: Date | string;
+	updatedAt: Date | string;
 	isEdited: boolean;
-	editedAt: Date | null;
+	editedAt: Date | string | null;
 	isModerated: boolean;
 	moderationMessage: string | null;
 	author: Author;
@@ -40,8 +96,8 @@ interface Article {
 	title: string;
 	content: string;
 	imageUrl: string | null;
-	publishedAt: Date;
-	updatedAt: Date;
+	publishedAt: Date | string;
+	updatedAt: Date | string;
 	author: Author;
 	commentsCount: number;
 	comments: Comment[];
@@ -54,27 +110,79 @@ interface Review {
 	title: string | null;
 	images: string[];
 	isVerified: boolean;
-	createdAt: Date;
-	updatedAt: Date;
+	createdAt: Date | string;
+	updatedAt: Date | string;
 	helpfulVotes: number;
 	user: Author;
 	session?: {
 		id: string;
 		title: string | null;
-		date: Date;
+		date: Date | string;
 	};
+}
+
+interface SessionParticipant {
+	id: string;
+	userId: string;
+	user: Author;
+}
+interface Session {
+	id: string;
+	title: string;
+	description?: string;
+	location: string;
+	date: string;
+	startTime: string;
+	endTime: string;
+	formatCategory: string;
+	status: string;
+	formatType?: string;
+	numPlayers: number;
+	suggestedLevel?: string;
+	duprRequired: boolean;
+	isPrivate: boolean;
+	amountPerPlayer: number;
+	sessionPrice: number;
+	sessionCurrency: string;
+	paymentPolicy: string;
+	isWeekly: boolean;
+	creator: Author;
+	participantsCount: number;
+	participants: SessionParticipant[];
+}
+interface GroupMember {
+	id: string;
+	userId: string;
+	user: Author;
+}
+interface Group {
+	id: string;
+	name: string;
+	description?: string;
+	typeOfGame: string;
+	visibility: string;
+	skillLevel?: string;
+	duprLvl: number[];
+	inviteOthers: boolean;
+	contactMe: boolean;
+	imageUrl?: string;
+	createdAt: string;
+	owner: Author;
+	membersCount: number;
+	members: GroupMember[];
 }
 
 interface CourtDetailPageProps {
 	params: Promise<{ slug: string }>;
 }
 
-interface CourtDetail {
+export interface CourtDetail {
 	id: string;
 	slug?: string;
 	name: string;
 	city: string;
 	country: string;
+	cityDetails?: CityDetail | null; // ADD THIS
 	address: string;
 	phone?: string;
 	hours?: string;
@@ -88,30 +196,22 @@ interface CourtDetail {
 	longitude?: number;
 	articles: Article[];
 	reviews: Review[];
+	sessions?: Session[];
+	groups?: Group[];
 }
 
-// src/app/court/[slug]/page.tsx
+// -------- Helpers --------
 
 async function getCourtDetails(slugOrId: string): Promise<CourtDetail | null> {
 	try {
 		const url = `${process.env.IP_CONFIG}/api/web/courts/${slugOrId}`;
-		console.log('🌐 Fetching from URL:', url);
-
-		const response = await fetch(url, {
-			cache: 'no-store',
-		});
-
-		console.log('📡 Response status:', response.status);
-		console.log('📡 Response ok:', response.ok);
-
+		const response = await fetch(url, { cache: 'no-store' });
 		if (!response.ok) {
 			const errorText = await response.text();
 			console.error('❌ API Error:', errorText);
 			return null;
 		}
-
 		const data = await response.json();
-		console.log('✅ API Data received:', data);
 		return data;
 	} catch (error) {
 		console.error('❌ Error fetching court:', error);
@@ -119,21 +219,18 @@ async function getCourtDetails(slugOrId: string): Promise<CourtDetail | null> {
 	}
 }
 
-// Format date helper
-function formatDate(date: Date): string {
+export function formatDate(date: Date | string): string {
 	return new Date(date).toLocaleDateString('en-US', {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
 	});
 }
-
-// Format relative time helper
-function formatRelativeTime(date: Date): string {
+export function formatRelativeTime(date: Date | string): string {
 	const now = new Date();
-	const diff = now.getTime() - new Date(date).getTime();
+	const target = new Date(date);
+	const diff = now.getTime() - target.getTime();
 	const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
 	if (days === 0) return 'Today';
 	if (days === 1) return 'Yesterday';
 	if (days < 7) return `${days} days ago`;
@@ -142,7 +239,8 @@ function formatRelativeTime(date: Date): string {
 	return `${Math.floor(days / 365)} years ago`;
 }
 
-// Generate metadata for SEO
+// -------- Metadata (unchanged) --------
+
 export async function generateMetadata(
 	props: CourtDetailPageProps
 ): Promise<Metadata> {
@@ -155,7 +253,6 @@ export async function generateMetadata(
 			description: 'The pickleball court you are looking for does not exist.',
 		};
 	}
-
 	const title = `${court.name} - Pickleball Court in ${court.city}`;
 	const description =
 		court.description ||
@@ -200,408 +297,67 @@ export async function generateMetadata(
 	};
 }
 
-// Loading Component
-function CourtDetailLoading() {
-	return (
-		<div className="min-h-screen bg-light-blue-3">
-			<div className="h-96 bg-cool-gray animate-pulse" />
-			<div className="container mx-auto px-4 py-12">
-				<div className="bg-white rounded-2xl shadow-xl p-8">
-					<div className="h-10 bg-cool-gray rounded w-3/4 mb-6 animate-pulse" />
-					<div className="space-y-4">
-						{[...Array(3)].map((_, i) => (
-							<div key={i} className="h-6 bg-cool-gray rounded animate-pulse" />
-						))}
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-}
+// -------- Main Detail Content --------
 
 async function CourtDetailContent({ params }: CourtDetailPageProps) {
 	const { slug } = await params;
 	const court = await getCourtDetails(slug);
 
-	if (!court) {
-		notFound();
-	}
+	if (!court) return notFound();
+	if (court.slug && court.slug !== slug) redirect(`/court/${court.slug}`);
 
-	if (court.slug && court.slug !== slug) {
-		redirect(`/court/${court.slug}`);
-	}
+	const hasSessions = court.sessions && court.sessions.length > 0;
+	const hasGroups = court.groups && court.groups.length > 0;
+	const hasArticles = court.articles && court.articles.length > 0;
+	const hasReviews = court.reviews && court.reviews.length > 0;
 
 	return (
 		<div className="min-h-screen bg-light-blue-3">
 			{/* Hero Image */}
-			<div className="relative h-96 bg-gradient-to-br from-primary to-primary-dark">
-				{court.images && court.images[0] && (
-					<img
-						src={court.images[0]}
-						alt={court.name}
-						className="absolute inset-0 w-full h-full object-cover"
-					/>
-				)}
-				<div className="absolute inset-0 bg-dark/30" />
-				<div className="absolute bottom-6 left-0 right-0">
-					<div className="container mx-auto px-4">
-						<nav className="flex items-center gap-2 text-white/80 text-sm mb-2">
-							<Link href="/" className="hover:text-white transition-colors">
-								Home
-							</Link>
-							<span>/</span>
-							<Link
-								href={`/city/${encodeURIComponent(court.city)}`}
-								className="hover:text-white transition-colors"
-							>
-								{court.city}
-							</Link>
-							<span>/</span>
-							<span className="text-white font-medium">{court.name}</span>
-						</nav>
-					</div>
-				</div>
-			</div>
+			<CourtHero court={court} />
 
 			{/* Content */}
 			<div className="container mx-auto px-4 py-12">
-				{/* Main Info Card */}
-				<div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
-					<div className="p-8">
-						<div className="flex items-start justify-between mb-6">
-							<div className="flex-1">
-								<h1 className="text-4xl font-bold text-dark-slate mb-2">
-									{court.name}
-								</h1>
-								{court.rating && court.totalReviews && court.totalReviews > 0 && (
-									<div className="flex items-center gap-2">
-										<div className="flex items-center">
-											{[...Array(5)].map((_, i) => (
-												<Star
-													key={i}
-													className={`w-5 h-5 ${
-														i < Math.floor(court.rating!)
-															? 'text-yellow fill-yellow'
-															: 'text-light-gray'
-													}`}
-												/>
-											))}
-										</div>
-										<span className="text-slate-gray">
-											{court.rating.toFixed(1)} ({court.totalReviews} reviews)
-										</span>
-									</div>
-								)}
-							</div>
-							{court.pricePerHour && (
-								<div className="text-right">
-									<p className="text-3xl font-bold text-primary">
-										${court.pricePerHour}
-									</p>
-									<p className="text-sm text-slate-gray">per hour</p>
-								</div>
-							)}
-						</div>
+				{/* Main Info Card - Full Width */}
+				<CourtContent court={court} />
 
-						{court.description && (
-							<p className="text-slate-gray leading-relaxed mb-8">
-								{court.description}
-							</p>
-						)}
+				{/* Map */}
+				<CourtMapWrapper
+					latitude={court.latitude || 0}
+					longitude={court.longitude || 0}
+					courtName={court.name}
+					address={court.address}
+					city={court.city}
+					country={court.country}
+				/>
 
-						<div className="grid md:grid-cols-2 gap-8 mb-8">
-							<div className="space-y-4">
-								<h3 className="text-xl font-bold text-dark-slate mb-4">
-									Court Information
-								</h3>
+				{/* Weather */}
+				<CourtWeatherCard
+					latitude={court.latitude || 0}
+					longitude={court.longitude || 0}
+					courtName={court.name}
+				/>
 
-								<div className="flex items-start gap-3">
-									<MapPin className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-									<div>
-										<p className="font-semibold text-dark-slate">Location</p>
-										<p className="text-slate-gray">{court.address}</p>
-										<p className="text-sm text-medium-gray">
-											{court.city}, {court.country}
-										</p>
-									</div>
-								</div>
+				{/* Two Column Layout for larger screens */}
+				<div className="grid lg:grid-cols-2 gap-6">
+					{/* Left Column */}
+					<div className="space-y-6">
+						{/* Sessions */}
+						{hasSessions && <CourtSessions court={court} />}
 
-								{court.phone && (
-									<div className="flex items-start gap-3">
-										<Phone className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-										<div>
-											<p className="font-semibold text-dark-slate">Phone</p>
-											<a
-												href={`tel:${court.phone}`}
-												className="text-primary hover:text-primary-dark transition-colors"
-											>
-												{court.phone}
-											</a>
-										</div>
-									</div>
-								)}
+						{/* Articles / News */}
+						{hasArticles && <CourtArticles court={court} />}
+					</div>
 
-								{court.hours && (
-									<div className="flex items-start gap-3">
-										<Clock className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-										<div>
-											<p className="font-semibold text-dark-slate">Hours</p>
-											<p className="text-slate-gray">{court.hours}</p>
-										</div>
-									</div>
-								)}
-							</div>
+					{/* Right Column */}
+					<div className="space-y-6">
+						{/* Groups */}
+						{hasGroups && <CourtGroups court={court} />}
 
-							{court.amenities && court.amenities.length > 0 && (
-								<div>
-									<h3 className="text-xl font-bold text-dark-slate mb-4">Amenities</h3>
-									<div className="flex flex-wrap gap-2">
-										{court.amenities.map((amenity, index) => (
-											<span
-												key={index}
-												className="px-4 py-2 bg-primary-ultra-soft text-primary-dark rounded-lg font-medium"
-											>
-												{amenity}
-											</span>
-										))}
-									</div>
-								</div>
-							)}
-						</div>
-
-						<div className="flex gap-4">
-							<Link
-								href={`/book/${court.slug || court.id}`}
-								className="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-							>
-								<Calendar className="w-5 h-5" />
-								Book a Court
-							</Link>
-							<a
-								href={
-									court.latitude && court.longitude
-										? `https://www.google.com/maps/dir/?api=1&destination=${court.latitude},${court.longitude}`
-										: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-												court.address
-										  )}`
-								}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="px-8 py-4 border-2 border-border hover:border-primary text-slate-gray hover:text-primary font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
-							>
-								<Navigation className="w-5 h-5" />
-								Get Directions
-							</a>
-						</div>
+						{/* Reviews */}
+						{hasReviews && <CourtReviews court={court} />}
 					</div>
 				</div>
-
-				{/* Articles/News Section */}
-				{court.articles && court.articles.length > 0 && (
-					<div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
-						<div className="p-8">
-							<h2 className="text-2xl font-bold text-dark-slate mb-6">
-								News & Updates
-							</h2>
-							<div className="space-y-6">
-								{court.articles.map((article) => (
-									<div
-										key={article.id}
-										className="border-b border-divider last:border-b-0 pb-6"
-									>
-										<div className="flex items-start gap-4">
-											{article.imageUrl && (
-												<img
-													src={article.imageUrl}
-													alt={article.title}
-													className="w-32 h-32 object-cover rounded-lg"
-												/>
-											)}
-											<div className="flex-1">
-												<h3 className="text-xl font-bold text-dark-slate mb-2">
-													{article.title}
-												</h3>
-												<p className="text-slate-gray mb-3 line-clamp-3">
-													{article.content}
-												</p>
-												<div className="flex items-center gap-4 text-sm text-medium-gray">
-													<div className="flex items-center gap-2">
-														{article.author.profilePicture ? (
-															<img
-																src={article.author.profilePicture}
-																alt={article.author.name || 'Author'}
-																className="w-6 h-6 rounded-full"
-															/>
-														) : (
-															<User className="w-6 h-6 text-light-gray" />
-														)}
-														<span className="font-medium">
-															{article.author.name || 'Anonymous'}
-														</span>
-													</div>
-													<span>{formatDate(article.publishedAt)}</span>
-													<div className="flex items-center gap-1">
-														<MessageSquare className="w-4 h-4" />
-														<span>{article.commentsCount} comments</span>
-													</div>
-												</div>
-
-												{/* Article Comments */}
-												{article.comments.length > 0 && (
-													<div className="mt-4 pl-4 border-l-2 border-primary-ultra-soft space-y-3">
-														<p className="text-sm font-semibold text-light-slate">
-															Comments:
-														</p>
-														{article.comments.slice(0, 3).map((comment) => (
-															<div key={comment.id} className="bg-light-blue-3 p-3 rounded-lg">
-																<div className="flex items-start gap-2 mb-2">
-																	{comment.author.profilePicture ? (
-																		<img
-																			src={comment.author.profilePicture}
-																			alt={comment.author.name || 'User'}
-																			className="w-8 h-8 rounded-full"
-																		/>
-																	) : (
-																		<User className="w-8 h-8 text-light-gray" />
-																	)}
-																	<div className="flex-1">
-																		<div className="flex items-center gap-2">
-																			<span className="font-semibold text-sm text-dark-slate">
-																				{comment.author.name || 'Anonymous'}
-																			</span>
-																			<span className="text-xs text-medium-gray">
-																				{formatRelativeTime(comment.createdAt)}
-																			</span>
-																			{comment.isEdited && (
-																				<span className="text-xs text-light-gray">(edited)</span>
-																			)}
-																		</div>
-																		<p className="text-sm text-light-slate mt-1">
-																			{comment.text}
-																		</p>
-																		{comment.isModerated && comment.moderationMessage && (
-																			<p className="text-xs text-error mt-1">
-																				Moderated: {comment.moderationMessage}
-																			</p>
-																		)}
-																	</div>
-																</div>
-															</div>
-														))}
-														{article.comments.length > 3 && (
-															<button className="text-sm text-primary hover:text-primary-dark font-medium">
-																View all {article.comments.length} comments
-															</button>
-														)}
-													</div>
-												)}
-											</div>
-										</div>
-									</div>
-								))}
-							</div>
-						</div>
-					</div>
-				)}
-
-				{/* Reviews Section */}
-				{court.reviews && court.reviews.length > 0 && (
-					<div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-						<div className="p-8">
-							<h2 className="text-2xl font-bold text-dark-slate mb-6">
-								Customer Reviews
-							</h2>
-							<div className="space-y-6">
-								{court.reviews.map((review) => (
-									<div
-										key={review.id}
-										className="border-b border-divider last:border-b-0 pb-6"
-									>
-										<div className="flex items-start gap-4">
-											<div>
-												{review.user.profilePicture ? (
-													<img
-														src={review.user.profilePicture}
-														alt={review.user.name || 'User'}
-														className="w-12 h-12 rounded-full"
-													/>
-												) : (
-													<div className="w-12 h-12 bg-cool-gray rounded-full flex items-center justify-center">
-														<User className="w-6 h-6 text-light-gray" />
-													</div>
-												)}
-											</div>
-											<div className="flex-1">
-												<div className="flex items-center gap-2 mb-2">
-													<span className="font-bold text-dark-slate">
-														{review.user.name || 'Anonymous'}
-													</span>
-													{review.isVerified && (
-														<BadgeCheck className="w-5 h-5 text-primary" />
-													)}
-													<span className="text-sm text-medium-gray">
-														{formatRelativeTime(review.createdAt)}
-													</span>
-												</div>
-
-												<div className="flex items-center gap-2 mb-2">
-													<div className="flex items-center">
-														{[...Array(5)].map((_, i) => (
-															<Star
-																key={i}
-																className={`w-4 h-4 ${
-																	i < Math.floor(review.rating)
-																		? 'text-yellow fill-yellow'
-																		: 'text-light-gray'
-																}`}
-															/>
-														))}
-													</div>
-													<span className="text-sm font-semibold text-dark-slate">
-														{review.rating.toFixed(1)}
-													</span>
-												</div>
-
-												{review.title && (
-													<h4 className="font-bold text-dark-slate mb-2">{review.title}</h4>
-												)}
-
-												{review.comment && (
-													<p className="text-light-slate mb-3">{review.comment}</p>
-												)}
-
-												{review.images && review.images.length > 0 && (
-													<div className="flex gap-2 mb-3">
-														{review.images.map((image, idx) => (
-															<img
-																key={idx}
-																src={image}
-																alt={`Review image ${idx + 1}`}
-																className="w-20 h-20 object-cover rounded-lg"
-															/>
-														))}
-													</div>
-												)}
-
-												<div className="flex items-center gap-4 text-sm">
-													<button className="flex items-center gap-1 text-slate-gray hover:text-primary transition-colors">
-														<ThumbsUp className="w-4 h-4" />
-														<span>Helpful ({review.helpfulVotes})</span>
-													</button>
-													{review.session && (
-														<span className="text-medium-gray">
-															Attended session: {review.session.title}
-														</span>
-													)}
-												</div>
-											</div>
-										</div>
-									</div>
-								))}
-							</div>
-						</div>
-					</div>
-				)}
 			</div>
 		</div>
 	);
