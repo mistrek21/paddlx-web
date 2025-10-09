@@ -1,4 +1,4 @@
-// /src/app/court/[slug]/_components/CourtWeatherCard.tsx
+// src/app/court/[slug]/_components/CourtWeatherCard.tsx
 
 'use client';
 
@@ -10,7 +10,6 @@ import {
 	CloudSnow,
 	Wind,
 	Droplets,
-	Gauge,
 	Loader2,
 	CloudDrizzle,
 	CloudFog,
@@ -152,7 +151,7 @@ export default function CourtWeatherCard({
 
 	if (loading) {
 		return (
-			<div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-6">
+			<div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-8 mb-4 md:mb-6">
 				<div className="flex items-center justify-center">
 					<Loader2 className="w-8 h-8 text-primary animate-spin" />
 					<span className="ml-3 text-medium-gray">Loading weather...</span>
@@ -223,54 +222,56 @@ export default function CourtWeatherCard({
 	const condition = getPlayingCondition();
 
 	return (
-		<div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+		<div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-4 md:mb-6">
 			{/* Header with Current Weather */}
 			<div
-				className={`bg-gradient-to-br ${currentWeather.color} p-6 text-white relative overflow-hidden`}
+				className={`bg-gradient-to-br ${currentWeather.color} p-4 md:p-6 text-white relative overflow-hidden`}
 			>
 				{/* Decorative Background */}
 				<div className="absolute inset-0 opacity-20">
-					<div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -translate-y-1/2 translate-x-1/2" />
-					<div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full translate-y-1/2 -translate-x-1/2" />
+					<div className="absolute top-0 right-0 w-32 h-32 md:w-64 md:h-64 bg-white rounded-full -translate-y-1/2 translate-x-1/2" />
+					<div className="absolute bottom-0 left-0 w-24 h-24 md:w-48 md:h-48 bg-white rounded-full translate-y-1/2 -translate-x-1/2" />
 				</div>
 
 				<div className="relative z-10">
-					<div className="flex items-start justify-between mb-4">
+					<div className="flex flex-col md:flex-row items-start justify-between mb-2 md:mb-4">
 						<div>
-							<div className="flex items-center gap-2 mb-2">
+							<div className="flex items-center gap-2 mb-1 md:mb-2">
 								<WeatherIcon
 									code={weather.current.weatherCode}
-									className="w-8 h-8 text-white"
+									className="w-6 h-6 md:w-8 md:h-8 text-white"
 								/>
-								<h3 className="text-2xl font-bold">Weather Forecast</h3>
+								<h3 className="text-lg md:text-2xl font-bold">Weather Forecast</h3>
 							</div>
-							<p className="text-white/90 text-sm">{courtName}</p>
+							<p className="text-white/90 text-xs md:text-sm">{courtName}</p>
 						</div>
 						<div className="text-right">
-							<div className="text-5xl font-bold mb-1">
+							<div className="text-3xl md:text-5xl font-bold mb-1">
 								{weather.current.temperature}°
 							</div>
-							<p className="text-sm text-white/90">
+							<p className="text-xs md:text-sm text-white/90">
 								Feels like {weather.current.feelsLike}°
 							</p>
 						</div>
 					</div>
 
-					<div className="flex items-center justify-between">
-						<div className="flex items-center gap-4">
-							<div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg">
+					<div className="flex flex-col md:flex-row items-center justify-between gap-2">
+						<div className="flex items-center gap-2 md:gap-4">
+							<div className="flex items-center gap-1 md:gap-2 bg-white/20 backdrop-blur-sm px-2 md:px-3 py-1 rounded-lg">
 								<Wind className="w-4 h-4" />
-								<span className="text-sm font-medium">
+								<span className="text-xs md:text-sm font-medium">
 									{weather.current.windSpeed} km/h
 								</span>
 							</div>
-							<div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg">
+							<div className="flex items-center gap-1 md:gap-2 bg-white/20 backdrop-blur-sm px-2 md:px-3 py-1 rounded-lg">
 								<Droplets className="w-4 h-4" />
-								<span className="text-sm font-medium">{weather.current.humidity}%</span>
+								<span className="text-xs md:text-sm font-medium">
+									{weather.current.humidity}%
+								</span>
 							</div>
 						</div>
 						<div
-							className={`${condition.bg} ${condition.color} px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2`}
+							className={`${condition.bg} ${condition.color} px-3 md:px-4 py-1 md:py-2 rounded-lg font-semibold text-xs md:text-sm flex items-center gap-1 md:gap-2`}
 						>
 							<span>{condition.icon}</span>
 							<span>{condition.text}</span>
@@ -280,81 +281,87 @@ export default function CourtWeatherCard({
 			</div>
 
 			{/* 7-Day Forecast */}
-			<div className="p-6">
-				<h4 className="text-lg font-bold text-dark-slate mb-4">7-Day Forecast</h4>
-				<div className="grid grid-cols-7 gap-2">
-					{weather.daily.time.map((day, index) => {
-						const dayWeather = getWeatherInfo(weather.daily.weatherCode[index]);
-						const rainChance = weather.daily.precipitationProbability[index];
-						const maxTemp = Math.round(weather.daily.temperatureMax[index]);
-						const minTemp = Math.round(weather.daily.temperatureMin[index]);
-						const isToday = index === 0;
-
-						return (
+			<div className="p-4 md:p-6">
+				<h4 className="text-base md:text-lg font-bold text-dark-slate mb-2 md:mb-4">
+					7-Day Forecast
+				</h4>
+				{/* Mobile: horizontal scroll with only 3 cards, Desktop: grid with 7 cards */}
+				<div className="flex gap-2 overflow-x-auto md:grid md:grid-cols-7 md:gap-2">
+					{weather.daily.time.map((day, index) => (
+						<div
+							key={day}
+							className={`relative rounded-xl p-2 md:p-3 transition-all duration-300
+                                ${index >= 3 ? 'hidden md:block' : ''}
+                                ${
+																																	index === 0
+																																		? 'bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary shadow-md'
+																																		: 'bg-gray-50 border border-gray-200 hover:shadow-lg'
+																																}
+                            text-xs md:text-sm min-w-[100px] md:min-w-0`}
+						>
+							{/* Day Label */}
 							<div
-								key={day}
-								className={`relative rounded-xl p-3 transition-all duration-300 hover:scale-105 ${
-									isToday
-										? 'bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary shadow-md'
-										: 'bg-gray-50 border border-gray-200 hover:shadow-lg'
+								className={`text-center mb-1 md:mb-2 ${
+									index === 0
+										? 'text-primary font-bold'
+										: 'text-medium-gray font-semibold'
 								}`}
 							>
-								{/* Day Label */}
-								<div
-									className={`text-center mb-2 ${
-										isToday ? 'text-primary font-bold' : 'text-medium-gray font-semibold'
-									}`}
-								>
-									<p className="text-xs">{getDayName(day, index)}</p>
-									<p className="text-xs opacity-75">
-										{new Date(day).toLocaleDateString('en-US', {
-											month: 'short',
-											day: 'numeric',
-										})}
-									</p>
-								</div>
-
-								{/* Weather Icon */}
-								<div className="flex justify-center my-3">
-									<div className="text-4xl">{dayWeather.icon}</div>
-								</div>
-
-								{/* Temperature */}
-								<div className="text-center mb-2">
-									<p className="text-lg font-bold text-dark-slate">{maxTemp}°</p>
-									<p className="text-sm text-medium-gray">{minTemp}°</p>
-								</div>
-
-								{/* Rain Chance */}
-								{rainChance > 0 && (
-									<div className="flex items-center justify-center gap-1 bg-blue-50 rounded-lg px-2 py-1">
-										<Droplets className="w-3 h-3 text-blue-500" />
-										<span className="text-xs font-semibold text-blue-600">
-											{rainChance}%
-										</span>
-									</div>
-								)}
-
-								{/* Today Badge */}
-								{isToday && (
-									<div className="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-										Now
-									</div>
-								)}
+								<p className="">{getDayName(day, index)}</p>
+								<p className="opacity-75 text-xs">
+									{new Date(day).toLocaleDateString('en-US', {
+										month: 'short',
+										day: 'numeric',
+									})}
+								</p>
 							</div>
-						);
-					})}
+
+							{/* Weather Icon */}
+							<div className="flex justify-center my-1 md:my-3">
+								<div className="text-xl md:text-4xl">
+									{getWeatherInfo(weather.daily.weatherCode[index]).icon}
+								</div>
+							</div>
+
+							{/* Temperature */}
+							<div className="text-center mb-1 md:mb-2">
+								<p className="font-bold text-base md:text-lg text-dark-slate">
+									{Math.round(weather.daily.temperatureMax[index])}°
+								</p>
+								<p className="text-xs md:text-sm text-medium-gray">
+									{Math.round(weather.daily.temperatureMin[index])}°
+								</p>
+							</div>
+
+							{/* Rain Chance */}
+							{weather.daily.precipitationProbability[index] > 0 && (
+								<div className="flex items-center justify-center gap-1 bg-blue-50 rounded-lg px-1 md:px-2 py-1">
+									<Droplets className="w-3 h-3 text-blue-500" />
+									<span className="text-xs font-semibold text-blue-600">
+										{weather.daily.precipitationProbability[index]}%
+									</span>
+								</div>
+							)}
+
+							{/* Today Badge */}
+							{index === 0 && (
+								<div className="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+									Now
+								</div>
+							)}
+						</div>
+					))}
 				</div>
 			</div>
 
 			{/* Playing Tips */}
-			<div className="px-6 pb-6">
-				<div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-xl p-4 border border-primary/20">
-					<div className="flex items-start gap-3">
-						<div className="text-2xl">{condition.icon}</div>
+			<div className="px-4 md:px-6 pb-4 md:pb-6">
+				<div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-xl p-3 md:p-4 border border-primary/20">
+					<div className="flex items-start gap-2 md:gap-3">
+						<div className="text-xl md:text-2xl">{condition.icon}</div>
 						<div className="flex-1">
 							<h5 className="font-bold text-dark-slate mb-1">Playing Conditions</h5>
-							<p className="text-sm text-light-slate leading-relaxed">
+							<p className="text-xs md:text-sm text-light-slate leading-relaxed">
 								{weather.current.temperature > 30
 									? '🌡️ Very hot! Bring plenty of water and take breaks. Consider early morning or evening sessions.'
 									: weather.current.temperature < 10

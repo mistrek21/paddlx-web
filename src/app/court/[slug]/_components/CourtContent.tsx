@@ -17,6 +17,8 @@ import {
 import { CourtDetail } from '../page';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useMobileAppModal } from '@/src/hooks/useMobileAppModal';
+import { Button } from '@/components/ui/button';
 
 const DAYS_ORDER = [
 	'Monday',
@@ -188,17 +190,16 @@ function parseOperatingHours(hours: any) {
 
 export default function CourtContent({ court }: { court: CourtDetail }) {
 	const [showAmenities, setShowAmenities] = useState(false);
+	const { openModal, ModalComponent } = useMobileAppModal(); // Modal hook
 
 	const operatingHours = parseOperatingHours(court.hours);
 
-	// Parse amenities structure
 	let amenitiesData: any = null;
 	let isStructuredAmenities = false;
 
 	if (court.amenities) {
 		if (typeof court.amenities === 'object' && !Array.isArray(court.amenities)) {
 			const amenitiesRecord = court.amenities as Record<string, any>;
-
 			if ('pickleballClubFacilities' in amenitiesRecord) {
 				amenitiesData = amenitiesRecord.pickleballClubFacilities;
 				isStructuredAmenities = true;
@@ -213,11 +214,9 @@ export default function CourtContent({ court }: { court: CourtDetail }) {
 		}
 	}
 
-	// Get current day for highlighting
 	const currentDay =
 		DAYS_ORDER[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1];
 
-	// Count total amenities
 	const totalAmenities =
 		isStructuredAmenities && amenitiesData
 			? Object.values(amenitiesData).reduce((total: number, category: any) => {
@@ -261,8 +260,6 @@ export default function CourtContent({ court }: { court: CourtDetail }) {
 						</div>
 					)}
 				</div>
-
-				{/* Description */}
 				{court.description && (
 					<p className="text-slate-gray leading-relaxed mb-8">{court.description}</p>
 				)}
@@ -274,8 +271,6 @@ export default function CourtContent({ court }: { court: CourtDetail }) {
 						<h3 className="text-xl font-bold text-dark-slate mb-4">
 							Court Information
 						</h3>
-
-						{/* Address */}
 						<div className="flex items-start gap-3">
 							<MapPin className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
 							<div>
@@ -286,8 +281,6 @@ export default function CourtContent({ court }: { court: CourtDetail }) {
 								</p>
 							</div>
 						</div>
-
-						{/* Phone */}
 						{court.phone && (
 							<div className="flex items-start gap-3">
 								<Phone className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
@@ -302,8 +295,6 @@ export default function CourtContent({ court }: { court: CourtDetail }) {
 								</div>
 							</div>
 						)}
-
-						{/* Operating Hours - ALWAYS SHOWN */}
 						{operatingHours && (
 							<div className="flex items-start gap-3">
 								<Clock className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
@@ -316,7 +307,6 @@ export default function CourtContent({ court }: { court: CourtDetail }) {
 												const hasHours =
 													dayHours && Array.isArray(dayHours) && dayHours.length > 0;
 												const isToday = day === currentDay;
-
 												return (
 													<div
 														key={day}
@@ -380,7 +370,6 @@ export default function CourtContent({ court }: { court: CourtDetail }) {
 									)}
 								</button>
 							</div>
-
 							{showAmenities && (
 								<div className="space-y-3 max-h-96 overflow-y-auto pr-2">
 									{isStructuredAmenities && amenitiesData ? (
@@ -414,29 +403,32 @@ export default function CourtContent({ court }: { court: CourtDetail }) {
 
 				{/* Action Buttons */}
 				<div className="flex gap-4 pt-6 border-t border-border">
-					<Link
-						href={`/book/${court.slug || court.id}`}
-						className="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+					<Button
+						onClick={() => openModal('book a court')}
+						className="flex-1 cursor-pointer bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
 					>
 						<Calendar className="w-5 h-5" />
 						Book a Court
-					</Link>
-					<a
-						href={
-							court.latitude && court.longitude
-								? `https://www.google.com/maps/dir/?api=1&destination=${court.latitude},${court.longitude}`
-								: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-										court.address
-								  )}`
-						}
-						target="_blank"
-						rel="noopener noreferrer"
-						className="px-8 py-4 border-2 border-divider hover:border-primary text-light-slate hover:text-primary font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 hover:shadow-md"
-					>
-						<Navigation className="w-5 h-5" />
-						Get Directions
-					</a>
+					</Button>
+					<Button asChild variant="base" className="flex-1 cursor-pointer">
+						<a
+							href={
+								court.latitude && court.longitude
+									? `https://www.google.com/maps/dir/?api=1&destination=${court.latitude},${court.longitude}`
+									: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+											court.address
+									  )}`
+							}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="px-8 py-4 border-2 border-divider hover:border-primary text-light-slate hover:text-primary font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 hover:shadow-md"
+						>
+							<Navigation className="w-5 h-5" />
+							Get Directions
+						</a>
+					</Button>
 				</div>
+				<ModalComponent />
 			</div>
 		</div>
 	);

@@ -155,7 +155,7 @@ interface GroupMember {
 	userId: string;
 	user: Author;
 }
-interface Group {
+export interface Group {
 	id: string;
 	name: string;
 	description?: string;

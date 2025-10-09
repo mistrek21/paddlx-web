@@ -26,11 +26,12 @@ interface Court {
 	followerCount: number;
 	reviewCount: number;
 	rating?: number;
+	slug: string;
 }
 
 export default function CourtCard({ court }: { court: Court }) {
 	return (
-		<Link href={`/court/${court.id}`}>
+		<Link href={`/court/${court.slug}`}>
 			<div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer">
 				{/* Image */}
 				<div className="relative h-48 bg-gradient-to-br from-primary-ultra-soft to-primary-super-soft">

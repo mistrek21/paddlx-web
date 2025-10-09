@@ -1,4 +1,6 @@
-// /src/app/court/[slug]/_components/CourtHero.tsx
+// src/app/court/[slug]/_components/CourtHero.tsx
+
+'use client';
 
 import Link from 'next/link';
 import { CourtDetail } from '../page';
@@ -10,21 +12,44 @@ import {
 	Trophy,
 	Dumbbell,
 } from 'lucide-react';
+import React from 'react';
+import { useKeenSlider } from 'keen-slider/react';
+import 'keen-slider/keen-slider.min.css';
 
 export default function CourtHero({ court }: { court: CourtDetail }) {
 	const cityDetails = court.cityDetails;
+	const images = court.images || [];
+	const [sliderRef] = useKeenSlider<HTMLDivElement>({
+		loop: true,
+		slides: { perView: 1 },
+	});
 
 	return (
 		<>
-			{/* Hero Section */}
+			{/* Hero Section (Image slider or single image) */}
 			<div className="relative h-96 bg-gradient-to-br from-primary to-primary-dark">
-				{court.images && court.images[0] && (
+				{images.length > 1 ? (
+					<div
+						ref={sliderRef}
+						className="keen-slider absolute inset-0 w-full h-full"
+					>
+						{images.map((img, idx) => (
+							<div key={idx} className="keen-slider__slide">
+								<img
+									src={img}
+									alt={`${court.name} - image ${idx + 1}`}
+									className="w-full h-full object-cover"
+								/>
+							</div>
+						))}
+					</div>
+				) : images[0] ? (
 					<img
-						src={court.images[0]}
+						src={images[0]}
 						alt={court.name}
 						className="absolute inset-0 w-full h-full object-cover"
 					/>
-				)}
+				) : null}
 				<div className="absolute inset-0 bg-dark/30" />
 				<div className="absolute bottom-6 left-0 right-0">
 					<div className="container mx-auto px-4">
@@ -47,6 +72,7 @@ export default function CourtHero({ court }: { court: CourtDetail }) {
 				</div>
 			</div>
 
+			{/* --- The rest of your component remains unchanged --- */}
 			{/* City Information Banner with LIVE STATS */}
 			{cityDetails && (
 				<div className="bg-gradient-to-r from-teal-500/10 to-blue-500/10 border-b border-teal-500/20">
