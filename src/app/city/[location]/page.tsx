@@ -47,7 +47,7 @@ export interface CityData {
 	populationYear?: number;
 	areaKm2?: number;
 
-	// External IDs (MISSING - Add these)
+	// External IDs
 	geonameId?: number;
 	openStreetMapId?: string;
 	wikiDataId?: string;
@@ -107,7 +107,7 @@ export interface CityData {
 	lastExternalSync?: string;
 	externalDataSource?: string;
 
-	// AI Content Fields (MISSING - Add these)
+	// AI Content Fields
 	isAiGenerated?: boolean;
 	aiGeneratedAt?: string;
 	aiGeneratedFields?: string[];
@@ -116,7 +116,7 @@ export interface CityData {
 	communityVibe?: string;
 	bestTimeToVisit?: string;
 
-	// Timestamps (MISSING - Add these)
+	// Timestamps
 	createdAt?: string;
 	updatedAt?: string;
 
@@ -124,18 +124,15 @@ export interface CityData {
 	features: CityFeature[];
 	courts: Court[];
 
-	// Optional relationship data (if you want to include them)
+	// Optional
 	nearbyCities?: CityData[];
-	featuredClubs?: Court[]; // or create a separate Club interface
-
-	// AI Content Fields (MISSING - Add these)
+	featuredClubs?: Court[];
 	aiContent?: AIContentResponse;
-
-	totalFacilities?: number; // Add this optional property
+	totalFacilities?: number;
 	averageRating?: number;
 }
 
-// Additional types for better type safety
+// Additional types
 export type CityDataQuality = 'BASIC' | 'COMPLETE' | 'VERIFIED';
 
 export type CityFeatureType =
@@ -150,7 +147,6 @@ export type CityFeatureType =
 	| 'SCENIC_LOCATIONS'
 	| 'AFFORDABLE_RATES';
 
-// Enhanced interface with strict typing
 export interface CityDataStrict
 	extends Omit<CityData, 'dataQuality' | 'features'> {
 	dataQuality: CityDataQuality;
@@ -161,7 +157,6 @@ export interface CityFeatureStrict extends Omit<CityFeature, 'featureType'> {
 	featureType: CityFeatureType;
 }
 
-// API Response types
 export interface CityAPIResponse {
 	success: boolean;
 	data: CityData;
@@ -182,7 +177,6 @@ export interface AIContentResponse {
 	aiGeneratedFields: string[];
 }
 
-// For the page props
 export interface CityPageParams {
 	location: string;
 }
@@ -191,10 +185,14 @@ export interface CityPageSearchParams {
 	country?: string;
 }
 
-export interface CityPageProps {
-	params: Promise<CityPageParams>;
-	searchParams: Promise<CityPageSearchParams>;
-}
+// CRITICAL: Make this route fully dynamic during development
+// Once AI generation is stable, you can switch to ISR
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// For production with ISR (uncomment when ready):
+// export const dynamic = 'auto';
+// export const revalidate = 3600; // 1 hour
 
 export default async function CityPage(props: CityPageProps) {
 	return (

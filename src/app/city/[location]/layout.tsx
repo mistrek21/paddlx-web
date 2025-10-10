@@ -28,11 +28,8 @@ async function getCityData(location: string, country?: string) {
 		console.log('🔍 Fetching:', url.toString());
 
 		const response = await fetch(url.toString(), {
-			next: {
-				revalidate: 2592000, // Cache for 30 days
-				tags: [`city-${location}`],
-			},
-			cache: 'no-store', // Important for dynamic generation
+			// Don't cache at all - let the API handle caching
+			cache: 'no-store',
 		});
 
 		console.log('📡 Response status:', response.status);
@@ -43,9 +40,13 @@ async function getCityData(location: string, country?: string) {
 		}
 
 		const data = await response.json();
-		console.log('✅ Data received:', data?.name);
+		console.log(
+			'✅ Data received:',
+			data?.name,
+			'AI Generated:',
+			data?.isAiGenerated
+		);
 
-		// Your API returns the city data directly (not wrapped in { data: ... })
 		return data;
 	} catch (error) {
 		console.error('❌ Error fetching city data:', error);
@@ -53,15 +54,13 @@ async function getCityData(location: string, country?: string) {
 	}
 }
 
-// Generate metadata dynamically - needs country from searchParams
+// Generate metadata dynamically
 export async function generateMetadata(
 	{ params }: { params: Promise<{ location: string }> },
-	// IMPORTANT: Add parent to access searchParams
 	parent: any
 ): Promise<Metadata> {
 	const { location } = await params;
 
-	// For now, fetch without country - your API handles this
 	const cityData = await getCityData(location);
 
 	if (!cityData) {
@@ -132,8 +131,13 @@ export async function generateMetadata(
 // Allow all dynamic routes to be generated on-demand
 export const dynamicParams = true;
 
-// Cache pages for 30 days
-export const revalidate = 2592000;
+// Make layout dynamic during development/AI enhancement phase
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// For production (uncomment when AI generation is stable):
+// export const dynamic = 'auto';
+// export const revalidate = 3600;
 
 export default async function CityLayout({
 	children,

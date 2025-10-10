@@ -6,87 +6,50 @@ import { cache } from 'react';
 import { CityStatsData } from '../CityStats';
 
 // ============================================
-// 1. CACHED VERSION - For static page content
+// SMART CACHED VERSION - Adapts based on AI status
 // ============================================
 export const getCityDataCached = cache(
 	async (location: string, country?: string): Promise<CityData> => {
 		const params = new URLSearchParams();
 		if (country) params.set('country', country);
-		// No 'fields' param = returns full data
 
 		const url = `${config.API_BASE_URL}/api/web/cities/${encodeURIComponent(
 			location
 		)}?${params.toString()}`;
 
-		console.log('📦 Fetching CACHED city data (full)');
-
-		const response = await fetch(url, {
-			next: { revalidate: 3600 }, // 1 hour cache
+		console.log('📦 [getCityDataCached] Fetching city data:', {
+			location,
+			country,
+			url,
 		});
 
-		if (!response.ok) throw new Error('Failed to fetch city data');
-		return await response.json();
-	}
-);
-
-// ============================================
-// 2. FRESH VERSION - For dynamic stats component
-// ============================================
-export async function getCityDataFresh(
-	location: string,
-	country?: string
-): Promise<CityData> {
-	try {
-		const params = new URLSearchParams();
-		if (country) params.set('country', country);
-
-		const url = `${config.API_BASE_URL}/api/web/cities/${encodeURIComponent(
-			location
-		)}?${params.toString()}`;
-
-		console.log('🔍 Fetching FRESH city data from:', url);
-
+		// First fetch to check AI status
 		const response = await fetch(url, {
-			cache: 'no-store', // Always fresh
-			headers: {
-				'Content-Type': 'application/json',
-			},
+			cache: 'no-store', // Always check fresh first
 		});
 
-		if (!response.ok) throw new Error('Failed to fetch city data');
-		return await response.json();
-	} catch (error) {
-		console.error('Error fetching fresh city data:', error);
-		return getMockCityData(location, country);
-	}
-}
+		if (!response.ok) {
+			const errorText = await response.text();
+			console.error('❌ Failed to fetch city data:', {
+				status: response.status,
+				location,
+				country,
+				url,
+				error: errorText,
+			});
 
-// ============================================
-// 3. ENHANCED VERSION - With AI enhancement logic
-// ============================================
-export async function getCityDataEnhanced(
-	location: string,
-	country?: string
-): Promise<CityData> {
-	try {
-		const params = new URLSearchParams();
-		if (country) params.set('country', country);
+			// Return mock data instead of throwing
+			console.warn('⚠️ Returning mock data for development');
+			return getMockCityData(location, country);
+		}
 
-		const url = `${config.API_BASE_URL}/api/web/cities/${encodeURIComponent(
-			location
-		)}?${params.toString()}`;
-
-		console.log('🔍 Fetching city data from:', url);
-
-		const response = await fetch(url, {
-			next: { revalidate: 3600 }, // Cache for 1 hour
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-
-		if (!response.ok) throw new Error('Failed to fetch city data');
 		const data: CityData = await response.json();
+
+		console.log('✅ [getCityDataCached] City data received:', {
+			name: data.name,
+			isAiGenerated: data.isAiGenerated,
+			aiGeneratedAt: data.aiGeneratedAt,
+		});
 
 		// Check if city needs AI enhancement
 		const needsEnhancement =
@@ -100,37 +63,82 @@ export async function getCityDataEnhanced(
 			!data.elevation;
 
 		if (needsEnhancement) {
-			console.log(`🚀 City needs enhancement, triggering now...`);
+			console.log(`🤖 [Enhancement] City needs enhancement, triggering...`);
 
-			// Trigger enhancement (this will update the database)
-			await enhanceCity(data.id);
+			// Trigger enhancement and WAIT for it
+			const enhanced = await enhanceCity(data.id);
 
-			// Fetch the updated data with no-store to get fresh enhanced data
-			const updatedResponse = await fetch(url, {
-				cache: 'no-store',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
+			if (enhanced) {
+				console.log('✅ [Enhancement] Success! Fetching fresh data...');
 
-			if (updatedResponse.ok) {
-				const updatedData: CityData = await updatedResponse.json();
-				console.log('✅ Fetched enhanced city data');
-				return updatedData;
+				// Fetch the updated data immediately
+				const updatedResponse = await fetch(url, {
+					cache: 'no-store',
+				});
+
+				if (updatedResponse.ok) {
+					const updatedData: CityData = await updatedResponse.json();
+					console.log('✅ [Enhancement] Returning enhanced data');
+					return updatedData;
+				}
+			} else {
+				console.warn('⚠️ [Enhancement] Failed, returning basic data');
 			}
 		}
 
 		return data;
+	}
+);
+
+// ============================================
+// FRESH VERSION - For dynamic stats component
+// ============================================
+export async function getCityDataFresh(
+	location: string,
+	country?: string
+): Promise<CityData> {
+	try {
+		const params = new URLSearchParams();
+		if (country) params.set('country', country);
+
+		const url = `${config.API_BASE_URL}/api/web/cities/${encodeURIComponent(
+			location
+		)}?${params.toString()}`;
+
+		console.log('🔍 [getCityDataFresh] Fetching from:', url);
+
+		const response = await fetch(url, {
+			cache: 'no-store',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if (!response.ok) throw new Error('Failed to fetch city data');
+		return await response.json();
 	} catch (error) {
-		console.error('Error fetching city data:', error);
+		console.error('❌ [getCityDataFresh] Error:', error);
 		return getMockCityData(location, country);
 	}
 }
 
-// Helper function
+// ============================================
+// ENHANCED VERSION (kept for compatibility)
+// ============================================
+export async function getCityDataEnhanced(
+	location: string,
+	country?: string
+): Promise<CityData> {
+	// Just use the smart cached version
+	return getCityDataCached(location, country);
+}
+
+// ============================================
+// ENHANCEMENT HELPER - Now with better error handling
+// ============================================
 async function enhanceCity(cityId: string): Promise<boolean> {
 	try {
-		console.log(`🤖 Triggering enhancement for city: ${cityId}`);
+		console.log(`🤖 [enhanceCity] Starting enhancement for: ${cityId}`);
 
 		const response = await fetch(
 			`${config.API_BASE_URL}/api/web/cities/${cityId}/enhance`,
@@ -141,27 +149,37 @@ async function enhanceCity(cityId: string): Promise<boolean> {
 		);
 
 		if (!response.ok) {
-			console.warn('Enhancement failed:', response.status);
+			const errorText = await response.text();
+			console.warn(
+				'⚠️ [enhanceCity] Enhancement failed:',
+				response.status,
+				errorText
+			);
 			return false;
 		}
 
 		const result = await response.json();
 
 		if (result.alreadyGenerated) {
-			console.log(`✅ City already enhanced on ${result.aiGeneratedAt}`);
-		} else {
+			console.log(`✅ [enhanceCity] Already enhanced on ${result.aiGeneratedAt}`);
+			return true;
+		} else if (result.success) {
 			console.log(
-				`✅ City enhanced with ${result.fieldsUpdated} fields and ${result.featuresCreated} features`
+				`✅ [enhanceCity] Enhanced with ${result.fieldsUpdated} fields and ${result.featuresCreated} features`
 			);
+			return true;
 		}
 
-		return result.success;
+		return false;
 	} catch (error) {
-		console.error('AI enhancement failed:', error);
+		console.error('❌ [enhanceCity] Enhancement error:', error);
 		return false;
 	}
 }
 
+// ============================================
+// STATS ONLY - Always fresh
+// ============================================
 export async function getCityStatsOnly(
 	location: string,
 	country?: string
@@ -173,17 +191,23 @@ export async function getCityStatsOnly(
 		location
 	)}/stats?${params.toString()}`;
 
-	console.log('⚡ Fetching FRESH stats (optimized)');
+	console.log('⚡ [getCityStatsOnly] Fetching fresh stats');
 
 	const response = await fetch(url, {
 		cache: 'no-store',
 	});
 
-	if (!response.ok) throw new Error('Failed to fetch stats');
+	if (!response.ok) {
+		console.error('❌ [getCityStatsOnly] Failed:', response.status);
+		throw new Error('Failed to fetch stats');
+	}
+
 	return await response.json();
 }
 
-// Mock data helper
+// ============================================
+// MOCK DATA HELPER
+// ============================================
 function getMockCityData(location: string, country?: string): CityData {
 	return {
 		id: 'mock',
