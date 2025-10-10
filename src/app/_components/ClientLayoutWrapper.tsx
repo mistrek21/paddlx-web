@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from 'react';
 import { TopBanner } from './TopBanner';
-import { Navigation } from './Navigation';
+import Navigation from './Navigation';
 
 export function ClientLayoutWrapper({
 	children,

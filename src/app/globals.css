@@ -78,3 +78,9 @@
   --color-light-gray-2: #F8FAFC;
   --color-background: #FEFEFE;
 }
+
+[data-radix-navigation-menu-viewport] {
+  left: 0 !important;
+  width: 100vw !important;
+  transform: translateX(0) !important;
+}
