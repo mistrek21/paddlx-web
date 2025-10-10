@@ -28,6 +28,7 @@ import {
 	Target,
 	Grid3x3,
 } from 'lucide-react';
+import Link from 'next/link';
 
 const Navigation = ({ offset = 0, compact = false }) => {
 	const playItems = [
@@ -395,42 +396,44 @@ const Navigation = ({ offset = 0, compact = false }) => {
 			<div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 				<div className="flex items-center gap-12">
 					{/* Logo */}
-					<div className="flex items-center gap-2">
-						<Image
-							src="/paddlx-logo-no-text.png"
-							alt="paddlX Logo"
-							width={44}
-							height={44}
-							className="h-11 w-11 object-contain rounded-full shadow-lg"
-						/>
-						<span
-							className="
-      font-bold
-      text-[1.35rem] sm:text-[1.65rem]
-      tracking-tighter
-      select-none
-      relative
-      leading-none
-      font-spacegrotesk
-    "
-							style={{
-								fontFamily: "'Space Grotesk', 'Inter', 'Segoe UI', Arial, sans-serif",
-							}}
-						>
-							paddl
+					<Link href="/" className="flex items-center gap-12">
+						<div className="flex items-center gap-2">
+							<Image
+								src="/paddlx-logo-no-text.png"
+								alt="paddlX Logo"
+								width={44}
+								height={44}
+								className="h-11 w-11 object-contain rounded-full shadow-lg"
+							/>
 							<span
 								className="
-        text-teal-500 ml-0.5 font-extrabold
-        text-[1.5rem] sm:text-[1.75rem]
-        drop-shadow-[0_1px_2px_rgba(0,188,212,0.15)]
-        inline-block -rotate-2 scale-105
-        align-middle
-      "
+                font-bold
+                text-[1.35rem] sm:text-[1.65rem]
+                tracking-tighter
+                select-none
+                relative
+                leading-none
+                font-spacegrotesk
+            "
+								style={{
+									fontFamily: "'Space Grotesk', 'Inter', 'Segoe UI', Arial, sans-serif",
+								}}
 							>
-								X
+								paddl
+								<span
+									className="
+                    text-teal-500 ml-0.5 font-extrabold
+                    text-[1.5rem] sm:text-[1.75rem]
+                    drop-shadow-[0_1px_2px_rgba(0,188,212,0.15)]
+                    inline-block -rotate-2 scale-105
+                    align-middle
+                "
+								>
+									X
+								</span>
 							</span>
-						</span>
-					</div>
+						</div>
+					</Link>
 
 					{/* Navigation Menu */}
 					<NavigationMenu className="hidden lg:block" viewport={false}>
