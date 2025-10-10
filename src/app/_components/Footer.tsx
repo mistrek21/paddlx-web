@@ -10,15 +10,47 @@ export function Footer() {
 			<div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
 				{/* Top Section - Logo and App Downloads */}
 				<div className="mb-12 flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
-					<div className="flex items-center gap-3">
+					<div className="flex items-center gap-2">
 						<Image
-							src="/paddlx-yellow-character-logo.jpg"
-							alt="paddlx"
-							width={80}
-							height={80}
-							className="h-20 w-20"
+							src="/paddlx-logo-no-text.png"
+							alt="paddlX Logo"
+							width={40}
+							height={40}
+							className="h-10 w-10 rounded-full object-contain bg-white shadow-md"
 						/>
-						<span className="text-3xl font-bold text-dark-slate">paddlx®</span>
+						<span
+							className="
+      font-bold
+      text-[1.2rem] sm:text-[1.45rem]
+      text-dark-slate
+      select-none
+      font-spacegrotesk
+      leading-none
+      px-2 py-1
+      rounded-xl
+      bg-white bg-opacity-90
+      shadow-sm
+      flex items-center
+    "
+							style={{
+								fontFamily: "'Space Grotesk', 'Inter', 'Segoe UI', Arial, sans-serif",
+							}}
+						>
+							paddl
+							<span
+								className="
+        text-teal-600 ml-0.5 font-extrabold
+        text-[1.35rem] sm:text-[1.65rem]
+        inline-block -rotate-2 scale-110
+        align-middle
+      "
+							>
+								X
+							</span>
+							<span className="text-xs font-semibold align-super ml-0.5 tracking-normal text-dark-slate">
+								®
+							</span>
+						</span>
 					</div>
 
 					<div className="flex items-center gap-4">
@@ -32,7 +64,7 @@ export function Footer() {
 								alt="Download on the App Store"
 								width={120}
 								height={40}
-								className="h-10 w-auto"
+								className="h-10 w-auto rounded-full"
 							/>
 						</Link>
 						<Link
@@ -54,7 +86,7 @@ export function Footer() {
 				<div className="mb-12 grid grid-cols-2 gap-8 md:grid-cols-4">
 					{/* paddlx Column */}
 					<div className="relative md:pr-8">
-						<h3 className="mb-4 text-lg font-bold">paddlx</h3>
+						<h3 className="mb-4 text-lg font-bold">paddlX</h3>
 						<ul className="space-y-3">
 							<li>
 								<Link href="#" className="hover:underline">

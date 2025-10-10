@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 import {
 	NavigationMenu,
 	NavigationMenuContent,
@@ -189,7 +190,7 @@ const Navigation = ({ offset = 0, compact = false }) => {
 	};
 
 	const renderStandardMenu = (items: any[]) => (
-		<div className="w-full bg-white  shadow-xl">
+		<div className="w-full bg-white shadow-xl">
 			<div className="max-w-7xl mx-auto px-6 py-10">
 				<div className="grid grid-cols-3 gap-8">
 					{items.map((item, index) => (
@@ -235,7 +236,7 @@ const Navigation = ({ offset = 0, compact = false }) => {
 	);
 
 	const renderLearnMenu = () => (
-		<div className="w-full bg-white  shadow-xl">
+		<div className="w-full bg-white shadow-xl">
 			<div className="max-w-7xl mx-auto px-6 py-10">
 				<div className="grid grid-cols-3 gap-8 mb-10">
 					{learnItems.main.map((item, index) => (
@@ -394,16 +395,40 @@ const Navigation = ({ offset = 0, compact = false }) => {
 			<div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 				<div className="flex items-center gap-12">
 					{/* Logo */}
-					<div className="flex items-center gap-3">
-						<div className="w-11 h-11 bg-gradient-to-br from-green-400 to-teal-400 rounded-full flex items-center justify-center shadow-lg">
-							<span className="text-gray-900 font-black text-sm">pX</span>
-						</div>
+					<div className="flex items-center gap-2">
+						<Image
+							src="/paddlx-logo-no-text.png"
+							alt="paddlX Logo"
+							width={44}
+							height={44}
+							className="h-11 w-11 object-contain rounded-full shadow-lg"
+						/>
 						<span
-							className={`font-black tracking-tight transition-all ${
-								compact ? 'text-gray-900 text-xl' : 'text-gray-900 text-xl'
-							}`}
+							className="
+      font-bold
+      text-[1.35rem] sm:text-[1.65rem]
+      tracking-tighter
+      select-none
+      relative
+      leading-none
+      font-spacegrotesk
+    "
+							style={{
+								fontFamily: "'Space Grotesk', 'Inter', 'Segoe UI', Arial, sans-serif",
+							}}
 						>
-							PaddlX
+							paddl
+							<span
+								className="
+        text-teal-500 ml-0.5 font-extrabold
+        text-[1.5rem] sm:text-[1.75rem]
+        drop-shadow-[0_1px_2px_rgba(0,188,212,0.15)]
+        inline-block -rotate-2 scale-105
+        align-middle
+      "
+							>
+								X
+							</span>
 						</span>
 					</div>
 
@@ -422,13 +447,12 @@ const Navigation = ({ offset = 0, compact = false }) => {
 								</NavigationMenuTrigger>
 								<NavigationMenuContent
 									className="
-								 !absolute
-    !left-0
-
-    !w-[110vw] 
-    !p-0
-	!-ml-[25vw] 
-								"
+                                        !absolute
+                                        !left-0
+                                        !w-[110vw] 
+                                        !p-0
+                                        !-ml-[25vw] 
+                                    "
 								>
 									{renderStandardMenu(playItems)}
 								</NavigationMenuContent>
@@ -446,12 +470,12 @@ const Navigation = ({ offset = 0, compact = false }) => {
 								</NavigationMenuTrigger>
 								<NavigationMenuContent
 									className="
-									!absolute
-									!left-0
-									!w-[110vw]
-									!p-0
-									!-ml-[30vw]
-									"
+                                        !absolute
+                                        !left-0
+                                        !w-[110vw]
+                                        !p-0
+                                        !-ml-[30vw]
+                                    "
 								>
 									{renderStandardMenu(organizeItems)}
 								</NavigationMenuContent>
@@ -468,11 +492,10 @@ const Navigation = ({ offset = 0, compact = false }) => {
 									Earn
 								</NavigationMenuTrigger>
 								<NavigationMenuContent
-									className="								 !absolute
-    !left-0
-
-    !w-[110vw] 
-    !p-0 !-ml-[38vw] "
+									className=" !absolute
+                                        !left-0
+                                        !w-[110vw] 
+                                        !p-0 !-ml-[38vw] "
 								>
 									{renderStandardMenu(earnItems)}
 								</NavigationMenuContent>
@@ -489,11 +512,10 @@ const Navigation = ({ offset = 0, compact = false }) => {
 									Learn
 								</NavigationMenuTrigger>
 								<NavigationMenuContent
-									className="								 !absolute
-    !left-0
-
-    !w-[110vw] 
-    !p-0 !-ml-[43vw]"
+									className=" !absolute
+                                        !left-0
+                                        !w-[110vw] 
+                                        !p-0 !-ml-[43vw]"
 								>
 									{renderLearnMenu()}
 								</NavigationMenuContent>
@@ -510,11 +532,10 @@ const Navigation = ({ offset = 0, compact = false }) => {
 									Gear
 								</NavigationMenuTrigger>
 								<NavigationMenuContent
-									className="								 !absolute
-    !left-0
-
-    !w-[110vw] 
-    !p-0 !-ml-[50vw]"
+									className=" !absolute
+                                        !left-0
+                                        !w-[110vw] 
+                                        !p-0 !-ml-[50vw]"
 								>
 									{renderGearMenu()}
 								</NavigationMenuContent>

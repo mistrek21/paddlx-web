@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { config } from '@/lib/config';
+import Image from 'next/image';
 
 interface Place {
 	id: string;
@@ -400,13 +401,18 @@ export function HeroSection() {
 			<section className="relative h-[500px] flex items-center justify-center">
 				{/* Background Image with Overlay */}
 				<div className="absolute inset-0 z-0">
-					<div
+					<Image
 						className="w-full h-full bg-cover bg-center"
 						style={{
 							backgroundImage:
 								'url(/placeholder.svg?height=500&width=1920&query=people+playing+pickleball+on+outdoor+courts)',
 						}}
+						alt="Pickleball courts"
+						src="/main-image.png"
+						width={1920}
+						height={500}
 					/>
+
 					<div className="absolute inset-0 bg-gradient-to-b from-dark/50 via-dark/40 to-dark/60" />
 				</div>
 
