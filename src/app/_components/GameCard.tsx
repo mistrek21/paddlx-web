@@ -5,9 +5,11 @@ import Image from 'next/image';
 interface GameCardProps {
 	image: string;
 	date: string;
+	title: string;
+	location: string;
 }
 
-export function GameCard({ image, date }: GameCardProps) {
+export function GameCard({ image, date, title, location }: GameCardProps) {
 	return (
 		<div className="group cursor-pointer">
 			<div className="relative aspect-[3/2] rounded-lg overflow-hidden mb-3">
@@ -19,6 +21,10 @@ export function GameCard({ image, date }: GameCardProps) {
 				/>
 				<div className="absolute bottom-3 left-3 bg-white px-3 py-1 rounded-md">
 					<span className="text-xs font-bold text-[#1a1f3a]">{date}</span>
+				</div>
+				<div className="p-4">
+					<h3 className="text-lg font-semibold">{title}</h3>
+					<p className="text-sm text-gray-600">{location}</p>
 				</div>
 			</div>
 		</div>
