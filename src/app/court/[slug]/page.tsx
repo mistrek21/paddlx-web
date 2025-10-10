@@ -94,6 +94,7 @@ interface Comment {
 interface Article {
 	id: string;
 	title: string;
+	slug: string;
 	content: string;
 	imageUrl: string | null;
 	publishedAt: Date | string;

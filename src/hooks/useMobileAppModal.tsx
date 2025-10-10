@@ -3,7 +3,16 @@
 'use client';
 
 import { useState } from 'react';
-import MobileAppModal from '../app/_components/modals/MobileAppModal';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the modal with no SSR
+const MobileAppModal = dynamic(
+	() => import('../app/_components/modals/MobileAppModal'),
+	{
+		ssr: false,
+		loading: () => null, // No loading state needed for modals
+	}
+);
 
 export function useMobileAppModal() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -18,9 +27,10 @@ export function useMobileAppModal() {
 		setIsOpen(false);
 	};
 
-	const ModalComponent = () => (
-		<MobileAppModal isOpen={isOpen} onClose={closeModal} action={action} />
-	);
+	const ModalComponent = () =>
+		isOpen ? (
+			<MobileAppModal isOpen={isOpen} onClose={closeModal} action={action} />
+		) : null;
 
 	return {
 		openModal,
