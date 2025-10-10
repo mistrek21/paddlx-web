@@ -254,46 +254,82 @@ export async function generateMetadata(
 			description: 'The pickleball court you are looking for does not exist.',
 		};
 	}
-	const title = `${court.name} - Pickleball Court in ${court.city}`;
+
+	const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://paddlx.com';
+	const canonicalUrl = `${BASE_URL}/court/${court.slug || params.slug}`;
+	const image = court.images?.[0] || `${BASE_URL}/og-default.jpg`;
+
 	const description =
 		court.description ||
 		`Find pickleball courts and sessions at ${court.name} in ${court.city}, ${court.country}. Book courts, join games, and connect with players.`;
 
+	const keywords = [
+		court.name,
+		court.city,
+		court.country,
+		'pickleball',
+		'paddle',
+		'court',
+		...(court.cityDetails?.keywords || []),
+	]
+		.filter(Boolean)
+		.join(', ');
+
 	return {
-		title,
+		title: `${court.name} - Pickleball Court in ${court.city}`,
 		description,
+		keywords,
+
+		alternates: {
+			canonical: canonicalUrl,
+		},
+
 		openGraph: {
-			title,
+			title: `${court.name} - Pickleball Court in ${court.city}`,
 			description,
-			url: `/court/${court.slug || params.slug}`,
-			type: 'website',
+			url: canonicalUrl,
+			type: 'website', // <--- FIXED: must be "website" or "article"
 			siteName: 'PaddlX',
-			images:
-				court.images && court.images.length > 0
-					? [
-							{
-								url: court.images[0],
-								width: 1200,
-								height: 630,
-								alt: court.name,
-							},
-					  ]
-					: [],
+			images: [
+				{
+					url: image,
+					width: 1200,
+					height: 630,
+					alt: court.name,
+				},
+			],
 			locale: 'en_US',
 		},
+
 		twitter: {
 			card: 'summary_large_image',
-			title,
+			title: court.name,
 			description,
-			images: court.images && court.images.length > 0 ? [court.images[0]] : [],
+			images: [image],
 		},
-		alternates: {
-			canonical: `/court/${court.slug || params.slug}`,
+
+		robots: {
+			index: true,
+			follow: true,
+			googleBot: {
+				'index': true,
+				'follow': true,
+				'max-image-preview': 'large',
+				'max-snippet': -1,
+			},
 		},
+
+		category: 'Sports & Recreation',
+		classification: 'Place',
+
 		other: {
 			'og:locality': court.city,
 			'og:country-name': court.country,
 			'og:street-address': court.address,
+			'business:contact_data:street_address': court.address,
+			'business:contact_data:locality': court.city,
+			'business:contact_data:country_name': court.country,
+			'business:contact_data:phone_number': court.phone || '',
 		},
 	};
 }
@@ -312,55 +348,99 @@ async function CourtDetailContent({ params }: CourtDetailPageProps) {
 	const hasArticles = court.articles && court.articles.length > 0;
 	const hasReviews = court.reviews && court.reviews.length > 0;
 
+	// Make sure keywords are scoped here as well (for JSON-LD)
+	const keywords = [
+		court.name,
+		court.city,
+		court.country,
+		'pickleball',
+		'paddle',
+		'court',
+		...(court.cityDetails?.keywords || []),
+	]
+		.filter(Boolean)
+		.join(', ');
+
 	return (
-		<div className="min-h-screen bg-light-blue-3">
-			{/* Hero Image */}
-			<CourtHero court={court} />
+		<>
+			{/* JSON-LD Structured Data */}
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify({
+						'@context': 'https://schema.org',
+						'@type': 'SportsActivityLocation',
+						'name': court.name,
+						'description': court.description || 'Pickleball court',
+						'address': {
+							'@type': 'PostalAddress',
+							'streetAddress': court.address,
+							'addressLocality': court.city,
+							'addressCountry': court.country,
+						},
+						'geo': {
+							'@type': 'GeoCoordinates',
+							'latitude': court.latitude,
+							'longitude': court.longitude,
+						},
+						'image': court.images?.[0] || undefined,
+						'telephone': court.phone || undefined,
+						'aggregateRating': court.rating
+							? {
+									'@type': 'AggregateRating',
+									'ratingValue': court.rating,
+									'reviewCount': court.totalReviews || 0,
+									'bestRating': '5',
+									'worstRating': '1',
+							  }
+							: undefined,
+						'openingHours': court.hours || undefined,
+						'keywords': keywords,
+					}),
+				}}
+			/>
 
-			{/* Content */}
-			<div className="container mx-auto px-4 py-12">
-				{/* Main Info Card - Full Width */}
-				<CourtContent court={court} />
+			<div className="min-h-screen bg-light-blue-3">
+				{/* Hero Image */}
+				<CourtHero court={court} />
 
-				{/* Map */}
-				<CourtMapWrapper
-					latitude={court.latitude || 0}
-					longitude={court.longitude || 0}
-					courtName={court.name}
-					address={court.address}
-					city={court.city}
-					country={court.country}
-				/>
+				{/* Content */}
+				<div className="container mx-auto px-4 py-12">
+					{/* Main Info Card - Full Width */}
+					<CourtContent court={court} />
 
-				{/* Weather */}
-				<CourtWeatherCard
-					latitude={court.latitude || 0}
-					longitude={court.longitude || 0}
-					courtName={court.name}
-				/>
+					{/* Map */}
+					<CourtMapWrapper
+						latitude={court.latitude || 0}
+						longitude={court.longitude || 0}
+						courtName={court.name}
+						address={court.address}
+						city={court.city}
+						country={court.country}
+					/>
 
-				{/* Two Column Layout for larger screens */}
-				<div className="grid lg:grid-cols-2 gap-6">
-					{/* Left Column */}
-					<div className="space-y-6">
-						{/* Sessions */}
-						{hasSessions && <CourtSessions court={court} />}
+					{/* Weather */}
+					<CourtWeatherCard
+						latitude={court.latitude || 0}
+						longitude={court.longitude || 0}
+						courtName={court.name}
+					/>
 
-						{/* Articles / News */}
-						{hasArticles && <CourtArticles court={court} />}
-					</div>
+					{/* Two Column Layout for larger screens */}
+					<div className="grid lg:grid-cols-2 gap-6">
+						<div className="space-y-6">
+							{hasSessions && <CourtSessions court={court} />}
+							{hasArticles && <CourtArticles court={court} />}
+						</div>
 
-					{/* Right Column */}
-					<div className="space-y-6">
-						{/* Groups */}
-						{hasGroups && <CourtGroups court={court} />}
-
-						{/* Reviews */}
-						{hasReviews && <CourtReviews court={court} />}
+						<div className="space-y-6">
+							{hasGroups && <CourtGroups court={court} />}
+							{hasReviews && <CourtReviews court={court} />}
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
 
