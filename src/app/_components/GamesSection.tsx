@@ -197,14 +197,14 @@ export function GamesSection() {
 						<div className="hidden md:flex items-center gap-2">
 							<button
 								onClick={() => scroll('left')}
-								className="p-2 rounded-full bg-cool-gray hover:bg-teal-50 transition-colors"
+								className="p-2 rounded-full bg-cool-gray hover:bg-teal-50 transition-colors cursor-pointer"
 								aria-label="Scroll left"
 							>
 								<ChevronLeft className="w-5 h-5 text-dark-slate" />
 							</button>
 							<button
 								onClick={() => scroll('right')}
-								className="p-2 rounded-full bg-cool-gray hover:bg-teal-50 transition-colors"
+								className="p-2 rounded-full bg-cool-gray hover:bg-teal-50 transition-colors cursor-pointer"
 								aria-label="Scroll right"
 							>
 								<ChevronRight className="w-5 h-5 text-dark-slate" />

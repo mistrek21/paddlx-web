@@ -49,7 +49,7 @@ export function RoundRobinSection() {
 
 				{/* Previews */}
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-					<div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-primary-super-soft">
+					<div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-primary-super-soft cursor-pointer">
 						<div className="aspect-video bg-primary-ultra-soft rounded-lg mb-4 overflow-hidden relative">
 							<Image
 								src="/pickleball-court-simulator-interface-with-players-.jpg"
@@ -73,7 +73,7 @@ export function RoundRobinSection() {
 						</Link>
 					</div>
 
-					<div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-primary-super-soft">
+					<div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow border border-primary-super-soft cursor-pointer">
 						<div className="aspect-video bg-primary-ultra-soft rounded-lg mb-4 overflow-hidden relative">
 							<Image
 								src="/mobile-app-showing-pickleball-round-robin-matchups.jpg"
