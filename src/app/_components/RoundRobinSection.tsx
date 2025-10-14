@@ -86,7 +86,7 @@ export function RoundRobinSection() {
 					</div>
 					<div className="flex-shrink-0">
 						<Link
-							href="/round-robin"
+							href="/help/why-paddlx"
 							className="text-white font-bold px-8 py-4 rounded-2xl transition-all duration-300 inline-block shadow-lg hover:shadow-xl hover:scale-105"
 							style={{ background: 'linear-gradient(to right, #2A9DB0, #4DB5C7)' }}
 							onMouseEnter={(e) =>

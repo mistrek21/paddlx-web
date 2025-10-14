@@ -24,7 +24,8 @@ export function HelpCenterSidebar({
 		'payments',
 		'groups',
 		'sessions',
-		'round-robin',
+		'round-robin-tool',
+		'tournaments',
 	]);
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const sidebarRef = useRef(null);

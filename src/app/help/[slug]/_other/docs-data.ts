@@ -1647,6 +1647,186 @@ export const docSections: DocSection[] = [
 		],
 	},
 	{
+		id: 'tournaments',
+		title: 'Tournaments',
+		slug: 'tournaments',
+		isExpandable: true,
+		items: [
+			{
+				id: 'creating-a-tournament',
+				title: 'Creating a Tournament',
+				slug: 'creating-a-tournament',
+				content: {
+					title: 'Creating a Tournament',
+					description:
+						'Step-by-step guide to setting up your first tournament on paddlX.',
+					sections: [
+						{
+							heading: 'Tournament Setup',
+							content:
+								'Create and configure your tournament with custom formats, registration rules, and scheduling.',
+							image: '/tournament-creation-interface.jpg',
+						},
+						{
+							heading: 'Initial Setup Steps',
+							content: 'Follow these steps to get your tournament started.',
+							steps: [
+								'From your dashboard, click "Create Tournament"',
+								'Enter tournament name, date, and location',
+								'Define registration start and end dates',
+								'Set the entry fee and payment details',
+								'Add a detailed description and upload a banner image',
+							],
+						},
+						{
+							heading: 'Format & Brackets',
+							content:
+								'Choose the right format for your event to ensure competitive and fair play.',
+							tips: [
+								'Select format: Single Elimination, Double Elimination, or Round Robin',
+								'Create different divisions (e.g., Mens 4.0, Womens 3.5)',
+								'Set seeding options: random, by skill level, or manual',
+								'Configure match rules (e.g., best 2 of 3 games to 11)',
+							],
+						},
+					],
+					relatedArticles: [
+						'tournament-formats',
+						'managing-brackets',
+						'player-registration',
+					],
+				},
+			},
+			{
+				id: 'tournament-formats',
+				title: 'Tournament Formats',
+				slug: 'tournament-formats',
+				content: {
+					title: 'Tournament Formats',
+					description:
+						'Understand the different tournament formats available in paddlX.',
+					sections: [
+						{
+							heading: 'Choosing Your Format',
+							content:
+								'paddlX supports the most popular tournament formats to suit any competitive event.',
+							image: '/tournament-formats-diagram.jpg',
+						},
+						{
+							heading: 'Single Elimination',
+							content:
+								'Players are eliminated after a single loss. This is the fastest format, ideal for large fields or limited time. A single champion is crowned.',
+						},
+						{
+							heading: 'Double Elimination',
+							content:
+								"Players must lose twice to be eliminated. After their first loss, they move to a 'losers bracket' for a chance to play their way back to the championship match. This format is great for ensuring players get more than one game.",
+						},
+						{
+							heading: 'Round Robin',
+							content:
+								'All players or teams play against each other at least once. The winner is determined by the overall win-loss record. Refer to our Round Robin Tool section for more details on running this format.',
+						},
+					],
+					relatedArticles: [
+						'creating-a-tournament',
+						'managing-brackets',
+						'round-robin-overview',
+					],
+				},
+			},
+			{
+				id: 'managing-brackets',
+				title: 'Managing Brackets',
+				slug: 'managing-brackets',
+				content: {
+					title: 'Managing Brackets',
+					description:
+						'Live bracket management, score reporting, and advancing players during your tournament.',
+					sections: [
+						{
+							heading: 'Live Tournament Dashboard',
+							content:
+								'Run your tournament smoothly with a real-time bracket view that players can follow on their phones.',
+							image: '/live-bracket-management.jpg',
+						},
+						{
+							heading: 'Running Your Tournament',
+							content: 'Manage matches and scores as they happen.',
+							steps: [
+								'Once registration closes, generate the brackets',
+								'Players are notified of their first match time and court',
+								'Enter scores as matches finish',
+								'Winners are automatically advanced to the next round',
+								'The public-facing bracket is updated in real-time',
+							],
+						},
+						{
+							heading: 'Handling Issues',
+							content:
+								'Easily manage common tournament day issues like forfeits or scoring errors.',
+							tips: [
+								'Mark players as "forfeit" to advance their opponent',
+								'Edit incorrect scores after they have been submitted',
+								'Send broadcast messages to all participants with updates',
+								'Pause the tournament in case of weather delays',
+							],
+						},
+					],
+					relatedArticles: [
+						'creating-a-tournament',
+						'tournament-formats',
+						'submitting-scores-to-dupr',
+					],
+				},
+			},
+			{
+				id: 'player-registration',
+				title: 'Player Registration',
+				slug: 'player-registration',
+				content: {
+					title: 'Player Registration',
+					description:
+						'Manage individual and team registrations for your tournament events.',
+					sections: [
+						{
+							heading: 'Registration Control',
+							content:
+								'Control who can register, manage waitlists for full divisions, and collect entry fees securely.',
+							image: '/tournament-registration-list.jpg',
+						},
+						{
+							heading: 'Managing Registrants',
+							content: 'Oversee the registration process from start to finish.',
+							steps: [
+								'Open registration to the public or send private invites',
+								'Players select their division and partner (if applicable)',
+								'Approve or deny registration requests',
+								'Close registration automatically on your set end date',
+								'View all registered players and their payment status',
+							],
+						},
+						{
+							heading: 'Waitlists and Refunds',
+							content: 'Handle full divisions and cancellations with ease.',
+							tips: [
+								'Enable automatic waitlists when a division fills up',
+								'Manually move players from the waitlist if a spot opens',
+								'Process refunds for players who withdraw before the deadline',
+								'Communicate your refund policy clearly in the tournament description',
+							],
+						},
+					],
+					relatedArticles: [
+						'creating-a-tournament',
+						'collecting-payments',
+						'refunds',
+					],
+				},
+			},
+		],
+	},
+	{
 		id: 'payments',
 		title: 'Payments',
 		slug: 'payments',
