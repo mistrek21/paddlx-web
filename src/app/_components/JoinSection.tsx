@@ -36,7 +36,7 @@ function IconCircle({
 
 export function JoinSection() {
 	return (
-		<section className="relative py-20 px-4 bg-gradient-to-b from-white to-[#f0fafd] overflow-hidden">
+		<section className="relative py-20 px-4 bg-gradient-to-b bg-white overflow-hidden">
 			{/* Decorative SVG Blobs for Brand Accent (Performance Safe) */}
 			<div className="absolute -left-32 -top-32 w-80 h-80 bg-teal-100 rounded-full opacity-20 pointer-events-none blur-[60px]"></div>
 			<div className="absolute right-0 bottom-0 w-40 h-40 bg-coral-100 rounded-full opacity-20 pointer-events-none blur-[40px]"></div>
@@ -75,7 +75,7 @@ export function JoinSection() {
 					{features.map((feature, idx) => (
 						<div
 							key={idx}
-							className="flex flex-col items-center text-center p-7 bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-lg hover:border-teal-400 transition duration-200"
+							className="flex flex-col items-center text-center p-7 bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-lg hover:border-teal-400 transition duration-200 cursor-pointer"
 						>
 							<IconCircle highlight={feature.title === '#1 Pickleball'}>
 								<feature.icon className="w-9 h-9 text-white" strokeWidth={2} />

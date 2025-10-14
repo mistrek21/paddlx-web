@@ -7,6 +7,7 @@ import './globals.css';
 import { Footer } from './_components/Footer';
 import { ClientLayoutWrapper } from './_components/ClientLayoutWrapper';
 import { Providers } from './providers';
+import { SupportContactModal } from './_components/modals/SupportContactModal';
 
 export const metadata: Metadata = {
 	title: 'v0 App',
@@ -25,6 +26,8 @@ export default function RootLayout({
 				<Suspense fallback={null}>
 					<Providers>
 						<ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+
+						<SupportContactModal />
 					</Providers>
 				</Suspense>
 				<Footer />

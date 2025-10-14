@@ -525,7 +525,7 @@ export function LocationsBrowserSection() {
 					</div>
 
 					{/* Stats Summary */}
-					<div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+					<div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto cursor-pointer">
 						<div className="bg-white rounded-xl p-6 text-center shadow-sm border border-gray-200">
 							<MapPin className="w-8 h-8 text-teal-500 mx-auto mb-3" />
 							<div className="text-3xl font-bold text-gray-900 mb-1">1,200+</div>

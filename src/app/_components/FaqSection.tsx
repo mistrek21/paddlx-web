@@ -59,17 +59,17 @@ export function FaqSection() {
 					</h2>
 				</div>
 
-				<div className="space-y-3">
+				<div className="space-y-3 ">
 					{faqs.map((faq, index) => (
 						<div
 							key={index}
-							className={`bg-white rounded-xl transition-all duration-300 ${
+							className={`bg-white rounded-xl transition-all duration-300 cursor-pointer ${
 								openIndex === index ? 'shadow-lg' : 'shadow-sm hover:shadow-md'
 							}`}
 						>
 							<button
 								onClick={() => toggleFaq(index)}
-								className="w-full flex items-center justify-between p-6 text-left group"
+								className="w-full flex items-center justify-between p-6 text-left group cursor-pointer"
 							>
 								<span className="text-lg font-semibold text-dark-slate pr-4 group-hover:text-teal transition-colors">
 									{faq.question}

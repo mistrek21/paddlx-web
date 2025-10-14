@@ -1,6 +1,6 @@
-// src/app/_components/LearnToPlaySection.tsx
+'use client';
 
-import { ArrowRight, Play } from 'lucide-react';
+import { ArrowRight, Play, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -8,91 +8,155 @@ const guideArticles = [
 	{
 		category: 'Guides',
 		title: 'How to play pickleball - 9 simple rules for beginners',
-		image: '/pickleball-court-play.jpg',
+		image: '/pickleball-court-with-players.jpg',
 	},
 	{
 		category: 'Guides',
 		title: 'What is my pickleball skill rating? Take this quiz to get rated',
-		image: '/pickleball-player-serve.jpg',
+		image: '/pickleball-player-serving.jpg',
 	},
 	{
 		category: 'Guides',
 		title: 'How to run a fixed-partner league on paddlx',
-		image: '/pickleball-doubles-play.jpg',
+		image: '/pickleball-doubles-team-playing.jpg',
 	},
 ];
 
 export function LearnToPlaySection() {
 	return (
-		<section className="py-16 px-4 bg-white">
+		<section className="py-20 px-4 bg-white">
 			<div className="max-w-7xl mx-auto">
-				<h2 className="text-3xl md:text-4xl font-bold text-teal mb-8">
-					Learn to play
-				</h2>
+				{/* Header with icon */}
+				<div className="flex items-center gap-3 mb-3">
+					<div
+						className="w-10 h-10 rounded-xl flex items-center justify-center"
+						style={{
+							background: 'linear-gradient(to bottom right, #4DB5C7, #2A9DB0)',
+						}}
+					>
+						<Sparkles className="w-5 h-5 text-white" />
+					</div>
+					<h2
+						className="text-4xl md:text-5xl font-bold"
+						style={{
+							background: 'linear-gradient(to right, #2A9DB0, #4DB5C7, #2A9DB0)',
+							WebkitBackgroundClip: 'text',
+							WebkitTextFillColor: 'transparent',
+							backgroundClip: 'text',
+						}}
+					>
+						Learn to play
+					</h2>
+				</div>
+				<p className="text-slate-600 text-lg mb-12 max-w-2xl">
+					Master the game with our expert guides and video tutorials
+				</p>
 
-				<div className="grid md:grid-cols-2 gap-8">
+				<div className="grid lg:grid-cols-2 gap-8">
 					{/* Left side - Guide articles */}
 					<div className="space-y-4">
 						{guideArticles.map((article, index) => (
 							<Link
 								key={index}
 								href="#"
-								className="flex gap-4 group hover:bg-light-gray p-3 rounded-lg transition-colors"
+								className="flex gap-4 group bg-white p-4 rounded-2xl transition-all duration-300 shadow-sm hover:shadow-lg border border-slate-100"
 							>
-								<div className="relative w-32 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+								<div className="relative w-36 h-28 flex-shrink-0 rounded-xl overflow-hidden">
 									<Image
 										src={article.image || '/placeholder.svg'}
 										alt={article.title}
 										fill
-										className="object-cover"
+										className="object-cover group-hover:scale-105 transition-transform duration-300"
 									/>
+									<div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
 								</div>
-								<div className="flex-1 space-y-2">
-									<span className="inline-block text-xs font-semibold text-teal">
+								<div className="flex-1 space-y-2 flex flex-col justify-center">
+									<span
+										className="inline-block text-xs font-bold px-3 py-1 rounded-full w-fit"
+										style={{ color: '#2A9DB0', backgroundColor: '#E6F7F9' }}
+									>
 										{article.category}
 									</span>
-									<h3 className="text-base font-bold text-dark-slate group-hover:text-teal transition-colors leading-tight">
+									<h3 className="text-base font-bold text-slate-800 transition-colors leading-snug group-hover:text-[#2A9DB0]">
 										{article.title}
 									</h3>
+									<div
+										className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+										style={{ color: '#2A9DB0' }}
+									>
+										<span className="text-sm font-semibold">Read more</span>
+										<ArrowRight className="w-4 h-4" />
+									</div>
 								</div>
 							</Link>
 						))}
 					</div>
 
 					{/* Right side - Featured video */}
-					<div className="space-y-4">
-						<div className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer">
+					<div className="space-y-5">
+						<div className="relative aspect-video rounded-2xl overflow-hidden group cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300">
 							<Image
-								src="/pickleball-clinic-video.jpg"
+								src="/pickleball-clinic-instructor-teaching-beginners.jpg"
 								alt="How to play pickleball video"
 								fill
 								className="object-cover"
 							/>
-							<div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-								<div className="w-16 h-16 bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-									<Play className="w-8 h-8 text-teal ml-1" fill="currentColor" />
+							<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent group-hover:from-black/70 transition-all duration-300" />
+							<div className="absolute inset-0 flex items-center justify-center">
+								<div className="w-20 h-20 bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-xl">
+									<Play
+										className="w-9 h-9 ml-1"
+										style={{ color: '#2A9DB0' }}
+										fill="currentColor"
+									/>
 								</div>
 							</div>
+							{/* Duration badge */}
+							<div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm text-white text-sm font-semibold px-3 py-1.5 rounded-lg">
+								12:45
+							</div>
 						</div>
-						<div className="space-y-3">
-							<div className="flex gap-2">
-								<span className="inline-block text-xs font-semibold text-teal bg-teal/10 px-3 py-1 rounded">
+						<div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+							<div className="flex gap-2 mb-4">
+								<span
+									className="inline-block text-xs font-bold px-3 py-1.5 rounded-full"
+									style={{ color: '#2A9DB0', backgroundColor: '#E6F7F9' }}
+								>
 									Guides
 								</span>
-								<span className="inline-block text-xs font-semibold text-teal bg-teal/10 px-3 py-1 rounded">
+								<span
+									className="inline-block text-xs font-bold px-3 py-1.5 rounded-full"
+									style={{ color: '#2A9DB0', backgroundColor: '#E6F7F9' }}
+								>
 									Learn
 								</span>
 							</div>
-							<h3 className="text-2xl font-bold text-dark-slate">
+							<h3 className="text-2xl font-bold text-slate-800 mb-4 leading-tight">
 								How To Play Pickleball: Free Virtual Clinic for Beginners
 							</h3>
 							<div className="flex flex-wrap gap-3">
-								<button className="bg-teal text-white px-6 py-2.5 rounded-md font-semibold hover:bg-teal/90 transition-colors">
+								<button
+									className="text-white px-8 py-3 rounded-xl font-bold transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+									style={{ backgroundColor: '#2A9DB0' }}
+									onMouseEnter={(e) =>
+										(e.currentTarget.style.backgroundColor = '#4DB5C7')
+									}
+									onMouseLeave={(e) =>
+										(e.currentTarget.style.backgroundColor = '#2A9DB0')
+									}
+								>
 									Watch Now
 								</button>
 								<Link
 									href="#"
-									className="flex items-center gap-2 text-teal font-semibold hover:gap-3 transition-all"
+									className="flex items-center gap-2 font-bold hover:gap-3 transition-all px-4 py-3 rounded-xl"
+									style={{ color: '#2A9DB0' }}
+									onMouseEnter={(e) =>
+										(e.currentTarget.style.backgroundColor = '#E6F7F9')
+									}
+									onMouseLeave={(e) =>
+										(e.currentTarget.style.backgroundColor = 'transparent')
+									}
 								>
 									Or read our guides
 									<ArrowRight className="w-4 h-4" />

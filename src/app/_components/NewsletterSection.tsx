@@ -175,7 +175,7 @@ export default function NewsletterSection() {
 							</div>
 
 							{/* Features */}
-							<div className="grid grid-cols-3 gap-4">
+							<div className="grid grid-cols-3 gap-4 cursor-pointer">
 								{[
 									{ icon: '🎯', label: 'Pro Tips' },
 									{ icon: '⚙️', label: 'Gear Reviews' },
@@ -200,13 +200,13 @@ export default function NewsletterSection() {
 								</p>
 								<div className="flex items-center gap-3">
 									<div className="flex -space-x-3">
-										{[...Array(4)].map((_, i) => (
-											<div
-												key={i}
-												className="w-10 h-10 rounded-full bg-gradient-to-br from-[#4DB5C7] to-[#2A9DB0] border-2 border-white flex items-center justify-center text-white text-xs font-bold shadow-md"
-											>
-												{String.fromCharCode(65 + i)}
-											</div>
+										{[4, 2, 3, 1].map((num) => (
+											<img
+												key={num}
+												src={`/user-avatar-${num}.jpg`}
+												alt={`Subscriber ${num}`}
+												className="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover"
+											/>
 										))}
 									</div>
 									<div>
@@ -289,26 +289,27 @@ export default function NewsletterSection() {
 												required
 												disabled={isSubmitting}
 											/>
-											<span className="text-xs text-[#64748B] leading-relaxed flex-1 font-medium">
-												I agree to receive weekly pickleball strategies and tips.
-												Unsubscribe anytime. Read our{' '}
-												<button
-													type="button"
-													onClick={() => setShowPrivacyModal(true)}
-													className="text-[#2A9DB0] hover:text-[#1A8DA0] font-bold underline underline-offset-2 transition-colors cursor-pointer bg-transparent p-0 m-0 border-none"
-												>
-													Privacy Policy
-												</button>{' '}
-												and{' '}
-												<button
-													type="button"
-													onClick={() => setShowTermsModal(true)}
-													className="text-[#2A9DB0] hover:text-[#1A8DA0] font-bold underline underline-offset-2 transition-colors cursor-pointer bg-transparent p-0 m-0 border-none"
-												>
-													Terms
-												</button>
-												.
-											</span>
+											<div className="pt-4 border-t border-[#E6F7F9]">
+												<p className="text-xs font-semibold text-[#64748B] uppercase tracking-wider mb-3">
+													Trusted by
+												</p>
+												<div className="flex items-center gap-3">
+													<div className="flex -space-x-3">
+														{[1, 2, 3, 4].map((num) => (
+															<img
+																key={num}
+																src={`/user-avatar-${num}.jpg`}
+																alt={`Subscriber ${num}`}
+																className="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover"
+															/>
+														))}
+													</div>
+													<div>
+														<p className="text-sm font-bold text-[#0F172A]">5,200+</p>
+														<p className="text-xs text-[#64748B]">active subscribers</p>
+													</div>
+												</div>
+											</div>
 										</label>
 									</div>
 
