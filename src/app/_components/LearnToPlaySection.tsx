@@ -3,6 +3,8 @@
 import { ArrowRight, Play, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { VideoPlayerModal } from '../videos/_components/VideoPlayerModal';
+import { useState } from 'react';
 
 // Helper function to generate URL-friendly slugs for guides
 const generateSlug = (title: string): string => {
@@ -38,6 +40,8 @@ const guideArticles = [
 ];
 
 export function LearnToPlaySection() {
+	const [isOpen, setIsOpen] = useState(false);
+
 	return (
 		<section className="py-20 px-4 bg-white">
 			<div className="max-w-7xl mx-auto">
@@ -121,6 +125,7 @@ export function LearnToPlaySection() {
 							<div className="absolute inset-0 flex items-center justify-center">
 								<div className="w-20 h-20 bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-xl">
 									<Play
+										onClick={() => setIsOpen(true)}
 										className="w-9 h-9 ml-1"
 										style={{ color: '#2A9DB0' }}
 										fill="currentColor"
@@ -151,7 +156,8 @@ export function LearnToPlaySection() {
 								How To Play Pickleball: Free Virtual Clinic for Beginners
 							</h3>
 							<div className="flex flex-wrap gap-3">
-								<button
+								<Link
+									href="/videos?watch=L_h_S12K_sQ"
 									className="text-white px-8 py-3 rounded-xl font-bold transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
 									style={{ backgroundColor: '#2A9DB0' }}
 									onMouseEnter={(e) =>
@@ -162,7 +168,7 @@ export function LearnToPlaySection() {
 									}
 								>
 									Watch Now
-								</button>
+								</Link>
 								<Link
 									// UPDATED: href now points to the main "guides" section on the homepage
 									href="/guides"
@@ -183,6 +189,13 @@ export function LearnToPlaySection() {
 					</div>
 				</div>
 			</div>
+
+			<VideoPlayerModal
+				title="How To Play Pickleball: Free Virtual Clinic for Beginners"
+				youtubeId="L_h_S12K_sQ"
+				isOpen={isOpen}
+				onClose={() => setIsOpen(false)}
+			/>
 		</section>
 	);
 }
