@@ -105,7 +105,8 @@ export function RoundRobinSection() {
 
 				{/* Previews */}
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-					<div
+					<Link
+						href="/help/round-robin-overview"
 						className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border cursor-pointer group hover:-translate-y-2"
 						style={{ borderColor: '#B8DCE8' }}
 					>
@@ -128,8 +129,8 @@ export function RoundRobinSection() {
 						<p className="text-slate-600 text-base mb-5 leading-relaxed">
 							Use the simulator to understand how each round robin format works.
 						</p>
-						<Link
-							href="/preview"
+						<button
+							// href="/help/round-robin-overview"
 							className="font-bold text-base inline-flex items-center gap-2 group-hover:gap-3 transition-all"
 							style={{ color: '#2A9DB0' }}
 							onMouseEnter={(e) => (e.currentTarget.style.color = '#4DB5C7')}
@@ -137,10 +138,11 @@ export function RoundRobinSection() {
 						>
 							Try it now
 							<ExternalLink className="w-5 h-5" />
-						</Link>
-					</div>
+						</button>
+					</Link>
 
-					<div
+					<Link
+						href="/create"
 						className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border cursor-pointer group hover:-translate-y-2"
 						style={{ borderColor: '#7BC9D6' }}
 					>
@@ -163,8 +165,7 @@ export function RoundRobinSection() {
 						<p className="text-slate-600 text-base mb-5 leading-relaxed">
 							Generate matchups, collect scores and view live standings!
 						</p>
-						<Link
-							href="/create"
+						<button
 							className="font-bold text-base inline-flex items-center gap-2 group-hover:gap-3 transition-all"
 							style={{ color: '#2A9DB0' }}
 							onMouseEnter={(e) => (e.currentTarget.style.color = '#4DB5C7')}
@@ -172,8 +173,8 @@ export function RoundRobinSection() {
 						>
 							Learn more
 							<ExternalLink className="w-5 h-5" />
-						</Link>
-					</div>
+						</button>
+					</Link>
 				</div>
 
 				{/* Video */}

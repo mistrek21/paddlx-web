@@ -4,6 +4,21 @@ import { ArrowRight, Play, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+// Helper function to generate URL-friendly slugs for guides
+const generateSlug = (title: string): string => {
+	return title
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/(^-|-$)/g, '');
+};
+
+// Simple function to build the correct guide URL
+const getGuideUrl = (category: string, title: string): string => {
+	const categorySlug = generateSlug(category);
+	const titleSlug = generateSlug(title);
+	return `/guides/${categorySlug}/${titleSlug}`;
+};
+
 const guideArticles = [
 	{
 		category: 'Guides',
@@ -58,7 +73,8 @@ export function LearnToPlaySection() {
 						{guideArticles.map((article, index) => (
 							<Link
 								key={index}
-								href="#"
+								// UPDATED: href now points to the correct guide URL
+								href={getGuideUrl(article.category, article.title)}
 								className="flex gap-4 group bg-white p-4 rounded-2xl transition-all duration-300 shadow-sm hover:shadow-lg border border-slate-100"
 							>
 								<div className="relative w-36 h-28 flex-shrink-0 rounded-xl overflow-hidden">
@@ -148,7 +164,8 @@ export function LearnToPlaySection() {
 									Watch Now
 								</button>
 								<Link
-									href="#"
+									// UPDATED: href now points to the main "guides" section on the homepage
+									href="/guides"
 									className="flex items-center gap-2 font-bold hover:gap-3 transition-all px-4 py-3 rounded-xl"
 									style={{ color: '#2A9DB0' }}
 									onMouseEnter={(e) =>

@@ -24,26 +24,30 @@ const tabs = [
 	{ id: 'browse', label: 'Browse all content' },
 ];
 
+// Data for "Trending" tab -> "Gear we love" section. This correctly links to /pickleball-gear/...
 const gearArticles = [
 	{
 		category: 'Pickleball Gear',
 		title: 'Best pickleball paddles 2025',
+		slug: 'paddles',
 		image: '/professional-pickleball-paddle-close-up-on-court.jpg',
-		readTime: '8 min read',
+		readTime: '11 min read',
 		excerpt:
 			'Comprehensive review of the top pickleball paddles for 2025, including power, control, and all-court options.',
 	},
 	{
-		category: 'Blog',
-		title: 'Watch this space - adidas is making waves in pickleball',
+		category: 'Pickleball Gear',
+		title: 'Top pickleball shoes for stability & comfort',
+		slug: 'shoes',
 		image: '/adidas-pickleball-shoes-and-equipment.jpg',
-		readTime: '5 min read',
+		readTime: '8 min read',
 		excerpt:
-			'Adidas enters the pickleball market with innovative gear and apparel designed for serious players.',
+			'Our expert picks for the best shoes that offer the stability and grip needed for intense pickleball matches.',
 	},
 	{
 		category: 'Pickleball Gear',
 		title: 'Best pickleball balls in 2025 - top 5 compared',
+		slug: 'balls',
 		image: '/colorful-pickleball-balls-arranged-on-court.jpg',
 		readTime: '6 min read',
 		excerpt:
@@ -51,6 +55,7 @@ const gearArticles = [
 	},
 ];
 
+// Data for other tabs. These objects are self-contained for the tabbed view.
 const fixedPartnerContent = {
 	featured: {
 		image: '/pickleball-doubles-team-celebrating-on-court.jpg',
@@ -101,7 +106,7 @@ const runLeagueContent = {
 	},
 	articles: [
 		{
-			category: 'Setup',
+			category: 'Getting Started',
 			title: 'Creating your first league on paddlx',
 			image: '/laptop-showing-league-management-dashboard.jpg',
 			readTime: '6 min read',
@@ -165,13 +170,17 @@ const scaleGroupContent = {
 	],
 };
 
+// FINAL CORRECTED VERSION of browseAllContent.
+// The problematic "Best Pickleball Paddles" article has been replaced with the new guide.
+// There is no more special 'slug' property needed here.
 const browseAllContent = [
 	{
 		category: 'Pickleball Gear',
-		title: 'Best pickleball paddles 2025',
+		title: 'Best Pickleball Paddles in 2025',
 		image: '/professional-pickleball-paddle-close-up-on-court.jpg',
 		readTime: '8 min read',
 		excerpt: 'Comprehensive review of the top pickleball paddles for 2025.',
+		href: '/pickleball-gear/paddles', // This is the exact URL you want.
 	},
 	{
 		category: 'League Management',
@@ -215,14 +224,13 @@ const browseAllContent = [
 export function GuidesReviewsSection() {
 	const [activeTab, setActiveTab] = useState('trending');
 
-	// Generate article URL with proper slug
-	const getArticleUrl = (category: string, title: string): string => {
+	// This function is for standard guides ONLY and now works for everything in the "Browse All" tab.
+	const getGuideUrl = (category: string, title: string): string => {
 		const categorySlug = generateSlug(category);
 		const titleSlug = generateSlug(title);
 		return `/guides/${categorySlug}/${titleSlug}`;
 	};
 
-	// Get category page URL
 	const getCategoryUrl = (category: string): string => {
 		return `/guides/${generateSlug(category)}`;
 	};
@@ -261,7 +269,7 @@ export function GuidesReviewsSection() {
 						Take the quiz
 					</Link>
 					<Link
-						href="/guides/pickleball-gear"
+						href="/pickleball-gear/paddles"
 						className="flex items-center gap-2 text-ocean font-semibold hover:gap-3 transition-all px-4"
 					>
 						More Gear Reviews
@@ -275,7 +283,7 @@ export function GuidesReviewsSection() {
 				<div className="flex items-center justify-between">
 					<h3 className="text-3xl font-bold text-charcoal">Gear we love</h3>
 					<Link
-						href="/guides/pickleball-gear"
+						href="/pickleball-gear/paddles"
 						className="text-ocean hover:text-ocean-dark font-medium text-sm transition-colors"
 					>
 						View all
@@ -285,7 +293,7 @@ export function GuidesReviewsSection() {
 					{gearArticles.map((article, index) => (
 						<article key={index}>
 							<Link
-								href={getArticleUrl(article.category, article.title)}
+								href={`/pickleball-gear/${article.slug}`}
 								className="flex gap-5 group hover:bg-sand/30 p-4 rounded-2xl transition-all"
 							>
 								<div className="relative w-32 h-32 flex-shrink-0 rounded-xl overflow-hidden">
@@ -322,12 +330,12 @@ export function GuidesReviewsSection() {
 		</div>
 	);
 
-	const renderGuideContent = (content: typeof fixedPartnerContent) => (
+	const renderGuideContent = (content: any) => (
 		<div className="grid lg:grid-cols-2 gap-12">
 			{/* Featured Guide */}
 			<article className="space-y-6">
 				<Link
-					href={getArticleUrl(content.featured.category, content.featured.title)}
+					href={getGuideUrl(content.featured.category, content.featured.title)}
 					className="block relative aspect-[4/3] rounded-2xl overflow-hidden group"
 				>
 					<Image
@@ -357,7 +365,7 @@ export function GuidesReviewsSection() {
 					</div>
 				</Link>
 				<Link
-					href={getArticleUrl(content.featured.category, content.featured.title)}
+					href={getGuideUrl(content.featured.category, content.featured.title)}
 					className="block w-full bg-sunset hover:bg-sunset-light text-white px-8 py-4 rounded-full font-bold transition-all hover:shadow-lg hover:shadow-sunset/30 text-center"
 				>
 					{content.featured.cta}
@@ -376,10 +384,10 @@ export function GuidesReviewsSection() {
 					</Link>
 				</div>
 				<div className="space-y-6">
-					{content.articles.map((article, index) => (
+					{content.articles.map((article: any, index: number) => (
 						<article key={index}>
 							<Link
-								href={getArticleUrl(article.category, article.title)}
+								href={getGuideUrl(article.category, article.title)}
 								className="flex gap-5 group hover:bg-cream/50 p-4 rounded-2xl transition-all"
 							>
 								<div className="relative w-32 h-32 flex-shrink-0 rounded-xl overflow-hidden">
@@ -418,10 +426,18 @@ export function GuidesReviewsSection() {
 
 	const renderBrowseContent = () => (
 		<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-			{browseAllContent.map((article, index) => (
+			{browseAllContent.map((article: any, index: number) => (
 				<article key={index}>
+					{/* ===== FINAL, DEFINITIVE FIX #2: THE LOGIC ===== */}
+					{/* This Link now checks for the 'href' property first. */}
 					<Link
-						href={getArticleUrl(article.category, article.title)}
+						href={
+							// If the article object has a specific 'href', use it directly.
+							article.href
+								? article.href
+								: // Otherwise, build the standard /guides/... URL.
+								  getGuideUrl(article.category, article.title)
+						}
 						className="group space-y-4 hover:scale-[1.02] transition-transform duration-300 block"
 					>
 						<div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
