@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
@@ -27,10 +29,14 @@ import {
 	Award,
 	Target,
 	Grid3x3,
+	ArrowRight,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useMobileAppModal } from '@/src/hooks/useMobileAppModal'; // 1. Import the hook
 
 const Navigation = ({ offset = 0, compact = false }) => {
+	const { openModal, ModalComponent } = useMobileAppModal(); // 2. Instantiate the hook
+
 	const playItems = [
 		{
 			icon: Calendar,
@@ -268,33 +274,41 @@ const Navigation = ({ offset = 0, compact = false }) => {
 				</div>
 
 				<div className="border-t-2 border-gray-200 pt-8">
-					<div className="flex items-center gap-2 mb-6">
-						<div className="h-8 w-1 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full" />
-						<h4 className="text-sm font-black text-gray-700 uppercase tracking-wider">
-							Keep Learning
-						</h4>
+					<div className="flex items-center gap-2 mb-6 justify-between">
+						<div className="flex items-center gap-2">
+							<div className="h-8 w-1 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full" />
+							<h4 className="text-sm font-black text-gray-700 uppercase tracking-wider">
+								Keep Learning
+							</h4>
+						</div>
+						<Link href="/guides" className="flex items-center gap-2">
+							<p className="text-sm font-black text-gray-700 uppercase tracking-wider">
+								See All Guides
+							</p>
+							<ArrowRight className="w-4 h-4 text-gray-600" />
+						</Link>
 					</div>
-					<div className="grid grid-cols-2 gap-6">
-						{learnItems.guides.map((guide, index) => (
-							<a
-								key={index}
-								href={guide.href}
-								className="group flex items-start gap-4 p-6 rounded-2xl bg-gradient-to-br from-gray-50 to-white hover:from-purple-50 hover:to-pink-50 transition-all duration-300 border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg"
-							>
-								<div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center group-hover:from-purple-200 group-hover:to-pink-200 transition-all shadow-md">
-									<guide.icon className="w-6 h-6 text-gray-600 group-hover:text-purple-700" />
-								</div>
-								<div className="flex-1 min-w-0">
-									<span className="inline-block text-xs font-black text-purple-600 uppercase tracking-wider mb-2">
-										{guide.tag}
-									</span>
-									<p className="text-sm font-bold text-gray-900 group-hover:text-purple-700 transition-colors leading-snug">
-										{guide.title}
-									</p>
-								</div>
-							</a>
-						))}
-					</div>
+				</div>
+				<div className="grid grid-cols-2 gap-6">
+					{learnItems.guides.map((guide, index) => (
+						<a
+							key={index}
+							href={guide.href}
+							className="group flex items-start gap-4 p-6 rounded-2xl bg-gradient-to-br from-gray-50 to-white hover:from-purple-50 hover:to-pink-50 transition-all duration-300 border-2 border-gray-200 hover:border-purple-300 hover:shadow-lg"
+						>
+							<div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center group-hover:from-purple-200 group-hover:to-pink-200 transition-all shadow-md">
+								<guide.icon className="w-6 h-6 text-gray-600 group-hover:text-purple-700" />
+							</div>
+							<div className="flex-1 min-w-0">
+								<span className="inline-block text-xs font-black text-purple-600 uppercase tracking-wider mb-2">
+									{guide.tag}
+								</span>
+								<p className="text-sm font-bold text-gray-900 group-hover:text-purple-700 transition-colors leading-snug">
+									{guide.title}
+								</p>
+							</div>
+						</a>
+					))}
 				</div>
 			</div>
 		</div>
@@ -380,33 +394,36 @@ const Navigation = ({ offset = 0, compact = false }) => {
 	);
 
 	return (
-		<nav
-			style={{
-				top: offset,
-				position: 'fixed',
-				width: '100%',
-				left: 0,
-			}}
-			className={`transition-all duration-300 z-[9998] ${
-				compact
-					? 'bg-white border-b shadow-sm py-2'
-					: 'bg-primary-ultra-soft py-4 shadow-xl'
-			}`}
-		>
-			<div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-				<div className="flex items-center gap-12">
-					{/* Logo */}
-					<Link href="/" className="flex items-center gap-12">
-						<div className="flex items-center gap-2">
-							<Image
-								src="/paddlx-logo-no-text.png"
-								alt="paddlX Logo"
-								width={44}
-								height={44}
-								className="h-11 w-11 object-contain rounded-full shadow-lg"
-							/>
-							<span
-								className="
+		<>
+			{/* 4. Render the modal component */}
+			<ModalComponent />
+			<nav
+				style={{
+					top: offset,
+					position: 'fixed',
+					width: '100%',
+					left: 0,
+				}}
+				className={`transition-all duration-300 z-[9998] ${
+					compact
+						? 'bg-white border-b shadow-sm py-2'
+						: 'bg-primary-ultra-soft py-4 shadow-xl'
+				}`}
+			>
+				<div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+					<div className="flex items-center gap-12">
+						{/* Logo */}
+						<Link href="/" className="flex items-center gap-12">
+							<div className="flex items-center gap-2">
+								<Image
+									src="/paddlx-logo-no-text.png"
+									alt="paddlX Logo"
+									width={44}
+									height={44}
+									className="h-11 w-11 object-contain rounded-full shadow-lg"
+								/>
+								<span
+									className="
                 font-bold
                 text-[1.35rem] sm:text-[1.65rem]
                 tracking-tighter
@@ -415,155 +432,162 @@ const Navigation = ({ offset = 0, compact = false }) => {
                 leading-none
                 font-spacegrotesk
             "
-								style={{
-									fontFamily: "'Space Grotesk', 'Inter', 'Segoe UI', Arial, sans-serif",
-								}}
-							>
-								paddl
-								<span
-									className="
+									style={{
+										fontFamily: "'Space Grotesk', 'Inter', 'Segoe UI', Arial, sans-serif",
+									}}
+								>
+									paddl
+									<span
+										className="
                     text-teal-500 ml-0.5 font-extrabold
                     text-[1.5rem] sm:text-[1.75rem]
                     drop-shadow-[0_1px_2px_rgba(0,188,212,0.15)]
                     inline-block -rotate-2 scale-105
                     align-middle
                 "
-								>
-									X
+									>
+										X
+									</span>
 								</span>
-							</span>
-						</div>
-					</Link>
+							</div>
+						</Link>
 
-					{/* Navigation Menu */}
-					<NavigationMenu className="hidden lg:block" viewport={false}>
-						<NavigationMenuList className="gap-2">
-							<NavigationMenuItem>
-								<NavigationMenuTrigger
-									className={`text-sm font-bold px-4 ${
-										compact
-											? 'text-gray-900 hover:text-cyan-600'
-											: 'text-gray-900 hover:text-cyan-400'
-									}`}
-								>
-									Play
-								</NavigationMenuTrigger>
-								<NavigationMenuContent
-									className="
+						{/* Navigation Menu */}
+						<NavigationMenu className="hidden lg:block" viewport={false}>
+							<NavigationMenuList className="gap-2">
+								<NavigationMenuItem>
+									<NavigationMenuTrigger
+										className={`text-sm font-bold px-4 ${
+											compact
+												? 'text-gray-900 hover:text-cyan-600'
+												: 'text-gray-900 hover:text-cyan-400'
+										}`}
+									>
+										Play
+									</NavigationMenuTrigger>
+									<NavigationMenuContent
+										className="
                                         !absolute
                                         !left-0
                                         !w-[110vw] 
                                         !p-0
                                         !-ml-[25vw] 
                                     "
-								>
-									{renderStandardMenu(playItems)}
-								</NavigationMenuContent>
-							</NavigationMenuItem>
+									>
+										{renderStandardMenu(playItems)}
+									</NavigationMenuContent>
+								</NavigationMenuItem>
 
-							<NavigationMenuItem>
-								<NavigationMenuTrigger
-									className={`text-sm font-bold px-4 ${
-										compact
-											? 'text-gray-900 hover:text-cyan-600'
-											: 'text-gray-900 hover:text-cyan-400'
-									}`}
-								>
-									Organize
-								</NavigationMenuTrigger>
-								<NavigationMenuContent
-									className="
+								<NavigationMenuItem>
+									<NavigationMenuTrigger
+										className={`text-sm font-bold px-4 ${
+											compact
+												? 'text-gray-900 hover:text-cyan-600'
+												: 'text-gray-900 hover:text-cyan-400'
+										}`}
+									>
+										Organize
+									</NavigationMenuTrigger>
+									<NavigationMenuContent
+										className="
                                         !absolute
                                         !left-0
                                         !w-[110vw]
                                         !p-0
                                         !-ml-[30vw]
                                     "
-								>
-									{renderStandardMenu(organizeItems)}
-								</NavigationMenuContent>
-							</NavigationMenuItem>
+									>
+										{renderStandardMenu(organizeItems)}
+									</NavigationMenuContent>
+								</NavigationMenuItem>
 
-							<NavigationMenuItem>
-								<NavigationMenuTrigger
-									className={`text-sm font-bold px-4 ${
-										compact
-											? 'text-gray-900 hover:text-cyan-600'
-											: 'text-gray-900 hover:text-cyan-400'
-									}`}
-								>
-									Earn
-								</NavigationMenuTrigger>
-								<NavigationMenuContent
-									className=" !absolute
+								<NavigationMenuItem>
+									<NavigationMenuTrigger
+										className={`text-sm font-bold px-4 ${
+											compact
+												? 'text-gray-900 hover:text-cyan-600'
+												: 'text-gray-900 hover:text-cyan-400'
+										}`}
+									>
+										Earn
+									</NavigationMenuTrigger>
+									<NavigationMenuContent
+										className=" !absolute
                                         !left-0
                                         !w-[110vw] 
                                         !p-0 !-ml-[38vw] "
-								>
-									{renderStandardMenu(earnItems)}
-								</NavigationMenuContent>
-							</NavigationMenuItem>
+									>
+										{renderStandardMenu(earnItems)}
+									</NavigationMenuContent>
+								</NavigationMenuItem>
 
-							<NavigationMenuItem>
-								<NavigationMenuTrigger
-									className={`text-sm font-bold px-4 ${
-										compact
-											? 'text-gray-900 hover:text-cyan-600'
-											: 'text-gray-900 hover:text-cyan-400'
-									}`}
-								>
-									Learn
-								</NavigationMenuTrigger>
-								<NavigationMenuContent
-									className=" !absolute
+								<NavigationMenuItem>
+									<NavigationMenuTrigger
+										className={`text-sm font-bold px-4 ${
+											compact
+												? 'text-gray-900 hover:text-cyan-600'
+												: 'text-gray-900 hover:text-cyan-400'
+										}`}
+									>
+										Learn
+									</NavigationMenuTrigger>
+									<NavigationMenuContent
+										className=" !absolute
                                         !left-0
                                         !w-[110vw] 
                                         !p-0 !-ml-[43vw]"
-								>
-									{renderLearnMenu()}
-								</NavigationMenuContent>
-							</NavigationMenuItem>
+									>
+										{renderLearnMenu()}
+									</NavigationMenuContent>
+								</NavigationMenuItem>
 
-							<NavigationMenuItem>
-								<NavigationMenuTrigger
-									className={`text-sm font-bold px-4 ${
-										compact
-											? 'text-gray-900 hover:text-cyan-600'
-											: 'text-gray-900 hover:text-cyan-400'
-									}`}
-								>
-									Gear
-								</NavigationMenuTrigger>
-								<NavigationMenuContent
-									className=" !absolute
+								<NavigationMenuItem>
+									<NavigationMenuTrigger
+										className={`text-sm font-bold px-4 ${
+											compact
+												? 'text-gray-900 hover:text-cyan-600'
+												: 'text-gray-900 hover:text-cyan-400'
+										}`}
+									>
+										Gear
+									</NavigationMenuTrigger>
+									<NavigationMenuContent
+										className=" !absolute
                                         !left-0
                                         !w-[110vw] 
                                         !p-0 !-ml-[50vw]"
-								>
-									{renderGearMenu()}
-								</NavigationMenuContent>
-							</NavigationMenuItem>
-						</NavigationMenuList>
-					</NavigationMenu>
-				</div>
+									>
+										{renderGearMenu()}
+									</NavigationMenuContent>
+								</NavigationMenuItem>
+							</NavigationMenuList>
+						</NavigationMenu>
+					</div>
 
-				{/* Auth Buttons */}
-				<div className="flex items-center gap-4">
-					<button
-						className={`text-sm font-bold transition-colors ${
-							compact
-								? 'text-gray-900 hover:text-cyan-600'
-								: 'text-gray-900 hover:text-cyan-400'
-						}`}
-					>
-						Log in
-					</button>
-					<Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transition-all">
-						Join for free
-					</Button>
+					{/* Auth Buttons */}
+					<div className="flex items-center gap-4">
+						{/* 3. Add onClick handler */}
+						<button
+							onClick={() => openModal('log in')}
+							className={`text-sm font-bold transition-colors cursor-pointer ${
+								compact
+									? 'text-gray-900 hover:text-cyan-600'
+									: 'text-gray-900 hover:text-cyan-400'
+							}`}
+						>
+							Log in
+						</button>
+						{/* 3. Add onClick handler */}
+						<Button
+							onClick={() => openModal('join for free')}
+							className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transition-all cursor-pointer"
+						>
+							Join for free
+						</Button>
+					</div>
 				</div>
-			</div>
-		</nav>
+			</nav>
+		</>
 	);
 };
 

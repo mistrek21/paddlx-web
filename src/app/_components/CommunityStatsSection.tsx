@@ -3,6 +3,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { useMobileAppModal } from '@/src/hooks/useMobileAppModal';
 import { useEffect, useRef, useState } from 'react';
 
 const stats = [
@@ -121,28 +122,34 @@ function AnimatedStat({
 }
 
 export function CommunityStatsSection() {
+	const { openModal, ModalComponent } = useMobileAppModal(); // 2. Instantiate the hook
+
 	return (
-		<section className="bg-white py-20 px-4">
-			<div className="max-w-7xl mx-auto">
-				<div className="flex flex-col lg:flex-row items-center justify-between gap-8 mb-16">
-					<h2 className="text-3xl lg:text-5xl font-black text-dark-slate text-center lg:text-left max-w-2xl leading-tight">
-						Join the fastest growing pickleball community
-					</h2>
+		<>
+			<ModalComponent /> {/* 4. Render the modal component */}
+			<section className="bg-white py-20 px-4">
+				<div className="max-w-7xl mx-auto">
+					<div className="flex flex-col lg:flex-row items-center justify-between gap-8 mb-16">
+						<h2 className="text-3xl lg:text-5xl font-black text-dark-slate text-center lg:text-left max-w-2xl leading-tight">
+							Join the fastest growing pickleball community
+						</h2>
 
-					<Button
-						size="lg"
-						className="bg-coral hover:bg-coral/90 text-white px-8 py-6 text-base rounded-full shadow-md hover:shadow-lg transition-all duration-200 font-semibold whitespace-nowrap"
-					>
-						Join for free
-					</Button>
-				</div>
+						<Button
+							size="lg"
+							className="bg-coral hover:bg-coral/90 text-white px-8 py-6 text-base rounded-full shadow-md hover:shadow-lg transition-all duration-200 font-semibold whitespace-nowrap"
+							onClick={() => openModal('join for free')} // 3. Add onClick handler
+						>
+							Join for free
+						</Button>
+					</div>
 
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
-					{stats.map((stat, index) => (
-						<AnimatedStat key={index} stat={stat} index={index} />
-					))}
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
+						{stats.map((stat, index) => (
+							<AnimatedStat key={index} stat={stat} index={index} />
+						))}
+					</div>
 				</div>
-			</div>
-		</section>
+			</section>
+		</>
 	);
 }
