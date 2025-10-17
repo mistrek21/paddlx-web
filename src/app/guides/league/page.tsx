@@ -1,7 +1,5 @@
 // src/app/guides/league/page.tsx
 
-// src/app/guides/league/page.tsx
-
 import { Metadata } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -14,88 +12,133 @@ import {
 	Trophy,
 	CheckCircle,
 	ArrowRight,
+	ChevronDown,
+	Zap,
+	Globe,
+	UserPlus,
+	RefreshCw,
+	Clock,
+	ShieldCheck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import FAQSection, { FAQ } from '../../_components/faq/FaqSection';
+import DynamicCtaSection from '../../_components/cta/DynamicCtaSection';
 
-// SEO Metadata
+const faqQuestions: FAQ[] = [
+	{
+		id: 1,
+		question: 'Can I change format mid-season?',
+		answer:
+			'Yes—use the "Edit Event" feature to switch formats before generating new schedules. This gives you the flexibility to adapt your league structure as needed without starting from scratch.',
+		category: 'League Management',
+	},
+	{
+		id: 2,
+		question: 'How do substitutions work?',
+		answer:
+			'Activate sub list on registration page; subs get auto-notified and confirmed. The system automatically manages the substitute roster and sends notifications when substitutes are needed.',
+		category: 'Players',
+	},
+	{
+		id: 3,
+		question: 'Is there a player/team limit?',
+		answer:
+			'Leagues support 4 to 64 teams or 10 to 200 individual entries. This range accommodates everything from small recreational leagues to large competitive tournaments.',
+		category: 'League Management',
+	},
+	{
+		id: 4,
+		question: 'Can I collect league fees?',
+		answer:
+			'Integrate paddlX Payments to accept entry fees at signup. Process payments securely and automatically track who has paid, with automated reminders for outstanding fees.',
+		category: 'Payments',
+	},
+	{
+		id: 5,
+		question: 'How do I embed standings?',
+		answer:
+			'Use the "Embed" option on the standings widget to add to your website. Simply copy the provided code snippet and paste it into your site—no technical expertise required.',
+		category: 'Integration',
+	},
+];
+
 export const metadata: Metadata = {
-	title: 'How to Run a Pickleball League: The Ultimate Guide | paddlX',
+	title:
+		'How to Run a Pickleball League: Formats, Automation & Best Practices | paddlX',
 	description:
-		'The complete guide to running a successful pickleball league. Learn about different formats and use our free software to automate scheduling, scoring, and standings.',
+		'The ultimate guide to running pickleball leagues—fixed-partner, round-robin, ladder, and more. Learn setup, registration, scheduling, scoring, playoffs, and pro tips with our free software.',
 	keywords: [
-		'how to run a pickleball league',
-		'pickleball league management software',
+		'run pickleball league',
 		'pickleball league formats',
-		'pickleball ladder league',
-		'pickleball round robin league',
-		'pickleball team league',
-		'pickleball league scheduler',
+		'league management software',
+		'pickleball round robin',
+		'ladder pickleball league',
+		'automated league scheduler',
+		'pickleball playoffs',
+		'league best practices',
+		'pickleball standings',
 	],
 	openGraph: {
-		title: 'The Ultimate Guide to Running a Pickleball League | paddlX',
+		title: 'Complete Pickleball League Guide | paddlX',
 		description:
-			'From choosing a format to managing live standings, this guide covers everything you need to run a successful pickleball league.',
+			'From choosing formats to live standings and playoffs, this guide shows you how to automate your league with paddlX.',
 		url: 'https://www.paddlx.com/guides/league',
 		type: 'article',
 		images: [
 			{
-				url: '/og-image-guide-league.jpg', // Replace with a general league image
+				url: '/og-image-guide-league.jpg',
 				width: 1200,
 				height: 630,
-				alt: 'Players competing in an organized pickleball league.',
+				alt: 'Organized pickleball league on paddlX',
 			},
 		],
 	},
 };
 
-// JSON-LD Structured Data
 const jsonLd = {
 	'@context': 'https://schema.org',
 	'@type': 'HowTo',
 	'name': 'How to Run a Pickleball League on paddlX',
 	'description':
-		'A step-by-step guide for organizers on setting up and managing any type of pickleball league using automated software.',
-	'tool': [
-		{
-			'@type': 'HowToTool',
-			'name': 'A free paddlX account',
-		},
-	],
+		'Step-by-step guide for setting up and managing any pickleball league format with automated scheduling, scoring, and standings.',
+	'totalTime': 'PT30M',
+	'tool': [{ '@type': 'HowToTool', 'name': 'paddlX account (free)' }],
 	'step': [
 		{
 			'@type': 'HowToStep',
-			'name': 'Step 1: Choose Your League Format',
-			'text':
-				'Decide on the best format for your players, such as Fixed-Partner, Rotating-Partner (Round Robin), or a Ladder League.',
-			'url': 'https://www.paddlx.com/guides/league#step1',
+			'name': 'Choose Format',
+			'text': 'Select fixed-partner, round-robin, ladder, or custom.',
+			'url': '#choose-format',
 		},
 		{
 			'@type': 'HowToStep',
-			'name': 'Step 2: Create Your Group & League Event',
-			'text':
-				"Set up a group to act as your league's central hub and then create the main league event, selecting your chosen format.",
-			'url': 'https://www.paddlx.com/guides/league#step2',
+			'name': 'Create Group & Event',
+			'text': 'Set up your player group and league event on paddlX.',
+			'url': '#create-event',
 		},
 		{
 			'@type': 'HowToStep',
-			'name': 'Step 3: Open Registration',
-			'text':
-				'Invite players and have them register for the league. You can set player caps and even collect entry fees.',
-			'url': 'https://www.paddlx.com/guides/league#step3',
+			'name': 'Open Registration',
+			'text': 'Invite players, set caps, and collect fees if desired.',
+			'url': '#registration',
 		},
 		{
 			'@type': 'HowToStep',
-			'name': 'Step 4: Generate the Schedule',
-			'text':
-				'With one click, the software automatically creates a balanced schedule based on your format and registered players.',
-			'url': 'https://www.paddlx.com/guides/league#step4',
+			'name': 'Generate Schedule',
+			'text': 'Click to auto-create balanced matchups.',
+			'url': '#generate-schedule',
 		},
 		{
 			'@type': 'HowToStep',
-			'name': 'Step 5: Track Scores & Standings',
-			'text':
-				'Players report scores directly in the app, and the league standings update instantly for everyone to see.',
-			'url': 'https://www.paddlx.com/guides/league#step5',
+			'name': 'Report Scores',
+			'text': 'Players submit scores; standings update live.',
+			'url': '#report-scores',
+		},
+		{
+			'@type': 'HowToStep',
+			'name': 'Host Playoffs',
+			'text': 'Seed and run playoffs with one-click bracket generation.',
+			'url': '#playoffs',
 		},
 	],
 };
@@ -107,181 +150,242 @@ export default function LeagueGuidePage() {
 				<script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
 			</Head>
 			<div className="bg-white text-slate-800">
-				{/* Article Header */}
+				{/* Header */}
 				<section className="bg-slate-50 py-16">
 					<div className="container mx-auto px-6 text-center">
-						<span className="text-teal-600 font-bold tracking-wider uppercase text-sm mb-2 block">
+						<span className="text-teal-600 uppercase font-bold text-sm mb-2 block">
 							GUIDE
 						</span>
-						<h1 className="text-3xl lg:text-5xl font-extrabold text-dark-slate mb-4">
-							How to Run a Pickleball League on paddlX
+						<h1 className="text-3xl lg:text-5xl font-extrabold mb-4">
+							The Ultimate Guide to Running a Pickleball League
 						</h1>
 						<p className="text-lg text-slate-600 max-w-3xl mx-auto">
-							Running a league is the best way to build a community, but it can be a
-							lot of work. This guide covers the different league formats and how to
-							manage any of them with ease using our tools.
+							Discover formats, automate scheduling, track scores, run playoffs, and
+							engage players—all with paddlX.
 						</p>
 					</div>
 				</section>
 
-				{/* Main Article Content */}
-				<div className="container mx-auto px-6 py-16 max-w-4xl">
-					<article className="prose lg:prose-xl max-w-none">
-						<p>
-							A well-run league can be the highlight of a player's week. It provides
-							consistent, competitive play and a great social outlet. But for
-							organizers, it can feel like a full-time job.
-						</p>
-						<p>
-							The good news is that software can automate 90% of the work. This guide
-							will help you choose the right league format for your group and show you
-							how to run it flawlessly on the paddlX platform.
-						</p>
+				{/* Introduction */}
+				<section className="container mx-auto px-6 py-12 max-w-4xl">
+					<p className="mb-6">
+						Whether you’re organizing a casual round-robin or a competitive ladder, a
+						well-structured league builds community and excitement. This guide walks
+						you through proven workflows and best practices, powered by our free
+						paddlX tools.
+					</p>
+					<p className="mb-6">
+						You’ll learn how to choose the right format, set up events, handle
+						registrations, generate balanced schedules, capture live standings,
+						organize playoffs, and keep players engaged from start to finish.
+					</p>
+				</section>
 
-						<h2 id="step1">Step 1: Choose Your League Format</h2>
-						<p>
-							The first step is deciding what kind of league you want to run. Each
-							format offers a different experience for your players.
-						</p>
-
-						<div className="space-y-6">
-							<div className="p-6 border border-slate-200 rounded-lg">
-								<h3 className="text-2xl font-bold mt-0">Fixed-Partner League</h3>
-								<p>
-									Players sign up as a team of two and play with that same partner for
-									the entire season.
-								</p>
-								<p>
-									<strong>Best for:</strong> Competitive play where teams want to build
-									chemistry and strategy over time.
-								</p>
-								<Link
-									href="/guides/fixed-partner"
-									className="font-bold text-teal-600 hover:text-teal-700"
+				{/* Choose Format */}
+				<section id="choose-format" className="py-20 bg-white">
+					<div className="container mx-auto px-6 max-w-4xl">
+						<h2 className="text-3xl font-bold mb-8">1. Choose Your League Format</h2>
+						<div className="space-y-8">
+							{[
+								{
+									icon: ClipboardList,
+									title: 'Fixed-Partner League',
+									desc:
+										'Teams of two play together all season. Best for competitive consistency and teamwork.',
+								},
+								{
+									icon: Users,
+									title: 'Round-Robin / Rotating',
+									desc:
+										'Individuals rotate partners/opponents each round. Ideal for social play and mixing skill levels.',
+								},
+								{
+									icon: CalendarPlus,
+									title: 'Ladder / Challenge',
+									desc:
+										'Players challenge those above them to move up the ladder. Great for ongoing, flexible competition.',
+								},
+								{
+									icon: Zap,
+									title: 'Custom Hybrid',
+									desc:
+										'Combine formats—round-robin pool play into playoff bracket or fixed-partner with rotating sub weeks.',
+								},
+							].map((f, i) => (
+								<div
+									key={i}
+									className="p-6 border rounded-lg bg-slate-50 flex items-start gap-4"
 								>
-									Read the full Fixed-Partner Guide &rarr;
-								</Link>
+									<f.icon className="w-8 h-8 text-teal-600 mt-1" />
+									<div>
+										<h3 className="font-bold text-xl mb-2">{f.title}</h3>
+										<p className="text-slate-600">{f.desc}</p>
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
+				</section>
+
+				{/* Create Group & Event */}
+				<section id="create-event" className="py-20 bg-slate-50">
+					<div className="container mx-auto px-6 max-w-4xl">
+						<h2 className="text-3xl font-bold mb-6">
+							2. Create Your Group & League Event
+						</h2>
+						<div className="flex items-start gap-6 mb-8">
+							<div className="bg-teal-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg">
+								2
 							</div>
-							<div className="p-6 border border-slate-200 rounded-lg">
-								<h3 className="text-2xl font-bold mt-0">
-									Rotating-Partner League (Round Robin)
-								</h3>
-								<p>
-									Players sign up individually and are paired with different partners and
-									opponents each week. Standings are tracked on an individual basis.
+							<div>
+								<p className="mb-4">
+									Your paddlX Group is the hub for all league communications. From there,
+									click “Create Event” to configure your season.
 								</p>
-								<p>
-									<strong>Best for:</strong> Social leagues where the main goal is to
-									have fun and play with a variety of people.
-								</p>
-							</div>
-							<div className="p-6 border border-slate-200 rounded-lg">
-								<h3 className="text-2xl font-bold mt-0">Ladder League</h3>
-								<p>
-									Players are ranked on a "ladder." They can challenge players above them
-									to try and move up the rankings.
-								</p>
-								<p>
-									<strong>Best for:</strong> Flexible, ongoing competition for groups
-									where players have varied schedules and can't commit to a fixed weekly
-									time.
-								</p>
+								<ul className="list-disc list-inside space-y-2">
+									<li>Select “League” then your chosen format.</li>
+									<li>Set start/end dates and registration deadline.</li>
+									<li>Define match length, point caps, and tiebreakers.</li>
+								</ul>
 							</div>
 						</div>
-
-						<h2 id="step2">Step 2: Create Your Group & League Event</h2>
-						<p>
-							Once you've chosen your format, setting up the league is simple. First,
-							ensure all your players are in a paddlX Group. This will be your command
-							center for communication.
-						</p>
-						<p>
-							Next, from your group page, click "Create Event." In the setup form, you
-							will select "League" as the event type and then choose the specific
-							format you decided on in Step 1.
-						</p>
-
-						<h2 id="step3">Step 3: Open Player Registration</h2>
-						<p>
-							Your event page is now a dedicated registration portal. Share the link
-							with your players to sign up. From your dashboard, you can:
-						</p>
-						<ul className="list-disc list-inside">
-							<li>Set a maximum number of players or teams.</li>
-							<li>Create a waitlist that automatically fills open spots.</li>
-							<li>
-								(Optional) Collect league fees securely with our integrated payment
-								tool.
-							</li>
-						</ul>
-
-						<h2 id="step4">Step 4: Generate the Schedule</h2>
-						<p>
-							After registration closes, you can generate the entire season's schedule
-							with one click. The software will automatically create all the weekly
-							matchups based on your chosen format (e.g., a balanced round-robin for a
-							fixed-partner league). No more spreadsheet headaches!
-						</p>
-
-						<h2 id="step5">Step 5: Track Scores & Live Standings</h2>
-						<p>
-							This is the best part. As games are played, winning players or teams can
-							report the score directly in the app. The moment a score is entered, the
-							official league standings are updated in real-time. Players can check the
-							standings anytime to see their rank, track their performance, and see
-							upcoming matches.
-						</p>
-
-						<h2 id="pro-tips">Pro Tips for League Organizers</h2>
-						<ul className="list-none space-y-4">
-							<li className="flex items-start">
-								<CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-								<div>
-									<strong>Communicate Clearly:</strong> Use the group chat to send weekly
-									reminders, share standings, and build excitement.
-								</div>
-							</li>
-							<li className="flex items-start">
-								<CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-								<div>
-									<strong>Establish Rules for Subs & Forfeits:</strong> Address these
-									common issues before the league starts. Post the rules in your event
-									description so everyone is on the same page.
-								</div>
-							</li>
-							<li className="flex items-start">
-								<CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-								<div>
-									<strong>Celebrate the Winners:</strong> Plan a small party or awards
-									ceremony for the final week to celebrate the champions and a successful
-									season.
-								</div>
-							</li>
-						</ul>
-					</article>
-				</div>
-
-				{/* Final CTA */}
-				<section className="bg-teal-600 text-white py-20">
-					<div className="container mx-auto px-6 text-center">
-						<h2 className="text-3xl lg:text-4xl font-bold mb-4">
-							You're Ready to Be a League Commissioner
-						</h2>
-						<p className="text-teal-100 text-lg mb-8 max-w-2xl mx-auto">
-							With the right tools, running a league is more fun than work. Provide
-							your community with the competitive play they're looking for.
-						</p>
-						<Button
-							asChild
-							size="lg"
-							className="bg-white text-teal-600 hover:bg-slate-100 font-bold py-4 px-8 rounded-full text-lg shadow-2xl transition-transform hover:scale-105"
-						>
-							<Link href="/join">
-								Create Your League for Free <ArrowRight className="ml-2" />
-							</Link>
-						</Button>
+						<Image
+							src="/league-setup-screenshot.png"
+							alt="league setup form screenshot"
+							width={800}
+							height={450}
+							className="rounded shadow mx-auto"
+						/>
 					</div>
 				</section>
+
+				{/* Registration */}
+				<section id="registration" className="py-20 bg-white">
+					<div className="container mx-auto px-6 max-w-4xl">
+						<h2 className="text-3xl font-bold mb-6">3. Open Player Registration</h2>
+						<p className="mb-4">
+							Share your event link via email, social, or embed on your site. Players
+							register individually or as teams, up to your cap.
+						</p>
+						<ul className="list-disc list-inside space-y-2 mb-6">
+							<li>Set player/team maximums; auto-waitlist overflow.</li>
+							<li>Optionally collect entry fees via paddlX Payments.</li>
+							<li>Approve or decline registrations for private leagues.</li>
+						</ul>
+						<Image
+							src="/registration-flow.png"
+							alt="registration flow diagram"
+							width={800}
+							height={450}
+							className="rounded shadow mx-auto"
+						/>
+					</div>
+				</section>
+
+				{/* Schedule Generation */}
+				<section id="generate-schedule" className="py-20 bg-slate-50">
+					<div className="container mx-auto px-6 max-w-4xl">
+						<h2 className="text-3xl font-bold mb-6">
+							4. Generate a Balanced Schedule
+						</h2>
+						<p className="mb-4">
+							With registrations closed, click “Generate Schedule.” paddlX auto-creates
+							matchups, handles byes, and optimizes court assignments based on
+							availability.
+						</p>
+						<ul className="list-disc list-inside space-y-2 mb-6">
+							<li>Round-robin, Swiss, ladder, or hybrid templates.</li>
+							<li>Automatic court/time slot conflict detection.</li>
+							<li>Skill-based seeding option for balanced competition.</li>
+						</ul>
+						<Image
+							src="/schedule-generation.png"
+							alt="schedule generation screenshot"
+							width={800}
+							height={450}
+							className="rounded shadow mx-auto"
+						/>
+					</div>
+				</section>
+
+				{/* Score Reporting & Standings */}
+				<section id="report-scores" className="py-20 bg-white">
+					<div className="container mx-auto px-6 max-w-4xl">
+						<h2 className="text-3xl font-bold mb-6">
+							5. Report Scores & Live Standings
+						</h2>
+						<p className="mb-4">
+							Players submit match results in-app. Standings update instantly, showing
+							wins, losses, and point differentials.
+						</p>
+						<ul className="list-disc list-inside space-y-2 mb-6">
+							<li>Automated tiebreaker calculations per official rules.</li>
+							<li>Live standings widget for embedding or sharing.</li>
+							<li>Export CSV for full season data and analytics.</li>
+						</ul>
+						<Image
+							src="/live-standings.png"
+							alt="live standings screenshot"
+							width={800}
+							height={450}
+							className="rounded shadow mx-auto"
+						/>
+					</div>
+				</section>
+
+				{/* Playoffs */}
+				<section id="playoffs" className="py-20 bg-slate-50">
+					<div className="container mx-auto px-6 max-w-4xl">
+						<h2 className="text-3xl font-bold mb-6">
+							6. Host Playoffs & Award Champions
+						</h2>
+						<p className="mb-4">
+							Seed playoffs based on standings with a single click. Generate brackets
+							for semifinals, finals, and championship matches.
+						</p>
+						<ul className="list-disc list-inside space-y-2 mb-6">
+							<li>Customize bracket size (4, 8, or 16 teams).</li>
+							<li>Share playoff bracket link with participants and spectators.</li>
+							<li>Issue digital trophies and highlight champions on group page.</li>
+						</ul>
+						<Image
+							src="/playoff-bracket.png"
+							alt="playoff bracket screenshot"
+							width={800}
+							height={450}
+							className="rounded shadow mx-auto"
+						/>
+					</div>
+				</section>
+
+				{/* Pro Tips */}
+				<section className="container mx-auto px-6 py-16 max-w-4xl">
+					<h2 className="text-3xl font-bold mb-6">Pro Tips for League Success</h2>
+					<ul className="list-disc pl-6 space-y-4 text-slate-700">
+						<li>Publish a comprehensive rulebook in your group before sign-ups.</li>
+						<li>Use polls and chat for mid-season feedback and social events.</li>
+						<li>Offer mid-season socials to build community engagement.</li>
+						<li>Maintain a dedicated sub list and auto-notify subs when needed.</li>
+						<li>Plan for weather backups with alternate indoor or rain dates.</li>
+					</ul>
+				</section>
+
+				{/* FAQ */}
+				<FAQSection
+					faqs={faqQuestions}
+					title="FAQ"
+					subtitle="Find answers to common questions about managing your league, players, and payments"
+				/>
+
+				<DynamicCtaSection
+					buttonHref="/join"
+					buttonText="Create League Free"
+					featureList={['Simple Setup', 'Save Hours', 'Focus on Fun']}
+					title="Ready to Automate Your League?"
+					subtitle="Save hours of admin work, deliver a pro experience, and focus on the game. Start your league for free today."
+					// buttonSubtext="Secure booking • Verified coaches • Easy cancellations"
+					colorScheme="teal"
+				/>
 			</div>
 		</>
 	);

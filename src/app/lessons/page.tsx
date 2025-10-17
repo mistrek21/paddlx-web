@@ -1,9 +1,6 @@
 // src/app/lessons/page.tsx
 
-// src/app/lessons/page.tsx
-
 import { Metadata } from 'next';
-import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -15,248 +12,321 @@ import {
 	Users,
 	ArrowRight,
 	ShieldCheck,
+	UserPlus,
+	BarChart3,
+	Clock,
+	Filter,
+	Globe,
+	MessageCircle,
+	ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import FAQSection, { FAQ } from '../_components/faq/FaqSection';
+import DynamicCtaSection from '../_components/cta/DynamicCtaSection';
 
-// SEO Metadata
+const faqQuestions: FAQ[] = [
+	{
+		id: 1,
+		question: 'How do I know a coach is qualified?',
+		answer:
+			'All coaches provide certifications, years of experience, and profile photos. Player reviews verify quality before booking.',
+		category: 'Coaches',
+	},
+	{
+		id: 2,
+		question: 'Can I gift lessons?',
+		answer:
+			'Yes. Select “Gift Lesson” during checkout and enter recipient details. We send a shareable voucher link.',
+		category: 'Coaches',
+	},
+	{
+		id: 3,
+		question: 'What is the cancellation policy?',
+		answer:
+			'Each coach sets their own policy. Policies are displayed on the booking page—typically 24–48hr notice for full refund.',
+		category: 'Coaches',
+	},
+	{
+		id: 4,
+		question: 'Do coaches offer video lessons?',
+		answer:
+			'Many offer virtual sessions via Zoom or FaceTime. Filter by “virtual” to find remote coaching options.',
+		category: 'Coaches',
+	},
+];
+
+// SEO metadata with long-tail keywords
 export const metadata: Metadata = {
-	title: 'Find Pickleball Coaches & Book Lessons Near You | paddlX',
+	title: 'Book Pickleball Lessons | Find Top Coaches & Clinics Nearby | paddlX',
 	description:
-		'Browse and book private or group pickleball lessons with top-rated coaches in your area. Compare profiles, check availability, and book online instantly with paddlX.',
+		'Discover and book private lessons, group clinics, and elite coaching programs. Compare coach metrics, read reviews, view availability, and secure your spot instantly with paddlX.',
 	keywords: [
 		'book pickleball lessons',
-		'find pickleball coach',
-		'pickleball private lessons',
+		'find pickleball coach near me',
+		'private pickleball instruction',
 		'group pickleball clinics',
-		'pickleball coach near me',
-		'pickleball coaching',
-		'learn to play pickleball',
+		'top pickleball coaches',
+		'pickleball coaching rates',
+		'pickleball skill development',
+		'learn pickleball strategy',
+		'pickleball training app',
 	],
 	openGraph: {
-		title: 'Find Your Perfect Pickleball Coach | paddlX',
+		title: 'Browse & Book Pickleball Coaches | paddlX Lessons',
 		description:
-			'Browse coaches in your area for a private or group lesson and book online today.',
+			'Instantly compare coach profiles, availability, prices, and reviews. Book private or group sessions securely online.',
 		url: 'https://www.paddlx.com/lessons',
 		type: 'website',
 		images: [
 			{
-				url: '/og-image-lessons.jpg', // Replace with an image of a friendly coach giving a lesson
+				url: '/og-lessons.jpg',
 				width: 1200,
 				height: 630,
-				alt: 'A player receiving a pickleball lesson from a professional coach.',
+				alt: 'Pickleball Coach Booking',
 			},
 		],
 	},
 	twitter: {
 		card: 'summary_large_image',
-		title: 'Book Pickleball Lessons with Top-Rated Coaches | paddlX',
+		title: 'Find & Book Pickleball Coaches | paddlX',
 		description:
-			'Ready to improve your game? Find and book your perfect pickleball coach in just a few clicks.',
-		images: ['/twitter-image-lessons.jpg'], // Replace with a relevant Twitter image
+			'Ready to improve your game? Browse top local coaches, view real-time availability, and book lessons instantly.',
+		images: ['/twitter-lessons.jpg'],
 	},
 };
 
-// JSON-LD Structured Data
+// JSON-LD structured data
 const jsonLd = {
 	'@context': 'https://schema.org',
 	'@type': 'Service',
 	'serviceType': 'Pickleball Coaching Service',
-	'provider': {
-		'@type': 'Organization',
-		'name': 'paddlX',
-	},
+	'provider': { '@type': 'Organization', 'name': 'paddlX' },
 	'description':
-		'A platform to find, compare, and book lessons with local pickleball coaches. Services include private lessons and group clinics with secure online booking.',
+		'paddlX connects you with vetted pickleball coaches for private lessons and group clinics, offering secure online booking, ratings, and availability.',
 	'name': 'paddlX Coach Finder',
-	'areaServed': {
-		'@type': 'Country',
-		'name': 'USA', // Adjust as needed
-	},
+	'areaServed': { '@type': 'Country', 'name': 'Global' },
 };
 
 export default function LessonsPage() {
 	return (
 		<>
-			<Head>
-				<script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-			</Head>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+			/>
 			<div className="bg-white text-slate-800">
-				{/* Hero Section */}
-				<section className="relative bg-blue-50 py-20 lg:py-32">
-					<div className="container mx-auto px-6 text-center">
-						<h1 className="text-4xl lg:text-6xl font-extrabold text-dark-slate mb-4 leading-tight">
-							Find Your Perfect Pickleball Coach
+				{/* Hero */}
+				<section className="bg-blue-50 py-24 text-center">
+					<div className="container mx-auto px-6">
+						<h1 className="text-4xl lg:text-6xl font-extrabold mb-4">
+							Find & Book Your Perfect Pickleball Coach
 						</h1>
-						<p className="text-lg lg:text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-							Browse top-rated coaches in your area for a private or group lesson. Take
-							your game to the next level, starting today.
+						<p className="text-lg text-slate-600 mb-8 max-w-3xl mx-auto">
+							Browse private lessons, group clinics, and elite training programs. View
+							coach ratings, certifications, availability, and secure online booking
+							instantly.
 						</p>
 						<Button
 							asChild
 							size="lg"
-							className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full text-lg shadow-lg shadow-blue-200 transition-transform hover:scale-105"
-						>
-							<Link href="/coaches">Browse Coaches Near You</Link>
-						</Button>
-					</div>
-				</section>
-
-				{/* How It Works Section */}
-				<section className="py-20">
-					<div className="container mx-auto px-6">
-						<div className="text-center mb-16">
-							<h2 className="text-3xl lg:text-4xl font-bold text-dark-slate">
-								Booking a Lesson is Easy
-							</h2>
-						</div>
-						<div className="grid md:grid-cols-3 gap-8 text-center">
-							<div className="p-8">
-								<Search className="w-12 h-12 mx-auto text-blue-500 mb-4" />
-								<h3 className="text-xl font-bold mb-2">1. Browse Coaches</h3>
-								<p className="text-slate-600">
-									Search our directory of vetted coaches. Filter by location, specialty,
-									and price to find your ideal match.
-								</p>
-							</div>
-							<div className="p-8">
-								<Star className="w-12 h-12 mx-auto text-blue-500 mb-4" />
-								<h3 className="text-xl font-bold mb-2">2. Compare Profiles</h3>
-								<p className="text-slate-600">
-									Read reviews from other players, check a coach's qualifications, and
-									view their real-time availability.
-								</p>
-							</div>
-							<div className="p-8">
-								<CalendarCheck className="w-12 h-12 mx-auto text-blue-500 mb-4" />
-								<h3 className="text-xl font-bold mb-2">3. Book Instantly</h3>
-								<p className="text-slate-600">
-									Select a time that works for you and book your lesson securely online
-									in just a few clicks.
-								</p>
-							</div>
-						</div>
-					</div>
-				</section>
-
-				{/* Types of Lessons Section */}
-				<section className="bg-slate-50 py-20">
-					<div className="container mx-auto px-6">
-						<div className="text-center mb-12">
-							<h2 className="text-3xl lg:text-4xl font-bold text-dark-slate">
-								Lessons for Every Player
-							</h2>
-						</div>
-						<div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-							<div className="bg-white p-8 rounded-2xl border border-slate-200">
-								<User className="w-8 h-8 text-blue-600 mb-4" />
-								<h3 className="text-2xl font-bold mb-3">Private Lessons</h3>
-								<p className="text-slate-600 mb-4">
-									Get personalized, one-on-one instruction tailored to your specific
-									goals. The fastest way to improve your technique.
-								</p>
-								<Link
-									href="/coaches?type=private"
-									className="font-bold text-blue-600 hover:text-blue-700 flex items-center"
-								>
-									Find a Private Coach <ArrowRight className="ml-2 h-5 w-5" />
-								</Link>
-							</div>
-							<div className="bg-white p-8 rounded-2xl border border-slate-200">
-								<Users className="w-8 h-8 text-blue-600 mb-4" />
-								<h3 className="text-2xl font-bold mb-3">Group Clinics</h3>
-								<p className="text-slate-600 mb-4">
-									Learn in a fun, social setting. Group clinics are great for practicing
-									specific skills and meeting new players.
-								</p>
-								<Link
-									href="/clinics"
-									className="font-bold text-blue-600 hover:text-blue-700 flex items-center"
-								>
-									Browse Group Clinics <ArrowRight className="ml-2 h-5 w-5" />
-								</Link>
-							</div>
-						</div>
-					</div>
-				</section>
-
-				{/* Testimonial Section */}
-				<section className="py-20 px-6">
-					<div className="container mx-auto text-center">
-						<div className="max-w-3xl mx-auto">
-							<p className="text-2xl font-medium text-slate-700 italic">
-								“I booked a series of lessons with a coach I found on paddlX, and it
-								completely changed my game. The booking process was so simple, and my
-								coach was fantastic. My third shot drop has never been better!”
-							</p>
-							<p className="mt-6 font-bold text-lg">- Maria S., 3.5 DUPR Player</p>
-						</div>
-					</div>
-				</section>
-
-				{/* FAQ Section */}
-				<section className="bg-slate-50 py-20">
-					<div className="container mx-auto px-6">
-						<div className="text-center mb-12">
-							<h2 className="text-3xl lg:text-4xl font-bold text-dark-slate">
-								Your Questions, Answered
-							</h2>
-						</div>
-						<div className="max-w-3xl mx-auto space-y-4">
-							<details className="p-6 border bg-white border-slate-200 rounded-lg">
-								<summary className="font-bold text-lg cursor-pointer">
-									How much do pickleball lessons cost?
-								</summary>
-								<p className="text-slate-600 mt-2">
-									Prices vary depending on the coach's experience, location, and the type
-									of lesson (private vs. group). You can browse coach profiles to see
-									their rates clearly listed before you book.
-								</p>
-							</details>
-							<details className="p-6 border bg-white border-slate-200 rounded-lg">
-								<summary className="font-bold text-lg cursor-pointer">
-									Are the coaches on paddlX certified?
-								</summary>
-								<p className="text-slate-600 mt-2">
-									Many of our coaches are certified by organizations like PPR or IPTPA.
-									You can view a coach's certifications and qualifications directly on
-									their profile to ensure they're a good fit for you.
-								</p>
-							</details>
-							<details className="p-6 border bg-white border-slate-200 rounded-lg">
-								<summary className="font-bold text-lg cursor-pointer">
-									What if I need to cancel or reschedule my lesson?
-								</summary>
-								<p className="text-slate-600 mt-2">
-									Each coach sets their own cancellation policy, which is clearly
-									displayed on their profile before you book. You can manage your
-									bookings, including rescheduling, directly from your paddlX account.
-								</p>
-							</details>
-						</div>
-					</div>
-				</section>
-
-				{/* Final CTA */}
-				<section className="bg-blue-600 text-white py-20">
-					<div className="container mx-auto px-6 text-center">
-						<h2 className="text-3xl lg:text-4xl font-bold mb-4">
-							Ready to Elevate Your Game?
-						</h2>
-						<p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
-							The right coach is waiting for you. Start your search and book a lesson
-							today.
-						</p>
-						<Button
-							asChild
-							size="lg"
-							className="bg-white text-blue-600 hover:bg-slate-100 font-bold py-4 px-8 rounded-full text-lg shadow-2xl transition-transform hover:scale-105"
+							className="bg-blue-600 hover:bg-blue-700 text-white py-4 px-8 rounded-full shadow-lg"
 						>
 							<Link href="/coaches">
-								Find Your Coach <ArrowRight className="ml-2" />
+								Browse Coaches
+								<ArrowRight className="ml-2" />
 							</Link>
 						</Button>
 					</div>
 				</section>
+
+				{/* How It Works */}
+				<section className="py-20">
+					<div className="container mx-auto px-6">
+						<h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+						<div className="grid md:grid-cols-3 gap-8 text-center">
+							<div>
+								<Search className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+								<h3 className="text-xl font-bold mb-2">1. Search & Filter</h3>
+								<p className="text-slate-600">
+									Use location, skill level, price, and coach specialty filters to find
+									the exact coach you need.
+								</p>
+							</div>
+							<div>
+								<UserPlus className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+								<h3 className="text-xl font-bold mb-2">2. Compare Profiles</h3>
+								<p className="text-slate-600">
+									View reviews, qualifications, match history, pricing, and real-time
+									availability.
+								</p>
+							</div>
+							<div>
+								<CalendarCheck className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+								<h3 className="text-xl font-bold mb-2">3. Book & Play</h3>
+								<p className="text-slate-600">
+									Secure your lesson with instant booking and online payment. Get
+									confirmation notifications immediately.
+								</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				{/* Lesson Types */}
+				<section className="bg-slate-50 py-20">
+					<div className="container mx-auto px-6">
+						<h2 className="text-3xl font-bold text-center mb-8">Lesson Options</h2>
+						<div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+							<div className="bg-white p-8 rounded-2xl border shadow">
+								<User className="w-8 h-8 text-blue-600 mb-4" />
+								<h3 className="text-2xl font-bold mb-3">Private Lessons</h3>
+								<p className="text-slate-600 mb-4">
+									One-on-one coaching tailored to your goals. Focus on technique,
+									strategy, and personalized feedback.
+								</p>
+								<Link
+									href="/coaches?type=private"
+									className="font-bold text-blue-600 hover:underline flex items-center"
+								>
+									Explore Private Coaches
+									<ArrowRight className="ml-2" />
+								</Link>
+							</div>
+							<div className="bg-white p-8 rounded-2xl border shadow">
+								<Users className="w-8 h-8 text-blue-600 mb-4" />
+								<h3 className="text-2xl font-bold mb-3">Group Clinics</h3>
+								<p className="text-slate-600 mb-4">
+									Learn in a fun, social setting. Group sessions for skill-specific
+									drills, strategy workshops, and match play.
+								</p>
+								<Link
+									href="/clinics"
+									className="font-bold text-blue-600 hover:underline flex items-center"
+								>
+									Find Group Clinics
+									<ArrowRight className="ml-2" />
+								</Link>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				{/* Coach Profiles Grid (sample) */}
+				<section className="py-20">
+					<div className="container mx-auto px-6">
+						<h2 className="text-3xl font-bold text-center mb-12">Featured Coaches</h2>
+						<div className="grid md:grid-cols-3 gap-8">
+							{[
+								{
+									name: 'Alex Chen',
+									rating: 4.9,
+									lessons: 120,
+									speciality: 'Technique & Footwork',
+									rate: '$60/hr',
+									location: 'New York, NY',
+									avatar: '/alex.jpg',
+								},
+								{
+									name: 'Maria Lopez',
+									rating: 4.8,
+									lessons: 85,
+									speciality: 'Strategy & Match Play',
+									rate: '$55/hr',
+									location: 'Los Angeles, CA',
+									avatar: '/maria.jpg',
+								},
+								{
+									name: 'James Park',
+									rating: 5.0,
+									lessons: 200,
+									speciality: 'Beginner to Advanced',
+									rate: '$65/hr',
+									location: 'Chicago, IL',
+									avatar: '/james.jpg',
+								},
+							].map((coach, i) => (
+								<div
+									key={i}
+									className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition"
+								>
+									<Image
+										src={coach.avatar}
+										alt={coach.name}
+										width={80}
+										height={80}
+										className="rounded-full mx-auto mb-4"
+									/>
+									<h3 className="text-xl font-bold text-center">{coach.name}</h3>
+									<div className="flex items-center justify-center gap-1 mb-2">
+										<Star className="w-5 h-5 text-yellow-400" />
+										{coach.rating}
+									</div>
+									<p className="text-slate-600 text-center mb-2">{coach.speciality}</p>
+									<p className="text-slate-600 text-center mb-4">
+										{coach.rate} • {coach.location}
+									</p>
+									<Button
+										asChild
+										size="sm"
+										className="bg-blue-600 hover:bg-blue-700 text-white block mx-auto"
+									>
+										<Link href={`/coaches/${coach.name.toLowerCase().replace(' ', '-')}`}>
+											View Profile
+										</Link>
+									</Button>
+								</div>
+							))}
+						</div>
+					</div>
+				</section>
+
+				{/* Booking Tips & Best Practices */}
+				<section className="bg-slate-50 py-20">
+					<div className="container mx-auto px-6 max-w-4xl">
+						<h2 className="text-3xl font-bold text-center mb-8">
+							Booking Tips & Best Practices
+						</h2>
+						<ul className="list-disc pl-6 space-y-4 text-slate-600">
+							<li>Check coach certifications and experience for your skill level.</li>
+							<li>Read multiple player reviews to gauge teaching style.</li>
+							<li>Book at least 48 hours in advance for popular coaches.</li>
+							<li>Combine private and group lessons for comprehensive improvement.</li>
+							<li>Cancel or reschedule 24+ hours before to avoid fees.</li>
+						</ul>
+					</div>
+				</section>
+
+				{/* Testimonial */}
+				<section className="py-20 px-6">
+					<div className="container mx-auto text-center">
+						<div className="max-w-3xl mx-auto">
+							<p className="text-2xl italic text-slate-700 mb-4">
+								“Booking a coach on paddlX was seamless. I found someone who specialized
+								in doubles strategy and saw results in just three sessions!”
+							</p>
+							<p className="font-bold">— Daniel K., 4.0 Player, Dallas, TX</p>
+						</div>
+					</div>
+				</section>
+
+				{/* FAQ */}
+				<FAQSection
+					faqs={faqQuestions}
+					title="FAQ"
+					subtitle="Find answers to common questions about lessons"
+					colorScheme="blue"
+				/>
+
+				<DynamicCtaSection
+					buttonHref="/join"
+					buttonText="Browse Coaches Now"
+					featureList={['Compare profiles', 'Book in seconds', 'Verified coaches']} // TODO: Add features
+					title="Ready to Level Up?"
+					subtitle="Find your ideal coach, book in seconds, and start improving your
+							pickleball game today."
+					buttonSubtext="Secure booking • Verified coaches • Easy cancellations"
+					colorScheme="blue"
+				/>
 			</div>
 		</>
 	);

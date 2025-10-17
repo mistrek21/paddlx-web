@@ -15,6 +15,7 @@ import {
 	ArrowRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import DynamicCtaSection from '../_components/cta/DynamicCtaSection';
 
 // SEO Metadata
 export const metadata: Metadata = {
@@ -368,39 +369,16 @@ export default function HowToPlayPage() {
 					</div>
 				</section>
 
-				{/* Final CTA */}
-				<section className="bg-green-600 text-white py-20">
-					<div className="container mx-auto px-6 text-center">
-						<h2 className="text-3xl lg:text-4xl font-bold mb-4">
-							You're Ready to Play!
-						</h2>
-						<p className="text-green-100 text-lg mb-8 max-w-2xl mx-auto">
-							The best way to learn is by doing. Grab a paddle, find a court, and give
-							it a try. You'll be dinking in no time!
-						</p>
-						<div className="flex flex-col sm:flex-row gap-4 justify-center">
-							<Button
-								asChild
-								size="lg"
-								className="bg-white text-green-600 hover:bg-slate-100 font-bold py-3 px-6 rounded-full text-lg shadow-2xl transition-transform hover:scale-105"
-							>
-								<Link href="/courts">
-									<MapPin className="mr-2 h-5 w-5" /> Find a Court
-								</Link>
-							</Button>
-							<Button
-								asChild
-								size="lg"
-								variant="outline"
-								className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-green-600 font-bold py-3 px-6 rounded-full text-lg shadow-2xl transition-transform hover:scale-105"
-							>
-								<Link href="/lessons">
-									<BookOpen className="mr-2 h-5 w-5" /> Book a Lesson
-								</Link>
-							</Button>
-						</div>
-					</div>
-				</section>
+				<DynamicCtaSection
+					buttonHref="/join"
+					buttonText="Book a Session"
+					featureList={['Book in seconds', 'Verified coaches', 'Easy cancellations']} // TODO: Add features
+					title="You're Ready to Play!"
+					subtitle="The best way to learn is by doing. Grab a paddle, find a court, and give
+										it a try. You'll be dinking in no time!"
+					buttonSubtext="Secure booking • Verified coaches • Easy cancellations"
+					colorScheme="green"
+				/>
 			</div>
 		</>
 	);

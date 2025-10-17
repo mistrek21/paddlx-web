@@ -13,6 +13,39 @@ import {
 	ArrowRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import FAQSection, { FAQ } from '../_components/faq/FaqSection';
+import DynamicCtaSection from '../_components/cta/DynamicCtaSection';
+
+const faqQuestions: FAQ[] = [
+	{
+		id: 1,
+		question: 'Is the Virtual Clinic free?',
+		answer:
+			'Yes! Access to our entire library of virtual clinic videos is included with your free paddlX account. Our goal is to help more people learn and enjoy the sport.',
+		category: 'Coaches',
+	},
+	{
+		id: 2,
+		question: 'Who is this clinic for?',
+		answer:
+			'The current curriculum is primarily designed for beginners and intermediate players (up to a 3.5 level) who want to build a strong foundation of fundamentals.',
+		category: 'Coaches',
+	},
+	{
+		id: 3,
+		question: 'How often are new videos added?',
+		answer:
+			'We are constantly working with our pro instructors to develop new content. We aim to add new modules and advanced lessons regularly.',
+		category: 'Coaches',
+	},
+	{
+		id: 4,
+		question: 'What is the cancellation policy?',
+		answer:
+			'Lessons are non-refundable. However, you can transfer your lesson to another date or time.',
+		category: 'Coaches',
+	},
+];
 
 // SEO Metadata
 export const metadata: Metadata = {
@@ -253,68 +286,23 @@ export default function VirtualClinicPage() {
 				</section>
 
 				{/* FAQ Section */}
-				<section className="bg-slate-50 py-20">
-					<div className="container mx-auto px-6">
-						<div className="text-center mb-12">
-							<h2 className="text-3xl lg:text-4xl font-bold text-dark-slate">
-								Frequently Asked Questions
-							</h2>
-						</div>
-						<div className="max-w-3xl mx-auto space-y-4">
-							<details className="p-6 border bg-white border-slate-200 rounded-lg">
-								<summary className="font-bold text-lg cursor-pointer">
-									Is the Virtual Clinic free?
-								</summary>
-								<p className="text-slate-600 mt-2">
-									Yes! Access to our entire library of virtual clinic videos is included
-									with your free paddlX account. Our goal is to help more people learn
-									and enjoy the sport.
-								</p>
-							</details>
-							<details className="p-6 border bg-white border-slate-200 rounded-lg">
-								<summary className="font-bold text-lg cursor-pointer">
-									Who is this clinic for?
-								</summary>
-								<p className="text-slate-600 mt-2">
-									The current curriculum is primarily designed for beginners and
-									intermediate players (up to a 3.5 level) who want to build a strong
-									foundation of fundamentals.
-								</p>
-							</details>
-							<details className="p-6 border bg-white border-slate-200 rounded-lg">
-								<summary className="font-bold text-lg cursor-pointer">
-									How often are new videos added?
-								</summary>
-								<p className="text-slate-600 mt-2">
-									We are constantly working with our pro instructors to develop new
-									content. We aim to add new modules and advanced lessons regularly.
-								</p>
-							</details>
-						</div>
-					</div>
-				</section>
+				<FAQSection
+					faqs={faqQuestions}
+					title="FAQ"
+					subtitle="Find answers to common questions about lessons"
+					colorScheme="purple"
+				/>
 
-				{/* Final CTA */}
-				<section className="bg-purple-600 text-white py-20">
-					<div className="container mx-auto px-6 text-center">
-						<h2 className="text-3xl lg:text-4xl font-bold mb-4">
-							Ready to Transform Your Game?
-						</h2>
-						<p className="text-purple-100 text-lg mb-8 max-w-2xl mx-auto">
-							Unlock instant access to the complete Virtual Clinic and start learning
-							from the best in the sport.
-						</p>
-						<Button
-							asChild
-							size="lg"
-							className="bg-white text-purple-600 hover:bg-slate-100 font-bold py-4 px-8 rounded-full text-lg shadow-2xl transition-transform hover:scale-105"
-						>
-							<Link href="/join">
-								Watch Now for Free <ArrowRight className="ml-2" />
-							</Link>
-						</Button>
-					</div>
-				</section>
+				<DynamicCtaSection
+					buttonHref="/join"
+					buttonText="Watch Now for Free"
+					featureList={['Completely Free', 'No Commitment', 'Cancel Anytime']}
+					title="Ready to Transform Your Game?"
+					subtitle="Unlock instant access to the complete Virtual Clinic and start learning
+														from the best in the sport."
+					// buttonSubtext="Secure booking • Verified coaches • Easy cancellations"
+					colorScheme="purple"
+				/>
 			</div>
 		</>
 	);

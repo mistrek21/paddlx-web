@@ -20,10 +20,10 @@ const config: Config = {
 				'accent-dark': 'var(--color-accent-dark)',
 				'accent-light': 'var(--color-accent-light)',
 				'dark': 'var(--color-dark)',
-				'dark-slate': 'var(--color-dark-slate)',
+
 				'slate-gray': 'var(--color-slate-gray)',
 				'light-slate': 'var(--color-light-slate)',
-				'light-blue-1': 'var(--color-light-blue-1)',
+
 				'light-blue-2': 'var(--color-light-blue-2)',
 				'light-blue-3': 'var(--color-light-blue-3)',
 				'light-blue-4': 'var(--color-light-blue-4)',
@@ -38,7 +38,8 @@ const config: Config = {
 				'light-red': 'var(--color-light-red)',
 				'teal': 'var(--color-teal)',
 				'pink-button': 'var(--color-pink-button)',
-				'coral': 'var(--color-coral)',
+
+				'coral-dark': 'var(--color-coral-dark)',
 				'mint': 'var(--color-mint)',
 				'sunset': 'var(--color-sunset)',
 				'ocean': 'var(--color-ocean)',
@@ -65,6 +66,12 @@ const config: Config = {
 				'error-light': 'var(--color-error-light)',
 				'light-gray-2': 'var(--color-light-gray-2)',
 				'background': 'var(--color-background)',
+
+				'blue': '#2563EB', // Corresponds to Tailwind's default blue-600
+				'light-blue': '#06B6D4', // Corresponds to Tailwind's default cyan-500
+				'light-blue-1': '#E0F2FE', // Corresponds to Tailwind's default light-blue-100 or sky-100
+				'dark-slate': '#0F172A', // Corresponds to Tailwind's default slate-900
+				'coral': '#FF7F50', // A standard hex code for "coral"
 			},
 			keyframes: {
 				headerPop: {

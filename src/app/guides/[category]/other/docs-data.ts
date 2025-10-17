@@ -7,6 +7,47 @@ const generateSlug = (title: string): string => {
 };
 
 // Define the structure of a single guide article
+// export interface Guide {
+// 	category: string;
+// 	categorySlug: string;
+// 	title: string;
+// 	titleSlug: string;
+// 	image: string;
+// 	readTime: string;
+// 	excerpt: string;
+// 	author: string;
+// 	publishedDate: string;
+// 	content: Array<{
+// 		type: 'heading' | 'paragraph' | 'image' | 'list';
+// 		text?: string;
+// 		src?: string;
+// 		alt?: string;
+// 		items?: string[]; // For bulleted or numbered lists
+// 	}>;
+// }
+
+export interface ContentMark {
+	offset: number;
+	length: number;
+	type: 'bold' | 'italic';
+}
+
+export interface ContentItem {
+	type: 'heading' | 'paragraph' | 'image' | 'list' | 'blockquote' | 'video';
+	text?: string;
+	src?: string;
+	alt?: string;
+	caption?: string; // For image captions
+	items?: string[]; // For lists
+	marks?: ContentMark[]; // For bold/italic text
+}
+
+export interface Author {
+	name: string;
+	avatar: string;
+	bio: string;
+}
+
 export interface Guide {
 	category: string;
 	categorySlug: string;
@@ -15,15 +56,10 @@ export interface Guide {
 	image: string;
 	readTime: string;
 	excerpt: string;
-	author: string;
+	author: Author; // Changed from string to Author object
 	publishedDate: string;
-	content: Array<{
-		type: 'heading' | 'paragraph' | 'image' | 'list';
-		text?: string;
-		src?: string;
-		alt?: string;
-		items?: string[]; // For bulleted or numbered lists
-	}>;
+	content: ContentItem[];
+	keywords: string[];
 }
 
 // Store all your guide articles in this array
@@ -38,11 +74,20 @@ export const guideArticles: Guide[] = [
 		titleSlug: generateSlug(
 			'Your step-by-step guide to running a pickleball league'
 		),
+		keywords: [
+			'pickleball league',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		image: '/pickleball-league-tournament-with-multiple-courts.jpg',
 		readTime: '15 min read',
 		excerpt:
 			'The ultimate A-to-Z playbook for organizing, scheduling, and managing a successful pickleball league on paddlX, from initial concept to championship glory.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-10-06',
 		content: [
 			{
@@ -112,9 +157,14 @@ export const guideArticles: Guide[] = [
 		titleSlug: generateSlug('Scale your pickleball community with paddlx'),
 		image: '/large-pickleball-community-playing-on-multiple-cou.jpg',
 		readTime: '10 min read',
+		keywords: ['pickleball community', 'pickleball growth', 'pickleball scaling'],
 		excerpt:
 			'The ultimate playbook to transform your casual pickleball group into a thriving, scalable, and profitable community ecosystem with paddlX.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-09-23',
 		content: [
 			{
@@ -163,11 +213,16 @@ export const guideArticles: Guide[] = [
 		titleSlug: generateSlug(
 			'Watch this space - adidas is making waves in pickleball'
 		),
+		keywords: ['adidas', 'pickleball', 'sports equipment'],
 		image: '/adidas-pickleball-shoes-and-equipment.jpg',
 		readTime: '5 min read',
 		excerpt:
 			'The three-stripe giant is entering the fastest-growing sport in America. Adidas is making a significant move into the pickleball market. Here’s what we know and what it means for players.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-09-29',
 		content: [
 			{
@@ -214,9 +269,18 @@ export const guideArticles: Guide[] = [
 		titleSlug: generateSlug('Keeping players active and engaged'),
 		image: '/engaged-pickleball-players-at-social-event.jpg',
 		readTime: '6 min read',
+		keywords: [
+			'pickleball engagement',
+			'pickleball retention',
+			'pickleball community',
+		],
 		excerpt:
 			'Attracting players is one thing, but keeping them coming back is what builds a true community. Learn how to boost player retention and create a vibrant, active club.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-10-01',
 		content: [
 			{
@@ -265,9 +329,18 @@ export const guideArticles: Guide[] = [
 		titleSlug: generateSlug('Creating your first league on paddlx'),
 		image: '/laptop-showing-league-management-dashboard.jpg',
 		readTime: '6 min read',
+		keywords: [
+			'pickleball league',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		excerpt:
 			'A complete, step-by-step walkthrough of setting up your first pickleball league on the paddlX platform, from initial creation to launching your registration page.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-10-05',
 		content: [
 			{
@@ -332,11 +405,20 @@ export const guideArticles: Guide[] = [
 		titleSlug: generateSlug(
 			'Setting up team registration for fixed-partner leagues'
 		),
+		keywords: [
+			'pickleball registration',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		image: '/people-registering-for-pickleball-tournament.jpg',
 		readTime: '7 min read',
 		excerpt:
 			'Step-by-step guide to creating an efficient team registration process for your fixed-partner league.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-09-27',
 		content: [
 			{
@@ -365,11 +447,20 @@ export const guideArticles: Guide[] = [
 		titleSlug: generateSlug(
 			'The complete guide to running a fixed-partner league'
 		),
+		keywords: [
+			'pickleball league',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		image: '/pickleball-doubles-team-celebrating-on-court.jpg',
 		readTime: '12 min read',
 		excerpt:
 			'Our comprehensive, step-by-step guide to organizing a successful fixed-partner pickleball league, from initial planning and registration to championship day.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-09-28',
 		content: [
 			{
@@ -450,9 +541,18 @@ export const guideArticles: Guide[] = [
 		titleSlug: generateSlug('Managing player registrations and payments'),
 		image: '/online-payment-and-registration-interface.jpg',
 		readTime: '8 min read',
+		keywords: [
+			'pickleball registration',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		excerpt:
 			'Stop chasing payments and deciphering messy spreadsheets. Learn how to streamline your league operations with efficient, automated registration and payment management.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-10-04',
 		content: [
 			{
@@ -500,10 +600,19 @@ export const guideArticles: Guide[] = [
 		title: 'Attracting new members to your pickleball group',
 		titleSlug: generateSlug('Attracting new members to your pickleball group'),
 		image: '/social-media-marketing-for-sports-community.jpg',
+		keywords: [
+			'pickleball group',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		readTime: '8 min read',
 		excerpt:
 			'Is your pickleball group ready to grow? Discover 5 proven, low-cost marketing strategies to attract new players and build a waitlist for your events.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-10-02',
 		content: [
 			{
@@ -554,10 +663,19 @@ export const guideArticles: Guide[] = [
 		title: 'Turning your group into a sustainable business',
 		titleSlug: generateSlug('Turning your group into a sustainable business'),
 		image: '/business-growth-chart-and-revenue-dashboard.jpg',
+		keywords: [
+			'pickleball group',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		readTime: '11 min read',
 		excerpt:
 			'Transform your passion for pickleball into a profitable venture. This guide explores multiple revenue streams to create a sustainable and successful pickleball business.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-09-30',
 		content: [
 			{
@@ -609,11 +727,20 @@ export const guideArticles: Guide[] = [
 		categorySlug: generateSlug('Scheduling'),
 		title: 'Creating balanced schedules for partner leagues',
 		titleSlug: generateSlug('Creating balanced schedules for partner leagues'),
+		keywords: [
+			'pickleball group',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		image: '/calendar-and-schedule-planning-for-sports-league.jpg',
 		readTime: '9 min read',
 		excerpt:
 			'A fair and balanced schedule is the backbone of any successful league. Learn the principles and methods to create pickleball schedules that keep teams happy and engaged.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-09-26',
 		content: [
 			{
@@ -678,10 +805,19 @@ export const guideArticles: Guide[] = [
 		title: 'How to handle team substitutions and absences',
 		titleSlug: generateSlug('How to handle team substitutions and absences'),
 		image: '/pickleball-team-discussing-strategy.jpg',
+		keywords: [
+			'pickleball group',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		readTime: '5 min read',
 		excerpt:
 			'Every league organizer needs a clear and fair sub policy. Learn the best practices for managing player substitutions to prevent forfeits and keep your league competitive.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-09-25',
 		content: [
 			{
@@ -722,6 +858,11 @@ export const guideArticles: Guide[] = [
 		category: 'Guides',
 		categorySlug: generateSlug('Guides'),
 		title: 'How to play pickleball - 9 simple rules for beginners',
+		keywords: [
+			'pickleball group',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		titleSlug: generateSlug(
 			'How to play pickleball - 9 simple rules for beginners'
 		),
@@ -729,7 +870,11 @@ export const guideArticles: Guide[] = [
 		readTime: '9 min read',
 		excerpt:
 			'Your essential guide to learning pickleball. We break down the 9 most important rules every beginner needs to know to get on the court and start playing today.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-10-10',
 		content: [
 			{
@@ -800,6 +945,11 @@ export const guideArticles: Guide[] = [
 		category: 'Guides',
 		categorySlug: generateSlug('Guides'),
 		title: 'What is my pickleball skill rating? Take this quiz to get rated',
+		keywords: [
+			'pickleball group',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		titleSlug: generateSlug(
 			'What is my pickleball skill rating? Take this quiz to get rated'
 		),
@@ -807,7 +957,11 @@ export const guideArticles: Guide[] = [
 		readTime: '5 min read',
 		excerpt:
 			'Unsure of your pickleball skill level? This simple quiz will help you estimate your rating (from 2.0 to 4.5+) so you can find balanced games and the right events.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-10-09',
 		content: [
 			{
@@ -860,11 +1014,20 @@ export const guideArticles: Guide[] = [
 		categorySlug: generateSlug('Guides'),
 		title: 'How to run a fixed-partner league on paddlx',
 		titleSlug: generateSlug('How to run a fixed-partner league on paddlx'),
+		keywords: [
+			'pickleball group',
+			'pickleball tournament',
+			'pickleball management',
+		],
 		image: '/pickleball-doubles-team-playing.jpg',
 		readTime: '7 min read',
 		excerpt:
 			'A focused guide on using the paddlX platform to set up and manage a fixed-partner pickleball league, automating registration, scheduling, and communication.',
-		author: 'paddlX Team',
+		author: {
+			name: 'paddlX Team',
+			avatar: '/paddlx-logo.png',
+			bio: 'The paddlX Team is a group of passionate pickleball enthusiasts who are dedicated to making the game accessible to everyone.',
+		},
 		publishedDate: '2025-10-08',
 		content: [
 			{

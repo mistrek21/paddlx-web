@@ -127,9 +127,24 @@ export function GamesSection() {
 						}
 					},
 					(error) => {
-						console.error('Error getting location:', error);
+						let errorMessage = 'Unable to retrieve location';
+
+						switch (error.code) {
+							case error.PERMISSION_DENIED:
+								errorMessage = 'User denied location permission';
+								break;
+							case error.POSITION_UNAVAILABLE:
+								errorMessage = 'Location information unavailable';
+								break;
+							case error.TIMEOUT:
+								errorMessage = 'Location request timed out';
+								break;
+							default:
+								errorMessage = 'Unknown error occurred';
+						}
+
+						console.error('Geolocation error:', errorMessage, error.message);
 						setIsLoadingLocation(false);
-						// Fallback to Manila coordinates if location fetch fails
 						fetchGamesNearby(14.5995, 120.9842);
 					}
 				);

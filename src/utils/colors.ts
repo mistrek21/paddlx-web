@@ -48,7 +48,7 @@ export const COLORS = {
 	accentLight: '#FF8B6B', // Lighter orange for subtle accents
 
 	// NEW: Unique complementary colors that make sense with teal/orange
-	coral: '#FF7A6B', // Warm coral - bridges orange and pink
+	coral: '#FF6B4A', // coral
 	mint: '#4ECDC4', // Fresh mint - complements teal beautifully
 	sunset: '#FFB347', // Warm sunset orange - extends your orange family
 	ocean: '#006B7D', // Deep ocean teal - darker than primaryDark

@@ -16,6 +16,67 @@ import {
 	Check,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import FAQSection, { FAQ } from '../_components/faq/FaqSection';
+import DynamicCtaSection from '../_components/cta/DynamicCtaSection';
+
+const faqQuestions: FAQ[] = [
+	{
+		id: 1,
+		question: 'What are your fees?',
+		answer:
+			'Free to start. 2.9%+30¢ on transactions. Premium tiers for enterprises include white-label and advanced integrations.',
+		category: 'Coaching',
+	},
+	{
+		id: 2,
+		question: 'Can I handle in-person payments?',
+		answer:
+			'Yes—accept on-site Cash App or QR-wallet via dynamic QR codes tied to events.',
+		category: 'Coaching',
+	},
+	{
+		id: 3,
+		question: 'Are digital waivers legally binding?',
+		answer:
+			'Yes—paddlX waivers are configured to meet your jurisdiction’s eSignature regulations.',
+		category: 'Coaching',
+	},
+	{
+		id: 4,
+		question: 'How does scheduling integrate?',
+		answer:
+			'Auto-sync events with Google Calendar or iCal. Notify members of schedule changes automatically.',
+		category: 'Coaching',
+	},
+	{
+		id: 5,
+		question: 'Can I export data?',
+		answer:
+			'Export CSV or PDF for registrations, payments, attendance, and revenue reports with date filters.',
+		category: 'Coaching',
+	},
+	{
+		id: 6,
+		question: 'How do players find and book me?',
+		answer:
+			"Once you create your coach profile, you'll get a unique public link you can share on social media, in your email signature, or anywhere else. Players in your area can also discover you through our coach directory.",
+		category: 'Coaching',
+	},
+	{
+		id: 7,
+		question: 'Can I set my own prices and availability?',
+		answer:
+			'Yes, you have 100% control. Set your hourly rate for private lessons, define the price per player for clinics, and block off your calendar to show only the times you are available to coach.',
+		category: 'Coaching',
+	},
+	{
+		id: 8,
+		question: 'What are the fees for using the coaching tools?',
+		answer:
+			"It's free to create your profile and list your services. We only make money when you do, by charging a small, transparent platform fee on each paid booking.",
+		category: 'Coaching',
+	},
+];
 
 // SEO Metadata
 export const metadata: Metadata = {
@@ -209,69 +270,22 @@ export default function CoachingPage() {
 				</section>
 
 				{/* FAQ Section */}
-				<section className="bg-slate-50 py-20">
-					<div className="container mx-auto px-6">
-						<div className="text-center mb-12">
-							<h2 className="text-3xl lg:text-4xl font-bold text-dark-slate">
-								Coaching on paddlX: Your Questions
-							</h2>
-						</div>
-						<div className="max-w-3xl mx-auto space-y-4">
-							<details className="p-6 border bg-white border-slate-200 rounded-lg">
-								<summary className="font-bold text-lg cursor-pointer">
-									How do players find and book me?
-								</summary>
-								<p className="text-slate-600 mt-2">
-									Once you create your coach profile, you'll get a unique public link you
-									can share on social media, in your email signature, or anywhere else.
-									Players in your area can also discover you through our coach directory.
-								</p>
-							</details>
-							<details className="p-6 border bg-white border-slate-200 rounded-lg">
-								<summary className="font-bold text-lg cursor-pointer">
-									Can I set my own prices and availability?
-								</summary>
-								<p className="text-slate-600 mt-2">
-									Yes, you have 100% control. Set your hourly rate for private lessons,
-									define the price per player for clinics, and block off your calendar to
-									show only the times you are available to coach.
-								</p>
-							</details>
-							<details className="p-6 border bg-white border-slate-200 rounded-lg">
-								<summary className="font-bold text-lg cursor-pointer">
-									What are the fees for using the coaching tools?
-								</summary>
-								<p className="text-slate-600 mt-2">
-									It's free to create your profile and list your services. We only make
-									money when you do, by charging a small, transparent platform fee on
-									each paid booking.
-								</p>
-							</details>
-						</div>
-					</div>
-				</section>
+				<FAQSection
+					faqs={faqQuestions}
+					title="FAQ"
+					subtitle="Find answers to common questions about running your business"
+					colorScheme="accent"
+				/>
 
-				{/* Final CTA */}
-				<section className="bg-orange-500 text-white py-20">
-					<div className="container mx-auto px-6 text-center">
-						<h2 className="text-3xl lg:text-4xl font-bold mb-4">
-							Ready to Level Up Your Coaching Career?
-						</h2>
-						<p className="text-orange-100 text-lg mb-8 max-w-2xl mx-auto">
-							Create your free coach profile and start building your weekly programming
-							today.
-						</p>
-						<Button
-							asChild
-							size="lg"
-							className="bg-white text-orange-600 hover:bg-slate-100 font-bold py-4 px-8 rounded-full text-lg shadow-2xl transition-transform hover:scale-105"
-						>
-							<Link href="/join">
-								Start Coaching on paddlX <ArrowRight className="ml-2" />
-							</Link>
-						</Button>
-					</div>
-				</section>
+				<DynamicCtaSection
+					buttonHref="/join"
+					buttonText="Start Coaching on paddlX"
+					featureList={['Launch free', 'scale fast', 'grow your business ']}
+					title="Ready to Level Up Your Coaching Career?"
+					subtitle="Create your free coach profile and start building your weekly programming today."
+					// buttonSubtext="No credit card required • Cancel anytime"
+					colorScheme="orange"
+				/>
 			</div>
 		</>
 	);

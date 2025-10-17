@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { DocContent } from '../_other/types';
 import { useSupportModalAdvanced } from '@/src/hooks/useSupportModal';
+import FAQSection from '@/src/app/_components/faq/FaqSection';
 
 interface DocArticleProps {
 	content: DocContent;
