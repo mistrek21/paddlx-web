@@ -4,7 +4,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/src/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { loadStripe } from '@stripe/stripe-js';
 import {
 	CreditCard,
 	Crown,
@@ -17,21 +16,31 @@ import {
 	Shield,
 	Users,
 	TrendingUp,
+	Sparkles,
+	Bot,
+	Palette,
+	Code,
+	AlertCircle,
 } from 'lucide-react';
 import Image from 'next/image';
 import { apiClient } from '@/lib/api-client';
-
-const stripePromise = loadStripe(
-	process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
 
 interface Payment {
 	id: string;
 	amount: number;
 	currency: string;
-	status: string;
+	paymentStatus: string;
+	paymentMethod: string;
+	transactionId: string | null;
+	receiptUrl: string | null;
 	createdAt: string;
-	stripeSessionId: string;
+	paymentGateway: string;
+	booking?: {
+		id: string;
+		court: {
+			name: string;
+		};
+	} | null;
 }
 
 interface UserData {
@@ -42,8 +51,57 @@ interface UserData {
 	surname?: string;
 	avatarUrl?: string;
 	isPremium: boolean;
+	subscriptionPlan: 'BASIC' | 'PREMIUM' | 'PRO';
+	subscriptionEndDate?: string;
 	createdAt: string;
 }
+
+const pricingOptions = [
+	{
+		plan: 'PREMIUM' as const,
+		name: 'Premium',
+		gradient: 'from-orange-500 to-red-500',
+		features: [
+			{ icon: Zap, text: 'Unlimited Games' },
+			{ icon: TrendingUp, text: 'Advanced Stats' },
+			{ icon: Users, text: 'Priority Support' },
+			{ icon: Shield, text: 'Ad-Free Experience' },
+		],
+		prices: [
+			{ duration: '4', label: '4 Weeks', price: 19.99, savings: null },
+			{
+				duration: '52',
+				label: '52 Weeks',
+				price: 199.99,
+				savings: '20% OFF',
+				popular: true,
+			},
+			{ duration: 'monthly', label: 'Monthly', price: 9.99, savings: null },
+		],
+	},
+	{
+		plan: 'PRO' as const,
+		name: 'Pro',
+		gradient: 'from-purple-500 to-pink-500',
+		features: [
+			{ icon: Sparkles, text: 'Everything in Premium' },
+			{ icon: Bot, text: 'AI Match Insights' },
+			{ icon: Palette, text: 'Custom Branding' },
+			{ icon: Code, text: 'API Access' },
+		],
+		prices: [
+			{ duration: '4', label: '4 Weeks', price: 39.99, savings: null },
+			{
+				duration: '52',
+				label: '52 Weeks',
+				price: 399.99,
+				savings: '20% OFF',
+				popular: true,
+			},
+			{ duration: 'monthly', label: 'Monthly', price: 19.99, savings: null },
+		],
+	},
+];
 
 export default function ProfilePage() {
 	const { user, loading: authLoading } = useAuth();
@@ -51,6 +109,9 @@ export default function ProfilePage() {
 	const [payments, setPayments] = useState<Payment[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [checkoutLoading, setCheckoutLoading] = useState(false);
+	const [selectedPlan, setSelectedPlan] = useState<'PREMIUM' | 'PRO'>('PREMIUM');
+	const [apiError, setApiError] = useState<string | null>(null);
+	const [paymentsError, setPaymentsError] = useState<string | null>(null);
 	const router = useRouter();
 
 	useEffect(() => {
@@ -68,13 +129,23 @@ export default function ProfilePage() {
 
 	async function fetchUserData() {
 		try {
-			const response = await fetch(`/api/paddle/users/${user!.id}`);
-			if (response.ok) {
-				const data = await response.json();
-				setUserData(data.user);
-			}
-		} catch (error) {
+			const data = await apiClient(`/api/paddle/profile-users/${user!.id}`, {
+				method: 'GET',
+			});
+			setUserData(data.user);
+			setApiError(null);
+		} catch (error: any) {
 			console.error('Error fetching user data:', error);
+			setApiError(error.message || 'Failed to load user data');
+			// Set fallback user data from Supabase auth
+			setUserData({
+				id: user!.id,
+				username: user!.email?.split('@')[0] || 'User',
+				email: user!.email || '',
+				subscriptionPlan: 'BASIC',
+				isPremium: false,
+				createdAt: new Date().toISOString(),
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -82,34 +153,39 @@ export default function ProfilePage() {
 
 	async function fetchPayments() {
 		try {
-			const response = await fetch(`/api/paddle/users/${user!.id}/payments`);
-			if (response.ok) {
-				const data = await response.json();
-				setPayments(data.payments);
-			}
-		} catch (error) {
+			const data = await apiClient(
+				`/api/paddle/profile-users/${user!.id}/payments`,
+				{
+					method: 'GET',
+				}
+			);
+			setPayments(data.payments);
+			setPaymentsError(null);
+		} catch (error: any) {
 			console.error('Error fetching payments:', error);
+			setPaymentsError(error.message || 'Failed to load payment history');
+			setPayments([]);
 		}
 	}
 
-	async function handleUpgradeToPremium() {
+	async function handleUpgrade(plan: 'PREMIUM' | 'PRO', duration: string) {
 		setCheckoutLoading(true);
 
 		try {
-			const { url } = await apiClient('/api/stripe/checkout', {
+			const { url } = await apiClient('/api/stripe/create-checkout-session', {
 				method: 'POST',
 				body: JSON.stringify({
 					userId: user!.id,
 					userEmail: user!.email,
-					priceId: 'price_xxxxx', // Your Stripe price ID
+					plan,
+					duration,
 				}),
 			});
 
-			if (url) {
-				window.location.href = url;
-			}
-		} catch (error) {
+			if (url) window.location.href = url;
+		} catch (error: any) {
 			console.error('Error:', error);
+			alert(`Failed to start checkout: ${error.message}`);
 		} finally {
 			setCheckoutLoading(false);
 		}
@@ -124,15 +200,54 @@ export default function ProfilePage() {
 	}
 
 	if (!userData) {
-		return null;
+		return (
+			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-slate-100 to-blue-50 px-4">
+				<div className="bg-white rounded-3xl shadow-xl p-8 max-w-md text-center">
+					<AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+					<h2 className="text-2xl font-black text-gray-900 mb-2">
+						Unable to Load Profile
+					</h2>
+					<p className="text-gray-600 mb-6">
+						Please try again or contact support if the problem persists.
+					</p>
+					<button
+						onClick={() => window.location.reload()}
+						className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-full"
+					>
+						Retry
+					</button>
+				</div>
+			</div>
+		);
 	}
+
+	const isBasic = userData.subscriptionPlan === 'BASIC';
+	const daysRemaining = userData.subscriptionEndDate
+		? Math.ceil(
+				(new Date(userData.subscriptionEndDate).getTime() - Date.now()) /
+					(1000 * 60 * 60 * 24)
+		  )
+		: null;
 
 	return (
 		<main className="min-h-screen bg-gradient-to-br from-teal-50 via-slate-100 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
-			<div className="max-w-6xl mx-auto">
+			<div className="max-w-7xl mx-auto">
+				{/* API Error Alert */}
+				{apiError && (
+					<div className="mb-6 bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
+						<AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 shrink-0" />
+						<div>
+							<p className="font-bold text-yellow-900">Limited Profile Data</p>
+							<p className="text-sm text-yellow-700">
+								{apiError}. Showing basic information from your account.
+							</p>
+						</div>
+					</div>
+				)}
+
 				{/* Header */}
 				<div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
-					<div className="flex items-start justify-between">
+					<div className="flex items-start justify-between flex-wrap gap-4">
 						<div className="flex items-center gap-6">
 							{userData.avatarUrl ? (
 								<Image
@@ -167,10 +282,25 @@ export default function ProfilePage() {
 
 						{/* Subscription Badge */}
 						<div>
-							{userData.isPremium ? (
-								<div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-6 py-3 rounded-full shadow-lg">
+							{userData.subscriptionPlan === 'PRO' ? (
+								<div className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full shadow-lg">
 									<Crown className="w-6 h-6" />
-									<span className="font-bold text-lg">Premium Member</span>
+									<div>
+										<span className="font-bold text-lg">Pro Member</span>
+										{daysRemaining && (
+											<p className="text-xs opacity-90">{daysRemaining} days remaining</p>
+										)}
+									</div>
+								</div>
+							) : userData.subscriptionPlan === 'PREMIUM' ? (
+								<div className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-full shadow-lg">
+									<Crown className="w-6 h-6" />
+									<div>
+										<span className="font-bold text-lg">Premium Member</span>
+										{daysRemaining && (
+											<p className="text-xs opacity-90">{daysRemaining} days remaining</p>
+										)}
+									</div>
 								</div>
 							) : (
 								<div className="flex items-center gap-2 bg-gray-200 text-gray-700 px-6 py-3 rounded-full">
@@ -185,84 +315,112 @@ export default function ProfilePage() {
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 					{/* Main Content */}
 					<div className="lg:col-span-2 space-y-8">
-						{/* Subscription Status */}
-						{!userData.isPremium && (
-							<div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-3xl shadow-xl p-8 border-2 border-orange-200">
-								<div className="flex items-start gap-4 mb-6">
-									<div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-										<Crown className="w-8 h-8 text-white" />
-									</div>
-									<div className="flex-1">
-										<h2 className="text-2xl font-black text-gray-900 mb-2">
-											Upgrade to Premium
-										</h2>
-										<p className="text-gray-600">
-											Get access to exclusive features at a better price than our mobile
-											app!
+						{/* Pricing Plans - ALWAYS SHOW */}
+						<div className="bg-white rounded-3xl shadow-xl p-8">
+							<h2 className="text-3xl font-black text-gray-900 mb-2">
+								{isBasic ? 'Choose Your Plan' : 'Upgrade Your Plan'}
+							</h2>
+							<p className="text-gray-600 mb-6">
+								{isBasic
+									? 'Unlock premium features and take your game to the next level'
+									: 'Switch to a different plan or extend your subscription'}
+							</p>
+
+							{/* Plan Selector */}
+							<div className="flex gap-4 mb-8">
+								{pricingOptions.map((option) => (
+									<button
+										key={option.plan}
+										onClick={() => setSelectedPlan(option.plan)}
+										className={`flex-1 p-6 rounded-2xl border-2 transition-all ${
+											selectedPlan === option.plan
+												? `border-transparent bg-gradient-to-br ${option.gradient} text-white shadow-lg`
+												: 'border-gray-200 hover:border-gray-300'
+										}`}
+									>
+										<Crown className="w-8 h-8 mb-2" />
+										<h3 className="text-2xl font-black mb-2">{option.name}</h3>
+										<p
+											className={
+												selectedPlan === option.plan ? 'text-white/90' : 'text-gray-600'
+											}
+										>
+											{option.plan === 'PREMIUM' ? 'Most Popular' : 'Best Value'}
 										</p>
-									</div>
-								</div>
-
-								<div className="grid grid-cols-2 gap-4 mb-6">
-									<div className="flex items-start gap-3">
-										<Zap className="w-5 h-5 text-orange-600 mt-0.5" />
-										<div>
-											<p className="font-bold text-gray-900">Unlimited Games</p>
-											<p className="text-sm text-gray-600">Create unlimited sessions</p>
-										</div>
-									</div>
-									<div className="flex items-start gap-3">
-										<Users className="w-5 h-5 text-orange-600 mt-0.5" />
-										<div>
-											<p className="font-bold text-gray-900">Priority Support</p>
-											<p className="text-sm text-gray-600">24/7 premium support</p>
-										</div>
-									</div>
-									<div className="flex items-start gap-3">
-										<TrendingUp className="w-5 h-5 text-orange-600 mt-0.5" />
-										<div>
-											<p className="font-bold text-gray-900">Advanced Stats</p>
-											<p className="text-sm text-gray-600">Detailed analytics</p>
-										</div>
-									</div>
-									<div className="flex items-start gap-3">
-										<Shield className="w-5 h-5 text-orange-600 mt-0.5" />
-										<div>
-											<p className="font-bold text-gray-900">Ad-Free</p>
-											<p className="text-sm text-gray-600">No advertisements</p>
-										</div>
-									</div>
-								</div>
-
-								<div className="bg-white rounded-2xl p-6 mb-6">
-									<div className="flex items-baseline gap-2 mb-2">
-										<span className="text-5xl font-black text-gray-900">$9.99</span>
-										<span className="text-gray-600">/month</span>
-									</div>
-									<p className="text-sm text-green-600 font-bold">
-										Save $2/month vs. mobile app pricing!
-									</p>
-								</div>
-
-								<button
-									onClick={handleUpgradeToPremium}
-									disabled={checkoutLoading}
-									className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 px-6 rounded-full shadow-lg hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-								>
-									{checkoutLoading ? (
-										<>
-											<Loader2 className="w-5 h-5 animate-spin" />
-											Processing...
-										</>
-									) : (
-										<>
-											<Crown className="w-5 h-5" />
-											Upgrade Now
-										</>
-									)}
-								</button>
+									</button>
+								))}
 							</div>
-						)}
+
+							{/* Selected Plan Details */}
+							{pricingOptions
+								.filter((opt) => opt.plan === selectedPlan)
+								.map((selectedOption) => (
+									<div key={selectedOption.plan}>
+										{/* Features */}
+										<div className="grid grid-cols-2 gap-4 mb-8">
+											{selectedOption.features.map((feature, idx) => (
+												<div key={idx} className="flex items-start gap-3">
+													<feature.icon className="w-5 h-5 text-teal-600 mt-0.5 shrink-0" />
+													<span className="font-semibold text-gray-900">{feature.text}</span>
+												</div>
+											))}
+										</div>
+
+										{/* Price Options */}
+										<div className="space-y-4">
+											{selectedOption.prices.map((price) => (
+												<div
+													key={price.duration}
+													className={`relative p-6 rounded-2xl border-2 transition-all ${
+														price.popular
+															? 'border-teal-500 bg-teal-50'
+															: 'border-gray-200 hover:border-teal-300'
+													}`}
+												>
+													{price.popular && (
+														<span className="absolute top-4 right-4 bg-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+															BEST VALUE
+														</span>
+													)}
+													<div className="flex items-center justify-between">
+														<div>
+															<h4 className="text-xl font-bold text-gray-900">
+																{price.label}
+															</h4>
+															<div className="flex items-baseline gap-2 mt-1">
+																<span className="text-3xl font-black text-gray-900">
+																	${price.price}
+																</span>
+																{price.duration === 'monthly' && (
+																	<span className="text-gray-600">/month</span>
+																)}
+															</div>
+															{price.savings && (
+																<span className="text-sm text-green-600 font-bold">
+																	{price.savings}
+																</span>
+															)}
+														</div>
+														<button
+															onClick={() =>
+																handleUpgrade(selectedOption.plan, price.duration)
+															}
+															disabled={checkoutLoading}
+															className={`bg-gradient-to-r ${selectedOption.gradient} text-white font-bold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all disabled:opacity-50`}
+														>
+															{checkoutLoading ? (
+																<Loader2 className="w-5 h-5 animate-spin" />
+															) : (
+																'Select'
+															)}
+														</button>
+													</div>
+												</div>
+											))}
+										</div>
+									</div>
+								))}
+						</div>
 
 						{/* Payment History */}
 						<div className="bg-white rounded-3xl shadow-xl p-8">
@@ -273,10 +431,29 @@ export default function ProfilePage() {
 								<h2 className="text-2xl font-black text-gray-900">Payment History</h2>
 							</div>
 
-							{payments.length === 0 ? (
+							{paymentsError ? (
+								<div className="bg-red-50 border-2 border-red-200 rounded-2xl p-6 flex items-start gap-3">
+									<AlertCircle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
+									<div>
+										<p className="font-bold text-red-900">
+											Unable to Load Payment History
+										</p>
+										<p className="text-sm text-red-700 mt-1">{paymentsError}</p>
+										<button
+											onClick={fetchPayments}
+											className="mt-3 text-sm text-red-600 hover:text-red-700 font-bold underline"
+										>
+											Try Again
+										</button>
+									</div>
+								</div>
+							) : payments.length === 0 ? (
 								<div className="text-center py-12">
 									<CreditCard className="w-16 h-16 text-gray-300 mx-auto mb-4" />
 									<p className="text-gray-500 text-lg">No payment history yet</p>
+									<p className="text-gray-400 text-sm mt-2">
+										Your transactions will appear here
+									</p>
 								</div>
 							) : (
 								<div className="space-y-4">
@@ -291,7 +468,7 @@ export default function ProfilePage() {
 												</div>
 												<div>
 													<p className="font-bold text-gray-900">
-														${payment.amount.toFixed(2)} {payment.currency.toUpperCase()}
+														${payment.amount.toFixed(2)} {payment.currency}
 													</p>
 													<div className="flex items-center gap-2 mt-1">
 														<Calendar className="w-4 h-4 text-gray-400" />
@@ -303,19 +480,42 @@ export default function ProfilePage() {
 															})}
 														</p>
 													</div>
+													{payment.booking ? (
+														<p className="text-xs text-gray-500 mt-1">
+															Booking: {payment.booking.court.name}
+														</p>
+													) : (
+														<p className="text-xs text-gray-500 mt-1">Subscription Payment</p>
+													)}
 												</div>
 											</div>
-											<div>
-												{payment.status === 'completed' ? (
+											<div className="flex flex-col items-end gap-2">
+												{payment.paymentStatus === 'PAID' ||
+												payment.paymentStatus === 'COMPLETED' ? (
 													<span className="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full font-bold text-sm">
 														<CheckCircle className="w-4 h-4" />
 														Completed
 													</span>
-												) : (
+												) : payment.paymentStatus === 'FAILED' ? (
 													<span className="flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-full font-bold text-sm">
 														<XCircle className="w-4 h-4" />
-														{payment.status}
+														Failed
 													</span>
+												) : (
+													<span className="flex items-center gap-2 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full font-bold text-sm">
+														<Loader2 className="w-4 h-4" />
+														{payment.paymentStatus}
+													</span>
+												)}
+												{payment.receiptUrl && (
+													<a
+														href={payment.receiptUrl}
+														target="_blank"
+														rel="noopener noreferrer"
+														className="text-xs text-teal-600 hover:text-teal-700 font-medium"
+													>
+														View Receipt →
+													</a>
 												)}
 											</div>
 										</div>

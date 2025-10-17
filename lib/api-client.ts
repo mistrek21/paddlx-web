@@ -8,8 +8,8 @@ export async function apiClient(endpoint: string, options: RequestInit = {}) {
 		...options,
 		headers: {
 			'Content-Type': 'application/json',
-			'x-api-secret': API_SECRET,
-			...options.headers,
+			// 'x-api-secret': API_SECRET,
+			// ...options.headers,
 		},
 	});
 
