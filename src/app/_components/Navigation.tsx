@@ -32,10 +32,15 @@ import {
 	ArrowRight,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useMobileAppModal } from '@/src/hooks/useMobileAppModal'; // 1. Import the hook
+import { UserProfileDropdown } from '../profile/_components/UserProfileDropdown';
+import { useAuth } from '@/src/hooks/useAuth';
+import { useMobileAppModal } from '@/src/hooks/useMobileAppModal';
+// import { useMobileAppModal } from '@/src/hooks/useMobileAppModal'; // 1. Import the hook
 
 const Navigation = ({ offset = 0, compact = false }) => {
-	const { openModal, ModalComponent } = useMobileAppModal(); // 2. Instantiate the hook
+	// const { openModal, ModalComponent } = useMobileAppModal(); // 2. Instantiate the hook
+	const { user, loading } = useAuth(); // Add this
+	const { openModal, ModalComponent } = useMobileAppModal();
 
 	const playItems = [
 		{
@@ -396,7 +401,7 @@ const Navigation = ({ offset = 0, compact = false }) => {
 	return (
 		<>
 			{/* 4. Render the modal component */}
-			<ModalComponent />
+			{/* <ModalComponent /> */}
 			<nav
 				style={{
 					top: offset,
@@ -564,26 +569,31 @@ const Navigation = ({ offset = 0, compact = false }) => {
 						</NavigationMenu>
 					</div>
 
-					{/* Auth Buttons */}
+					{/* Auth Buttons - UPDATED */}
 					<div className="flex items-center gap-4">
-						{/* 3. Add onClick handler */}
-						<button
-							onClick={() => openModal('log in')}
-							className={`text-sm font-bold transition-colors cursor-pointer ${
-								compact
-									? 'text-gray-900 hover:text-cyan-600'
-									: 'text-gray-900 hover:text-cyan-400'
-							}`}
-						>
-							Log in
-						</button>
-						{/* 3. Add onClick handler */}
-						<Button
-							onClick={() => openModal('join for free')}
-							className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transition-all cursor-pointer"
-						>
-							Join for free
-						</Button>
+						{loading ? (
+							<div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
+						) : user ? (
+							<UserProfileDropdown user={user} compact={compact} />
+						) : (
+							<>
+								<Link
+									href="/login"
+									className={`text-sm font-bold transition-colors cursor-pointer ${
+										compact
+											? 'text-gray-900 hover:text-cyan-600'
+											: 'text-gray-900 hover:text-cyan-400'
+									}`}
+								>
+									Log in
+								</Link>
+								<Link href="/join">
+									<Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transition-all cursor-pointer">
+										Join for free
+									</Button>
+								</Link>
+							</>
+						)}
 					</div>
 				</div>
 			</nav>

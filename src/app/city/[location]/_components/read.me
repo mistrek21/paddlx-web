@@ -74,3 +74,21 @@ app/
 │               ├── route.ts          // Full data (cached)
 │               └── stats/
 │                   └── route.ts      // Stats only (fresh)
+
+
+
+┌─────────────────────────────────────┐
+│   Next.js Frontend (Vercel)        │
+│   - Supabase Auth only              │
+│   - No database connection          │
+│   - API calls to external backend   │
+└─────────────────────────────────────┘
+              ↓ HTTP/REST
+┌─────────────────────────────────────┐
+│   External Backend API              │
+│   (e.g., separate Next.js/Express)  │
+│   - Prisma + PostgreSQL             │
+│   - Stripe API keys                 │
+│   - All business logic              │
+│   - Database operations             │
+└─────────────────────────────────────┘

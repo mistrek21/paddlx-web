@@ -61,7 +61,8 @@ export default function LoginPage() {
 				if (response.status === 404) {
 					// User doesn't exist in your database, redirect to onboarding
 					router.push(
-						`/onboarding?email=${authData.user.email}&id=${authData.user.id}`
+						'profile'
+						// `/onboarding?email=${authData.user.email}&id=${authData.user.id}`
 					);
 				} else {
 					// Successful login, redirect to dashboard
