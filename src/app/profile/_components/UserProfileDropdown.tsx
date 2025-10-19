@@ -135,7 +135,7 @@ export function UserProfileDropdown({
 					<div className="py-2">
 						<button
 							onClick={() => {
-								router.push(`/profile/${userData?.username || user.id}`);
+								router.push(`/profile`);
 								setIsOpen(false);
 							}}
 							className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-teal-50 transition-colors text-left"
@@ -146,7 +146,7 @@ export function UserProfileDropdown({
 
 						<button
 							onClick={() => {
-								router.push('/dashboard');
+								router.push('/profile/dashboard');
 								setIsOpen(false);
 							}}
 							className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-teal-50 transition-colors text-left"
@@ -157,7 +157,7 @@ export function UserProfileDropdown({
 
 						<button
 							onClick={() => {
-								router.push('/my-games');
+								router.push('/profile/my-games');
 								setIsOpen(false);
 							}}
 							className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-teal-50 transition-colors text-left"
@@ -168,7 +168,7 @@ export function UserProfileDropdown({
 
 						<button
 							onClick={() => {
-								router.push('/my-groups');
+								router.push('/profile/my-groups');
 								setIsOpen(false);
 							}}
 							className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-teal-50 transition-colors text-left"
@@ -179,7 +179,7 @@ export function UserProfileDropdown({
 
 						<button
 							onClick={() => {
-								router.push('/settings');
+								router.push('/profile/settings');
 								setIsOpen(false);
 							}}
 							className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-teal-50 transition-colors text-left"

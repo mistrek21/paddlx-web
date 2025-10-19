@@ -178,7 +178,13 @@ export default function JoinPage() {
 		<main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-50 via-slate-100 to-blue-50 px-4 py-8">
 			<div className="mx-auto w-full max-w-md rounded-2xl bg-white shadow-xl p-8 md:p-10">
 				<div className="flex justify-center mb-6">
-					<Image src="/paddlX-logo.png" width={48} height={48} alt="paddlX" />
+					<Image
+						src="/paddlx-logo-no-text.png"
+						width={200}
+						height={200}
+						alt="paddlX"
+						className="rounded-full"
+					/>
 				</div>
 				<h1 className="text-3xl font-extrabold text-center mb-4 text-teal-600">
 					Sign up for paddlX

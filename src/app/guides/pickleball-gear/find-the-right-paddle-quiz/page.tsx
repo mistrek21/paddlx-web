@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function PaddleQuizPage() {
 	return (
 		<div className="bg-gradient-to-br from-sand/20 via-white to-ocean/10 min-h-screen">
-			<div className="max-w-4xl mx-auto px-4 py-16 sm:py-24 text-center">
+			<div className="max-w-7xl mx-auto px-4 py-16 sm:py-24 text-center">
 				{/* Breadcrumb */}
 				<nav className="text-sm mb-4 text-slate-500">
 					<Link href="/" className="hover:text-ocean">

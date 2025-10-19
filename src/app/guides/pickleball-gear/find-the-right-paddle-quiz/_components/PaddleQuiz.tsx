@@ -5,652 +5,55 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
 	CheckCircle2,
 	RefreshCcw,
-	Zap,
-	Shield,
 	Star,
 	Ruler,
 	Weight,
 	Hand,
 	Brain,
 	Info,
-	DollarSign,
 	Award,
 	Target,
 	Sparkles,
+	Shield,
+	Zap,
+	Wind,
+	ChevronUp,
+	ChevronDown,
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-// Types
-type AnswerValue =
-	| 'beginner'
-	| 'intermediate'
-	| 'advanced'
-	| 'no-issues'
-	| 'minor-issues'
-	| 'arm-issues'
-	| 'tennis'
-	| 'some-racquet'
-	| 'first-racquet'
-	| 'power'
-	| 'control'
-	| 'all-court'
-	| 'defense'
-	| 'drives-volleys'
-	| 'dinks-drops'
-	| 'spin-placement'
-	| 'returns-resets'
-	| 'light'
-	| 'mid'
-	| 'heavy'
-	| 'auto'
-	| 'baseline'
-	| 'kitchen'
-	| 'mid-court'
-	| 'everywhere'
-	| 'more-power'
-	| 'more-control'
-	| 'more-spin'
-	| 'more-forgiveness';
-
-type Paddle = {
-	id: string;
-	name: string;
-	brand: string;
-	price: number;
-	image: string;
-	weight: string;
-	core_thickness: string;
-	surface: string;
-	shape: string;
-	handle_length: string;
-	grip_circumference: string;
-	power_rating: number;
-	control_rating: number;
-	spin_rating: number;
-	forgiveness_rating: number;
-	skill_level: string[];
-	description: string;
-	key_features: string[];
-	best_for: string[];
-	pros: string[];
-	cons: string[];
-};
-
-type Question = {
-	id: number;
-	section:
-		| 'Skill'
-		| 'Physical'
-		| 'Background'
-		| 'Style'
-		| 'Shots'
-		| 'Weight'
-		| 'Position'
-		| 'Priority';
-	question: string;
-	helper?: string;
-	options: { text: string; value: AnswerValue; hint?: string }[];
-};
-
-type ResultSpec = {
-	Icon: any;
-	title: string;
-	description: string;
-	specSummary: string;
-	specs: {
-		weight: string;
-		core: string;
-		surface: string;
-		shape: string;
-	};
-	topPicks: Paddle[];
-	avoid?: string[];
-	nextSteps?: string[];
-};
-
-// Paddle Database
-const PADDLE_DATABASE: Record<string, Paddle[]> = {
-	'power': [
-		{
-			id: 'crbn-1x-power',
-			name: 'CRBN 1X Power Series',
-			brand: 'CRBN',
-			price: 229.99,
-			image: '/api/placeholder/300/200',
-			weight: '7.8-8.3 oz',
-			core_thickness: '13mm/14mm',
-			surface: 'Raw T700 Carbon Fiber',
-			shape: 'Elongated',
-			handle_length: '5.5"',
-			grip_circumference: '4.25"',
-			power_rating: 9,
-			control_rating: 7,
-			spin_rating: 9,
-			forgiveness_rating: 6,
-			skill_level: ['intermediate', 'advanced'],
-			description:
-				'Tour-level power paddle with raw carbon face for explosive drives and spin. Features UNIBODY design for durability.',
-			key_features: [
-				'Raw carbon fiber face for maximum spin',
-				'Elongated shape for reach and power',
-				'Foam-injected edges for stability',
-				'UNIBODY construction eliminates weak points',
-			],
-			best_for: [
-				'Power baseline play',
-				'Aggressive net finishing',
-				'Tournament competition',
-			],
-			pros: [
-				'Explosive power',
-				'Excellent spin generation',
-				'Durable construction',
-				'Pro-level performance',
-			],
-			cons: [
-				'Smaller sweet spot',
-				'Less forgiving on mishits',
-				'Premium price point',
-			],
-		},
-		{
-			id: 'joola-perseus-14mm',
-			name: 'JOOLA Perseus Pro IV 14mm',
-			brand: 'JOOLA',
-			price: 199.95,
-			image: '/api/placeholder/300/200',
-			weight: '7.9-8.3 oz',
-			core_thickness: '14mm',
-			surface: 'Textured Carbon Fiber',
-			shape: 'Elongated',
-			handle_length: '5.5"',
-			grip_circumference: '4.25"',
-			power_rating: 10,
-			control_rating: 7,
-			spin_rating: 8,
-			forgiveness_rating: 6,
-			skill_level: ['advanced'],
-			description:
-				'Ben Johns signature paddle with explosive power. Features TechFlex Power technology for optimized energy transfer.',
-			key_features: [
-				'TechFlex Power (TFP) technology',
-				'Propulsion core for explosive power',
-				'Hyper-Foam edge wall',
-				'Textured carbon surface for spin',
-			],
-			best_for: [
-				'Aggressive baseline play',
-				'Power finishing shots',
-				'Tournament level competition',
-			],
-			pros: [
-				'Maximum power output',
-				'Pro-level performance',
-				'Good spin capability',
-				'Tour-proven design',
-			],
-			cons: [
-				'Less forgiving',
-				'Requires advanced technique',
-				'Can overhit easily',
-			],
-		},
-		{
-			id: 'engage-pursuit-pro-mx',
-			name: 'Engage Pursuit Pro MX',
-			brand: 'Engage',
-			price: 207.99,
-			image: '/api/placeholder/300/200',
-			weight: '7.8-8.2 oz',
-			core_thickness: '12.7mm',
-			surface: 'Raw T700 Carbon Fiber',
-			shape: 'Elongated',
-			handle_length: '5.875"',
-			grip_circumference: '4.25"',
-			power_rating: 9,
-			control_rating: 7,
-			spin_rating: 9,
-			forgiveness_rating: 7,
-			skill_level: ['intermediate', 'advanced'],
-			description:
-				'Premium power paddle with Variable Release 2.0 technology. Excellent for players seeking power with spin.',
-			key_features: [
-				'Variable Release 2.0 technology',
-				'Raw Toray T700 carbon surface',
-				'MachPro polymer core',
-				'Vortex Barrier Edge technology',
-			],
-			best_for: ['Power with spin', 'Aggressive net play', 'All-court power'],
-			pros: [
-				'Excellent power and spin',
-				'Quality construction',
-				'Good reach',
-				'Proven performance',
-			],
-			cons: [
-				'Premium pricing',
-				'Less forgiving than control paddles',
-				'May be too powerful for beginners',
-			],
-		},
-	],
-	'control': [
-		{
-			id: 'selkirk-luxx-control',
-			name: 'Selkirk LUXX Control Air',
-			brand: 'Selkirk',
-			price: 249.99,
-			image: '/api/placeholder/300/200',
-			weight: '7.8-8.1 oz',
-			core_thickness: '20mm',
-			surface: 'Florek Carbon Fiber',
-			shape: 'Invikta (Elongated)',
-			handle_length: '5.35"',
-			grip_circumference: '4.25"',
-			power_rating: 7,
-			control_rating: 10,
-			spin_rating: 8,
-			forgiveness_rating: 10,
-			skill_level: ['intermediate', 'advanced'],
-			description:
-				'Ultimate control paddle with massive sweet spot. Thermoformed construction with 20mm core for maximum forgiveness.',
-			key_features: [
-				'20mm X7 Thikset Honeycomb core',
-				'Florek Carbon Fiber face',
-				'360° Proto Molding construction',
-				'Aero-DuraEdge Edgeless technology',
-			],
-			best_for: ['Precision placement', 'Dink battles', 'Consistent touch shots'],
-			pros: [
-				'Massive sweet spot',
-				'Excellent control',
-				'Premium feel',
-				'Very forgiving',
-			],
-			cons: [
-				'Expensive',
-				'Less power than competitors',
-				'May feel too controlled for power players',
-			],
-		},
-		{
-			id: 'joola-perseus-16mm',
-			name: 'JOOLA Perseus Pro IV 16mm',
-			brand: 'JOOLA',
-			price: 199.95,
-			image: '/api/placeholder/300/200',
-			weight: '7.9-8.3 oz',
-			core_thickness: '16mm',
-			surface: 'Textured Carbon Fiber',
-			shape: 'Elongated',
-			handle_length: '5.5"',
-			grip_circumference: '4.25"',
-			power_rating: 8,
-			control_rating: 9,
-			spin_rating: 8,
-			forgiveness_rating: 8,
-			skill_level: ['intermediate', 'advanced'],
-			description:
-				'Balanced control version of the Perseus with 16mm core for softer feel and better touch around the net.',
-			key_features: [
-				'16mm Propulsion core',
-				'TechFlex Power technology',
-				'Textured carbon surface',
-				'Enhanced dwell time',
-			],
-			best_for: ['All-court control', 'Touch shots', 'Balanced power and control'],
-			pros: [
-				'Great balance of power/control',
-				'Good spin',
-				'Quality construction',
-				'Proven tour paddle',
-			],
-			cons: [
-				'Still requires skill to master',
-				'Premium price',
-				'May lack power for some',
-			],
-		},
-	],
-	'all-court': [
-		{
-			id: 'paddletek-bantam-tko',
-			name: 'Paddletek Bantam TKO-C',
-			brand: 'Paddletek',
-			price: 249.99,
-			image: '/api/placeholder/300/200',
-			weight: '7.8-8.2 oz',
-			core_thickness: '12.7mm/14.3mm',
-			surface: 'PT-700 Raw Carbon Fiber',
-			shape: 'Elongated',
-			handle_length: '5.25"',
-			grip_circumference: '4.25"',
-			power_rating: 9,
-			control_rating: 8,
-			spin_rating: 9,
-			forgiveness_rating: 8,
-			skill_level: ['intermediate', 'advanced'],
-			description:
-				'Designed with pro Christian Alshon for balanced power and control. Excellent for all-court play.',
-			key_features: [
-				'PT-700 unidirectional raw carbon',
-				'Bantam PolyCore with Quick Response',
-				'Two thickness options',
-				'Professional design input',
-			],
-			best_for: [
-				'All-court versatility',
-				'Power with control',
-				'Intermediate to advanced play',
-			],
-			pros: [
-				'Great balance',
-				'Excellent spin',
-				'Durable construction',
-				'Versatile performance',
-			],
-			cons: [
-				'Premium price',
-				'Slightly head-heavy',
-				'May be too powerful for beginners',
-			],
-		},
-		{
-			id: 'engage-pursuit-pro-ex',
-			name: 'Engage Pursuit Pro EX 6.0',
-			brand: 'Engage',
-			price: 207.99,
-			image: '/api/placeholder/300/200',
-			weight: '7.8-8.2 oz',
-			core_thickness: '15.2mm',
-			surface: 'Raw T700 Carbon Fiber',
-			shape: 'Standard',
-			handle_length: '5.875"',
-			grip_circumference: '4.25"',
-			power_rating: 8,
-			control_rating: 8,
-			spin_rating: 8,
-			forgiveness_rating: 8,
-			skill_level: ['intermediate', 'advanced'],
-			description:
-				'Balanced all-court paddle with standard shape for maximum maneuverability and consistent performance.',
-			key_features: [
-				'Standard shape for balance',
-				'16mm MachPro core',
-				'Raw carbon surface',
-				'Variable Release 2.0',
-			],
-			best_for: [
-				'Balanced gameplay',
-				'All-court versatility',
-				'Consistent performance',
-			],
-			pros: [
-				'Well-balanced specs',
-				'Good for multiple playing styles',
-				'Quality construction',
-				'Proven design',
-			],
-			cons: [
-				'Jack of all trades approach',
-				'Premium pricing',
-				'May not excel in specific areas',
-			],
-		},
-	],
-	'beginner': [
-		{
-			id: 'selkirk-luxx-epic',
-			name: 'Selkirk LUXX Control Air Epic',
-			brand: 'Selkirk',
-			price: 249.99,
-			image: '/api/placeholder/300/200',
-			weight: '7.8-8.1 oz',
-			core_thickness: '20mm',
-			surface: 'Florek Carbon Fiber',
-			shape: 'Standard (Epic)',
-			handle_length: '5.35"',
-			grip_circumference: '4.25"',
-			power_rating: 6,
-			control_rating: 10,
-			spin_rating: 7,
-			forgiveness_rating: 10,
-			skill_level: ['beginner', 'intermediate'],
-			description:
-				'Most forgiving paddle available with massive sweet spot. Standard shape provides maximum stability for developing players.',
-			key_features: [
-				'Massive 20mm sweet spot',
-				'Standard shape for stability',
-				'Thermoformed construction',
-				'Premium materials',
-			],
-			best_for: [
-				'Learning fundamentals',
-				'Consistent contact',
-				'Building confidence',
-			],
-			pros: [
-				'Most forgiving',
-				'Large sweet spot',
-				'Premium quality',
-				'Great for learning',
-			],
-			cons: ['Expensive for beginners', 'Less power', 'May outgrow quickly'],
-		},
-	],
-};
-
-// Questions (same as before)
-const questions: Question[] = [
-	{
-		id: 1,
-		section: 'Skill',
-		question: 'What best describes your current pickleball skill level?',
-		helper: 'Use the USA Pickleball rating system as reference.',
-		options: [
-			{
-				text: 'Beginner (1.0–2.5): learning rules and strokes',
-				value: 'beginner',
-			},
-			{
-				text: 'Intermediate (3.0–3.5): consistent with basic shots',
-				value: 'intermediate',
-			},
-			{
-				text: 'Advanced (4.0+): strong fundamentals and strategy',
-				value: 'advanced',
-			},
-		],
-	},
-	{
-		id: 2,
-		section: 'Physical',
-		question: 'Which statement best describes your arm/shoulder comfort?',
-		options: [
-			{ text: 'No issues — strong and healthy', value: 'no-issues' },
-			{ text: 'Some fatigue or minor joint concerns', value: 'minor-issues' },
-			{ text: 'Frequent pain or recovering from injury', value: 'arm-issues' },
-		],
-	},
-	{
-		id: 3,
-		section: 'Background',
-		question: 'What is your racquet sport background?',
-		options: [
-			{ text: 'Extensive tennis/badminton/squash background', value: 'tennis' },
-			{ text: 'Some racquet sport experience', value: 'some-racquet' },
-			{ text: 'Pickleball is my first racquet sport', value: 'first-racquet' },
-		],
-	},
-	{
-		id: 4,
-		section: 'Style',
-		question: 'How do you prefer to win points?',
-		options: [
-			{ text: 'Aggressive power and fast pace', value: 'power' },
-			{ text: 'Strategic placement and soft game control', value: 'control' },
-			{ text: 'Balanced — adapt to the situation', value: 'all-court' },
-			{ text: 'Defensive consistency — outlast opponents', value: 'defense' },
-		],
-	},
-	{
-		id: 5,
-		section: 'Shots',
-		question: 'Which shots feel most effective or enjoyable?',
-		options: [
-			{ text: 'Hard drives and put-away volleys', value: 'drives-volleys' },
-			{ text: 'Precise dinks and third-shot drops', value: 'dinks-drops' },
-			{ text: 'Spinny rolls and deceptive placement', value: 'spin-placement' },
-			{ text: 'Consistent returns and resets', value: 'returns-resets' },
-		],
-	},
-	{
-		id: 6,
-		section: 'Weight',
-		question: 'What paddle weight feel do you prefer?',
-		helper: 'Lighter = faster hands, heavier = more plow-through.',
-		options: [
-			{ text: 'Light and maneuverable (under ~7.5 oz)', value: 'light' },
-			{ text: 'Balanced feel (7.5–8.2 oz)', value: 'mid' },
-			{ text: 'Solid and substantial (8.2+ oz)', value: 'heavy' },
-			{ text: 'Not sure — choose for me based on my answers', value: 'auto' },
-		],
-	},
-	{
-		id: 7,
-		section: 'Position',
-		question: 'Where do you feel most confident on court?',
-		options: [
-			{ text: 'Baseline — drives and deep returns', value: 'baseline' },
-			{ text: 'Kitchen — dinks and hand battles', value: 'kitchen' },
-			{ text: 'Mid-court — transition and resets', value: 'mid-court' },
-			{ text: 'Comfortable everywhere', value: 'everywhere' },
-		],
-	},
-	{
-		id: 8,
-		section: 'Priority',
-		question: 'What would benefit your game the most right now?',
-		options: [
-			{ text: 'More power to finish points', value: 'more-power' },
-			{ text: 'More control for consistency', value: 'more-control' },
-			{ text: 'More spin for variety', value: 'more-spin' },
-			{ text: 'More forgiveness (bigger sweet spot)', value: 'more-forgiveness' },
-		],
-	},
-];
-
-// Core archetype definitions
-const archetypes: Record<
-	'power' | 'control' | 'all-court' | 'defense',
-	ResultSpec
-> = {
-	'power': {
-		Icon: Zap,
-		title: "You're a Power Player!",
-		description:
-			'Thrives on aggressive pace and put-aways. Prefers pop, drive penetration, and quick finishes.',
-		specSummary:
-			'Elongated shape, thinner core, stiffer face, mid-to-heavy weight.',
-		specs: {
-			weight: '7.8–8.4 oz',
-			core: '11–14mm (more pop)',
-			surface: 'Raw carbon/graphite (spin & stiffness)',
-			shape: 'Elongated for reach',
-		},
-		topPicks: PADDLE_DATABASE.power,
-		avoid: [
-			'Ultra-light builds that reduce put-away power',
-			'Overly thick cores that dampen pop',
-		],
-		nextSteps: [
-			'Practice compact swings on drives to keep balls in',
-			'Add lead tape at 3/9 for stability if needed',
-		],
-	},
-	'control': {
-		Icon: Shield,
-		title: "You're a Control Maestro!",
-		description:
-			'Wins with precision, patience, and soft hands. Prefers feel, stability, and forgiveness.',
-		specSummary: 'Widebody, thick core, softer face, light-to-mid weight.',
-		specs: {
-			weight: '7.6–8.0 oz',
-			core: '16–20mm (softer, bigger sweet spot)',
-			surface: 'Raw carbon for grab/feel',
-			shape: 'Standard/widebody for stability',
-		},
-		topPicks: PADDLE_DATABASE.control,
-		avoid: [
-			'Very thin cores that spray on mishits',
-			'Excessively heavy builds causing fatigue at the kitchen',
-		],
-		nextSteps: [
-			'Drill third-shot drops and resets to maximize paddle strengths',
-			'Try slightly thicker grips for added touch',
-		],
-	},
-	'all-court': {
-		Icon: Star,
-		title: "You're an All-Court Strategist!",
-		description:
-			'Balanced style — switches between pace and touch. Needs versatility for every zone.',
-		specSummary:
-			'Hybrid shape, mid-core thickness, mid weight, spin-capable face.',
-		specs: {
-			weight: '7.8–8.2 oz',
-			core: '14–16mm (balanced)',
-			surface: 'Raw carbon or hybrid composite',
-			shape: 'Hybrid/standard',
-		},
-		topPicks: PADDLE_DATABASE['all-court'],
-		avoid: ['Extreme specs (ultra-thin or ultra-thick) unless targeted need'],
-		nextSteps: [
-			'Tune with edge weight if seeking more plow or faster hands',
-			'Switch balls/courts to test adaptability',
-		],
-	},
-	'defense': {
-		Icon: Shield,
-		title: 'Defensive Counterpuncher!',
-		description:
-			'Prioritizes consistency and depth. Values stability, forgiveness, and low error rates.',
-		specSummary: 'Widebody, thicker core, head-light to mid weight.',
-		specs: {
-			weight: '7.6–8.1 oz (head-light preferred)',
-			core: '16–20mm for stability',
-			surface: 'Raw carbon for grab on resets',
-			shape: 'Standard/widebody',
-		},
-		topPicks: PADDLE_DATABASE.control, // Use control paddles for defensive style
-		avoid: ['Head-heavy builds that slow hands at the kitchen'],
-		nextSteps: [
-			'Work on counterattacks off blocks to add threat',
-			'Consider a slightly thicker overgrip for stability',
-		],
-	},
-};
+import { AnswerValue, ComputeResultOutput, Paddle } from '../types';
+import questions, { Question } from '../_data/questions';
+import archetypes from '../_data/archetypes';
+import PADDLE_DATABASE from '../_data/PADDLE_DATABASE';
+import { IconType } from 'react-icons/lib';
 
 // Helper components
 const RatingBar = ({
 	rating,
 	label,
 	color = 'ocean',
+	icon: Icon,
 }: {
 	rating: number;
 	label: string;
 	color?: string;
+	icon?: IconType;
 }) => (
-	<div className="flex items-center gap-2 text-sm">
-		<span className="w-16 text-slate-600">{label}</span>
-		<div className="flex-1 bg-sand rounded-full h-1.5">
+	<div className="flex items-center gap-2">
+		<div className="flex items-center gap-1.5 w-20">
+			{Icon && <Icon className="w-3.5 h-3.5 text-slate-500" />}
+			<span className="text-xs font-medium text-slate-600">{label}</span>
+		</div>
+		<div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
 			<div
-				className={`bg-${color} h-1.5 rounded-full transition-all duration-500`}
+				className="bg-gradient-to-r from-ocean to-emerald-500 h-2 rounded-full transition-all duration-700 ease-out"
 				style={{ width: `${(rating / 10) * 100}%` }}
 			/>
 		</div>
-		<span className="text-xs text-slate-500 w-6">{rating}/10</span>
+		<span className="text-xs font-bold text-slate-700 w-8 text-right">
+			{rating}
+		</span>
 	</div>
 );
 
@@ -660,103 +63,193 @@ const PaddleCard = ({
 }: {
 	paddle: Paddle;
 	isTop?: boolean;
-}) => (
-	<div
-		className={`bg-white rounded-xl border ${
-			isTop ? 'border-ocean shadow-lg' : 'border-sand'
-		} p-4 hover:shadow-md transition-shadow`}
-	>
-		{isTop && (
-			<div className="flex items-center gap-1 text-ocean font-semibold text-sm mb-2">
-				<Award size={14} />
-				Top Pick
-			</div>
-		)}
+}) => {
+	const [isExpanded, setIsExpanded] = useState(false);
 
-		<div className="relative mb-3">
-			<Image
-				src={paddle.image}
-				alt={paddle.name}
-				width={300}
-				height={200}
-				className="w-full h-32 object-cover rounded-lg bg-sand"
-			/>
-			<div className="absolute top-2 right-2 bg-ocean text-white px-2 py-1 rounded-full text-xs font-semibold">
-				${paddle.price}
-			</div>
-		</div>
-
-		<div className="space-y-3">
-			<div>
-				<h4 className="font-bold text-charcoal text-sm">{paddle.name}</h4>
-				<p className="text-xs text-slate-600">{paddle.brand}</p>
-			</div>
-
-			<p className="text-xs text-slate-700 line-clamp-2">{paddle.description}</p>
-
-			<div className="grid grid-cols-2 gap-2">
-				<RatingBar rating={paddle.power_rating} label="Power" />
-				<RatingBar rating={paddle.control_rating} label="Control" />
-				<RatingBar rating={paddle.spin_rating} label="Spin" />
-				<RatingBar rating={paddle.forgiveness_rating} label="Sweet Spot" />
-			</div>
-
-			<div className="space-y-2 text-xs">
-				<div className="flex justify-between">
-					<span className="text-slate-500">Weight:</span>
-					<span className="font-medium">{paddle.weight}</span>
+	return (
+		<div
+			className={`group relative bg-white rounded-2xl overflow-hidden transition-all duration-300 ${
+				isTop
+					? 'ring-2 ring-ocean shadow-2xl shadow-ocean/20'
+					: 'border border-slate-200 hover:border-ocean/30 hover:shadow-xl'
+			}`}
+		>
+			{/* Top Pick Badge */}
+			{isTop && (
+				<div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 bg-gradient-to-r from-ocean to-emerald-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
+					<Award size={14} strokeWidth={2.5} />
+					Top Pick
 				</div>
-				<div className="flex justify-between">
-					<span className="text-slate-500">Core:</span>
-					<span className="font-medium">{paddle.core_thickness}</span>
-				</div>
-				<div className="flex justify-between">
-					<span className="text-slate-500">Surface:</span>
-					<span className="font-medium">{paddle.surface}</span>
+			)}
+
+			{/* Image Section */}
+			<div className="relative h-48 overflow-hidden bg-gradient-to-br from-slate-100 to-slate-50">
+				<img
+					src={paddle.image}
+					alt={paddle.name}
+					className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+				/>
+				<div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+
+				{/* Price Tag */}
+				<div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
+					<span className="text-lg font-bold text-ocean">${paddle.price}</span>
 				</div>
 			</div>
 
-			<div className="space-y-2">
+			{/* Content Section */}
+			<div className="p-5 space-y-4">
+				{/* Header */}
 				<div>
-					<h5 className="text-xs font-semibold text-emerald-700 mb-1">
-						Key Features:
-					</h5>
-					<ul className="text-xs text-slate-600 space-y-1">
-						{paddle.key_features.slice(0, 2).map((feature, i) => (
-							<li key={i} className="flex items-start gap-1">
-								<Sparkles size={10} className="mt-0.5 text-emerald-500 flex-shrink-0" />
-								{feature}
-							</li>
-						))}
-					</ul>
+					<h4 className="font-bold text-charcoal text-base mb-1 group-hover:text-ocean transition-colors">
+						{paddle.name}
+					</h4>
+					<div className="flex items-center justify-between">
+						<p className="text-sm text-slate-600 font-medium">{paddle.brand}</p>
+						<div className="flex gap-1">
+							{paddle.skill_level.map((level, i) => (
+								<span
+									key={i}
+									className="text-[10px] px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full font-medium"
+								>
+									{level}
+								</span>
+							))}
+						</div>
+					</div>
 				</div>
 
-				<div className="grid grid-cols-2 gap-2 text-xs">
-					<div>
-						<h6 className="font-semibold text-emerald-600 mb-1">Pros:</h6>
-						<ul className="text-slate-600 space-y-1">
-							{paddle.pros.slice(0, 2).map((pro, i) => (
-								<li key={i}>• {pro}</li>
-							))}
-						</ul>
+				{/* Description */}
+				<p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+					{paddle.description}
+				</p>
+
+				{/* Performance Metrics */}
+				<div className="space-y-2 py-3 border-y border-slate-100">
+					<RatingBar rating={paddle.power_rating} label="Power" icon={Zap} />
+					<RatingBar rating={paddle.control_rating} label="Control" icon={Target} />
+					<RatingBar rating={paddle.spin_rating} label="Spin" icon={Wind} />
+					<RatingBar
+						rating={paddle.forgiveness_rating}
+						label="Sweet"
+						icon={Shield}
+					/>
+				</div>
+
+				{/* Quick Specs Grid */}
+				<div className="grid grid-cols-3 gap-2">
+					<div className="bg-slate-50 rounded-lg p-2.5 text-center border border-slate-100">
+						<p className="text-[10px] text-slate-500 font-medium mb-0.5">Weight</p>
+						<p className="text-xs font-bold text-slate-700">{paddle.weight}</p>
 					</div>
-					<div>
-						<h6 className="font-semibold text-red-600 mb-1">Cons:</h6>
-						<ul className="text-slate-600 space-y-1">
-							{paddle.cons.slice(0, 2).map((con, i) => (
-								<li key={i}>• {con}</li>
-							))}
-						</ul>
+					<div className="bg-slate-50 rounded-lg p-2.5 text-center border border-slate-100">
+						<p className="text-[10px] text-slate-500 font-medium mb-0.5">Core</p>
+						<p className="text-xs font-bold text-slate-700">
+							{paddle.core_thickness}
+						</p>
 					</div>
+					<div className="bg-slate-50 rounded-lg p-2.5 text-center border border-slate-100">
+						<p className="text-[10px] text-slate-500 font-medium mb-0.5">Shape</p>
+						<p className="text-xs font-bold text-slate-700">{paddle.shape}</p>
+					</div>
+				</div>
+
+				{/* Expandable Details */}
+				{isExpanded && (
+					<div className="space-y-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+						{/* Key Features */}
+						<div className="bg-emerald-50/50 rounded-xl p-3 border border-emerald-100">
+							<h5 className="text-xs font-bold text-emerald-800 mb-2 flex items-center gap-1.5">
+								<div className="w-1 h-4 bg-emerald-500 rounded-full" />
+								Key Features
+							</h5>
+							<ul className="space-y-1.5">
+								{paddle.key_features.slice(0, 3).map((feature, i) => (
+									<li
+										key={i}
+										className="text-[11px] text-emerald-900/80 flex items-start gap-2"
+									>
+										<span className="text-emerald-500 mt-0.5">●</span>
+										<span className="flex-1">{feature}</span>
+									</li>
+								))}
+							</ul>
+						</div>
+
+						{/* Pros & Cons */}
+						<div className="grid grid-cols-2 gap-3">
+							<div className="bg-green-50/50 rounded-xl p-3 border border-green-100">
+								<h6 className="text-xs font-bold text-green-700 mb-2">Pros</h6>
+								<ul className="space-y-1">
+									{paddle.pros.slice(0, 3).map((pro, i) => (
+										<li
+											key={i}
+											className="text-[10px] text-green-900/70 flex items-start gap-1.5"
+										>
+											<span className="text-green-500 mt-0.5">✓</span>
+											<span className="flex-1">{pro}</span>
+										</li>
+									))}
+								</ul>
+							</div>
+							<div className="bg-red-50/50 rounded-xl p-3 border border-red-100">
+								<h6 className="text-xs font-bold text-red-700 mb-2">Cons</h6>
+								<ul className="space-y-1">
+									{paddle.cons.slice(0, 3).map((con, i) => (
+										<li
+											key={i}
+											className="text-[10px] text-red-900/70 flex items-start gap-1.5"
+										>
+											<span className="text-red-400 mt-0.5">✗</span>
+											<span className="flex-1">{con}</span>
+										</li>
+									))}
+								</ul>
+							</div>
+						</div>
+
+						{/* Additional Specs */}
+						<div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
+							<h5 className="text-xs font-bold text-slate-700 mb-2">Full Specs</h5>
+							<div className="grid grid-cols-2 gap-x-3 gap-y-2 text-[11px]">
+								<div className="flex justify-between">
+									<span className="text-slate-500">Surface:</span>
+									<span className="font-medium text-slate-700">{paddle.surface}</span>
+								</div>
+								<div className="flex justify-between">
+									<span className="text-slate-500">Handle:</span>
+									<span className="font-medium text-slate-700">
+										{paddle.handle_length}
+									</span>
+								</div>
+								<div className="flex justify-between col-span-2">
+									<span className="text-slate-500">Grip Circumference:</span>
+									<span className="font-medium text-slate-700">
+										{paddle.grip_circumference}
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				)}
+
+				{/* Action Buttons */}
+				<div className="flex gap-2 pt-2">
+					<button className="flex-1 bg-gradient-to-r from-ocean to-emerald-500 hover:from-ocean-dark hover:to-emerald-600 text-white py-2.5 px-4 rounded-xl text-sm font-bold transition-all shadow-lg shadow-ocean/20 hover:shadow-xl hover:shadow-ocean/30 hover:scale-[1.02] active:scale-[0.98]">
+						View Details
+					</button>
+					<button
+						onClick={() => setIsExpanded(!isExpanded)}
+						className="bg-slate-100 hover:bg-slate-200 text-slate-700 p-2.5 rounded-xl transition-all hover:scale-105 active:scale-95"
+						aria-label={isExpanded ? 'Show less' : 'Show more'}
+					>
+						{isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+					</button>
 				</div>
 			</div>
-
-			<button className="w-full bg-ocean hover:bg-ocean-dark text-white py-2 px-3 rounded-lg text-xs font-semibold transition-colors">
-				View Details & Buy
-			</button>
 		</div>
-	</div>
-);
+	);
+};
 
 // Helper: Progress sub-label per section
 const sectionSubLabel: Record<Question['section'], string> = {
@@ -771,8 +264,15 @@ const sectionSubLabel: Record<Question['section'], string> = {
 };
 
 // Scoring engine (same as before)
-function computeResult(answers: Record<number, AnswerValue>) {
-	const score = { 'power': 0, 'control': 0, 'all-court': 0, 'defense': 0 };
+export function computeResult(
+	answers: Record<number, AnswerValue>
+): ComputeResultOutput {
+	const score: Record<'power' | 'control' | 'all-court' | 'defense', number> = {
+		'power': 0,
+		'control': 0,
+		'all-court': 0,
+		'defense': 0,
+	};
 
 	const W = {
 		SKILL: 2,
@@ -785,6 +285,7 @@ function computeResult(answers: Record<number, AnswerValue>) {
 		BACKGROUND: 1,
 	};
 
+	// Extract answers
 	const skill = answers[1];
 	const physical = answers[2];
 	const background = answers[3];
@@ -816,12 +317,16 @@ function computeResult(answers: Record<number, AnswerValue>) {
 		score.power += 1;
 	}
 
-	// Background
-	if (background === 'tennis') {
+	// Background (MUST match questions/options)
+	if (background === 'extensive-racquet') {
 		score.power += 1 * W.BACKGROUND;
 		score['all-court'] += 1 * W.BACKGROUND;
 	} else if (background === 'first-racquet') {
 		score.control += 1 * W.BACKGROUND;
+	} else if (background === 'table-tennis') {
+		// if you want to factor spin archetype, otherwise just add to control as before
+		// score.spin += 2;
+		score.control += 1;
 	}
 
 	// Style
@@ -830,11 +335,12 @@ function computeResult(answers: Record<number, AnswerValue>) {
 	if (style === 'all-court') score['all-court'] += 1 * W.STYLE;
 	if (style === 'defense') score.defense += 1 * W.STYLE;
 
-	// Shots
+	// Shots (must match quiz options, not arbitrary strings)
 	if (shots === 'drives-volleys') score.power += 1 * W.SHOTS;
 	if (shots === 'dinks-drops') score.control += 1 * W.SHOTS;
-	if (shots === 'spin-placement') score['all-court'] += 1 * W.SHOTS;
-	if (shots === 'returns-resets') score.defense += 1 * W.SHOTS;
+	if (shots === 'spin-slice') score['all-court'] += 1 * W.SHOTS;
+	if (shots === 'blocks-resets') score.defense += 1 * W.SHOTS;
+	if (shots === 'volleys-speedups') score.power += 1;
 
 	// Position
 	if (position === 'baseline') score.power += 1 * W.POSITION;
@@ -848,17 +354,27 @@ function computeResult(answers: Record<number, AnswerValue>) {
 	if (priority === 'more-spin') score['all-court'] += 1 * W.PRIORITY;
 	if (priority === 'more-forgiveness') score.defense += 1 * W.PRIORITY;
 
-	// Handle beginner override
+	// Beginner override (controls both archetype and paddle array for beginner)
+	// Beginner override (controls both archetype and paddle array for beginner)
 	if (skill === 'beginner') {
 		return {
-			archetypeKey: 'control' as const,
-			resolvedWeight: 'mid' as const,
+			archetypeKey: 'control',
+			resolvedWeight: 'mid',
 			result: {
-				...archetypes.control,
+				Icon: archetypes.control.Icon,
 				title: 'Perfect for Learning!',
 				description:
 					'As a beginner, focus on control and forgiveness to build fundamentals. These paddles will help you develop consistent shots.',
+				specSummary: archetypes.control.specSummary,
+				specs: {
+					weight: '≈7.8–8.2 oz (balanced feel)',
+					core: '16–20mm (maximum sweet spot)',
+					surface: 'Raw carbon for touch and control',
+					shape: 'Standard/widebody for stability',
+				},
 				topPicks: PADDLE_DATABASE.beginner,
+				avoid: archetypes.control.avoid ?? [],
+				nextSteps: archetypes.control.nextSteps ?? [],
 			},
 		};
 	}
@@ -868,7 +384,8 @@ function computeResult(answers: Record<number, AnswerValue>) {
 	entries.sort((a, b) => b[1] - a[1]);
 	const [winner] = entries[0];
 
-	// Weight resolution
+	// Weight resolution — ONLY ever output 'light' | 'mid' | 'heavy'
+	// Weight resolution — ONLY ever output 'light' | 'mid' | 'heavy'
 	const physicalBias =
 		physical === 'arm-issues'
 			? 'light'
@@ -881,7 +398,14 @@ function computeResult(answers: Record<number, AnswerValue>) {
 	else if (weight === 'auto') resolvedWeight = physicalBias as any;
 	else if (weight === 'mid') resolvedWeight = 'mid';
 
-	const spec = { ...archetypes[winner].specs };
+	// Explicitly type spec to match ResultSpec
+	const spec: {
+		weight: string;
+		core: string;
+		surface: string;
+		shape: string;
+	} = { ...archetypes[winner].specs };
+
 	if (resolvedWeight === 'light')
 		spec.weight = '≈7.3–7.8 oz (arm-friendly, fast hands)';
 	if (resolvedWeight === 'mid') spec.weight = '≈7.8–8.2 oz (balanced feel)';
@@ -968,7 +492,12 @@ export function PaddleQuiz() {
 											{currentQuestionIndex + 1}/{total}
 										</div>
 										<span className="text-sm font-medium text-slate-600">
-											{sectionSubLabel[questions[currentQuestionIndex].section]}
+											{
+												sectionSubLabel[
+													questions[currentQuestionIndex]
+														.section as keyof typeof sectionSubLabel
+												]
+											}
 										</span>
 									</div>
 									<span className="text-xs font-semibold text-ocean bg-ocean/5 px-3 py-1 rounded-full">
@@ -1193,16 +722,18 @@ export function PaddleQuiz() {
 										</div>
 
 										<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
-											{final.result.topPicks.slice(0, 3).map((paddle, index) => (
-												<motion.div
-													key={paddle.id}
-													initial={{ opacity: 0, y: 20 }}
-													animate={{ opacity: 1, y: 0 }}
-													transition={{ delay: 0.7 + index * 0.1 }}
-												>
-													<PaddleCard paddle={paddle} isTop={index === 0} />
-												</motion.div>
-											))}
+											{final.result.topPicks
+												.slice(0, 3)
+												.map((paddle: Paddle, index: number) => (
+													<motion.div
+														key={paddle.id}
+														initial={{ opacity: 0, y: 20 }}
+														animate={{ opacity: 1, y: 0 }}
+														transition={{ delay: 0.7 + index * 0.1 }}
+													>
+														<PaddleCard paddle={paddle} isTop={index === 0} />
+													</motion.div>
+												))}
 										</div>
 
 										{final.result.topPicks.length > 3 && (
@@ -1294,7 +825,7 @@ export function PaddleQuiz() {
 														'Start with the top pick and adjust from there',
 														'Consider grip size (measure palm to ring finger)',
 													]
-												).map((step, i) => (
+												).map((step: string, i: number) => (
 													<li
 														key={i}
 														className="flex items-start gap-3 text-emerald-900/90 text-sm"
