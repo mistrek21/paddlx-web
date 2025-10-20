@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import {
@@ -30,17 +30,21 @@ import {
 	Target,
 	Grid3x3,
 	ArrowRight,
+	Menu,
+	X,
+	ChevronDown,
+	ChevronRight,
 } from 'lucide-react';
 import Link from 'next/link';
 import { UserProfileDropdown } from '../profile/_components/UserProfileDropdown';
 import { useAuth } from '@/src/hooks/useAuth';
 import { useMobileAppModal } from '@/src/hooks/useMobileAppModal';
-// import { useMobileAppModal } from '@/src/hooks/useMobileAppModal'; // 1. Import the hook
 
 const Navigation = ({ offset = 0, compact = false }) => {
-	// const { openModal, ModalComponent } = useMobileAppModal(); // 2. Instantiate the hook
-	const { user, loading } = useAuth(); // Add this
+	const { user, loading } = useAuth();
 	const { openModal, ModalComponent } = useMobileAppModal();
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
 	const playItems = [
 		{
@@ -200,6 +204,40 @@ const Navigation = ({ offset = 0, compact = false }) => {
 			},
 		],
 	};
+
+	const toggleSection = (section: string) => {
+		setExpandedSection(expandedSection === section ? null : section);
+	};
+
+	const closeMobileMenu = () => {
+		setMobileMenuOpen(false);
+		setExpandedSection(null);
+	};
+
+	const renderMobileMenuItem = (item: any) => (
+		<Link
+			href={item.href}
+			onClick={closeMobileMenu}
+			className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors"
+		>
+			<div
+				className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center shadow-md`}
+			>
+				<item.icon className="w-6 h-6 text-white" strokeWidth={2} />
+			</div>
+			<div className="flex-1 min-w-0">
+				<div className="flex items-center gap-2 mb-1">
+					<h4 className="font-bold text-gray-900">{item.title}</h4>
+					{item.badge && (
+						<span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+							{item.badge}
+						</span>
+					)}
+				</div>
+				<p className="text-sm text-gray-600">{item.description}</p>
+			</div>
+		</Link>
+	);
 
 	const renderStandardMenu = (items: any[]) => (
 		<div className="w-full bg-white shadow-xl">
@@ -400,8 +438,6 @@ const Navigation = ({ offset = 0, compact = false }) => {
 
 	return (
 		<>
-			{/* 4. Render the modal component */}
-			{/* <ModalComponent /> */}
 			<nav
 				style={{
 					top: offset,
@@ -428,36 +464,20 @@ const Navigation = ({ offset = 0, compact = false }) => {
 									className="h-11 w-11 object-contain rounded-full shadow-lg"
 								/>
 								<span
-									className="
-                font-bold
-                text-[1.35rem] sm:text-[1.65rem]
-                tracking-tighter
-                select-none
-                relative
-                leading-none
-                font-spacegrotesk
-            "
+									className="font-bold text-[1.35rem] sm:text-[1.65rem] tracking-tighter select-none relative leading-none font-spacegrotesk"
 									style={{
 										fontFamily: "'Space Grotesk', 'Inter', 'Segoe UI', Arial, sans-serif",
 									}}
 								>
 									paddl
-									<span
-										className="
-                    text-teal-500 ml-0.5 font-extrabold
-                    text-[1.5rem] sm:text-[1.75rem]
-                    drop-shadow-[0_1px_2px_rgba(0,188,212,0.15)]
-                    inline-block -rotate-2 scale-105
-                    align-middle
-                "
-									>
+									<span className="text-teal-500 ml-0.5 font-extrabold text-[1.5rem] sm:text-[1.75rem] drop-shadow-[0_1px_2px_rgba(0,188,212,0.15)] inline-block -rotate-2 scale-105 align-middle">
 										X
 									</span>
 								</span>
 							</div>
 						</Link>
 
-						{/* Navigation Menu */}
+						{/* Desktop Navigation Menu */}
 						<NavigationMenu className="hidden lg:block" viewport={false}>
 							<NavigationMenuList className="gap-2">
 								<NavigationMenuItem>
@@ -470,15 +490,7 @@ const Navigation = ({ offset = 0, compact = false }) => {
 									>
 										Play
 									</NavigationMenuTrigger>
-									<NavigationMenuContent
-										className="
-                                        !absolute
-                                        !left-0
-                                        !w-[110vw] 
-                                        !p-0
-                                        !-ml-[25vw] 
-                                    "
-									>
+									<NavigationMenuContent className="!absolute !left-0 !w-[110vw] !p-0 !-ml-[25vw]">
 										{renderStandardMenu(playItems)}
 									</NavigationMenuContent>
 								</NavigationMenuItem>
@@ -493,15 +505,7 @@ const Navigation = ({ offset = 0, compact = false }) => {
 									>
 										Organize
 									</NavigationMenuTrigger>
-									<NavigationMenuContent
-										className="
-                                        !absolute
-                                        !left-0
-                                        !w-[110vw]
-                                        !p-0
-                                        !-ml-[30vw]
-                                    "
-									>
+									<NavigationMenuContent className="!absolute !left-0 !w-[110vw] !p-0 !-ml-[30vw]">
 										{renderStandardMenu(organizeItems)}
 									</NavigationMenuContent>
 								</NavigationMenuItem>
@@ -516,12 +520,7 @@ const Navigation = ({ offset = 0, compact = false }) => {
 									>
 										Earn
 									</NavigationMenuTrigger>
-									<NavigationMenuContent
-										className=" !absolute
-                                        !left-0
-                                        !w-[110vw] 
-                                        !p-0 !-ml-[38vw] "
-									>
+									<NavigationMenuContent className="!absolute !left-0 !w-[110vw] !p-0 !-ml-[38vw]">
 										{renderStandardMenu(earnItems)}
 									</NavigationMenuContent>
 								</NavigationMenuItem>
@@ -536,12 +535,7 @@ const Navigation = ({ offset = 0, compact = false }) => {
 									>
 										Learn
 									</NavigationMenuTrigger>
-									<NavigationMenuContent
-										className=" !absolute
-                                        !left-0
-                                        !w-[110vw] 
-                                        !p-0 !-ml-[43vw]"
-									>
+									<NavigationMenuContent className="!absolute !left-0 !w-[110vw] !p-0 !-ml-[43vw]">
 										{renderLearnMenu()}
 									</NavigationMenuContent>
 								</NavigationMenuItem>
@@ -556,12 +550,7 @@ const Navigation = ({ offset = 0, compact = false }) => {
 									>
 										Gear
 									</NavigationMenuTrigger>
-									<NavigationMenuContent
-										className=" !absolute
-                                        !left-0
-                                        !w-[110vw] 
-                                        !p-0 !-ml-[50vw]"
-									>
+									<NavigationMenuContent className="!absolute !left-0 !w-[110vw] !p-0 !-ml-[50vw]">
 										{renderGearMenu()}
 									</NavigationMenuContent>
 								</NavigationMenuItem>
@@ -569,8 +558,8 @@ const Navigation = ({ offset = 0, compact = false }) => {
 						</NavigationMenu>
 					</div>
 
-					{/* Auth Buttons - UPDATED */}
-					<div className="flex items-center gap-4">
+					{/* Desktop Auth Buttons */}
+					<div className="hidden lg:flex items-center gap-4">
 						{loading ? (
 							<div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
 						) : user ? (
@@ -595,8 +584,221 @@ const Navigation = ({ offset = 0, compact = false }) => {
 							</>
 						)}
 					</div>
+
+					{/* Mobile Hamburger Button */}
+					<button
+						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+						className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+						aria-label="Toggle menu"
+					>
+						{mobileMenuOpen ? (
+							<X className="w-6 h-6 text-gray-900" />
+						) : (
+							<Menu className="w-6 h-6 text-gray-900" />
+						)}
+					</button>
 				</div>
 			</nav>
+
+			{/* Mobile Menu Overlay */}
+			{mobileMenuOpen && (
+				<div
+					className="fixed inset-0 bg-black bg-opacity-50 z-[9997] lg:hidden"
+					onClick={closeMobileMenu}
+				/>
+			)}
+
+			{/* Mobile Menu Sidebar */}
+			<div
+				className={`fixed top-0 right-0 h-full w-full max-w-md bg-white z-[9999] transform transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto ${
+					mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+				}`}
+				style={{ top: offset }}
+			>
+				<div className="p-6">
+					{/* Mobile Menu Header */}
+					<div className="flex items-center justify-between mb-8">
+						<span className="text-xl font-bold text-gray-900">Menu</span>
+						<button
+							onClick={closeMobileMenu}
+							className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+						>
+							<X className="w-6 h-6 text-gray-900" />
+						</button>
+					</div>
+
+					{/* Mobile Auth Section */}
+					{!user && (
+						<div className="mb-8 flex flex-col gap-3">
+							<Link href="/login" onClick={closeMobileMenu}>
+								<Button
+									variant="default"
+									className="w-full font-bold border-2 border-gray-300 hover:border-gray-400 transition-colors text-white"
+								>
+									Log in
+								</Button>
+							</Link>
+							<Link href="/join" onClick={closeMobileMenu}>
+								<Button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold shadow-lg">
+									Join for free
+								</Button>
+							</Link>
+						</div>
+					)}
+
+					{/* Mobile Navigation Sections */}
+					<div className="space-y-2">
+						{/* Play Section */}
+						<div className="border-b border-gray-200">
+							<button
+								onClick={() => toggleSection('play')}
+								className="w-full flex items-center justify-between py-4 font-bold text-gray-900"
+							>
+								<span>Play</span>
+								<ChevronDown
+									className={`w-5 h-5 transition-transform ${
+										expandedSection === 'play' ? 'rotate-180' : ''
+									}`}
+								/>
+							</button>
+							{expandedSection === 'play' && (
+								<div className="pb-4 space-y-2">
+									{playItems.map((item, index) => (
+										<div key={index}>{renderMobileMenuItem(item)}</div>
+									))}
+								</div>
+							)}
+						</div>
+
+						{/* Organize Section */}
+						<div className="border-b border-gray-200">
+							<button
+								onClick={() => toggleSection('organize')}
+								className="w-full flex items-center justify-between py-4 font-bold text-gray-900"
+							>
+								<span>Organize</span>
+								<ChevronDown
+									className={`w-5 h-5 transition-transform ${
+										expandedSection === 'organize' ? 'rotate-180' : ''
+									}`}
+								/>
+							</button>
+							{expandedSection === 'organize' && (
+								<div className="pb-4 space-y-2">
+									{organizeItems.map((item, index) => (
+										<div key={index}>{renderMobileMenuItem(item)}</div>
+									))}
+								</div>
+							)}
+						</div>
+
+						{/* Earn Section */}
+						<div className="border-b border-gray-200">
+							<button
+								onClick={() => toggleSection('earn')}
+								className="w-full flex items-center justify-between py-4 font-bold text-gray-900"
+							>
+								<span>Earn</span>
+								<ChevronDown
+									className={`w-5 h-5 transition-transform ${
+										expandedSection === 'earn' ? 'rotate-180' : ''
+									}`}
+								/>
+							</button>
+							{expandedSection === 'earn' && (
+								<div className="pb-4 space-y-2">
+									{earnItems.map((item, index) => (
+										<div key={index}>{renderMobileMenuItem(item)}</div>
+									))}
+								</div>
+							)}
+						</div>
+
+						{/* Learn Section */}
+						<div className="border-b border-gray-200">
+							<button
+								onClick={() => toggleSection('learn')}
+								className="w-full flex items-center justify-between py-4 font-bold text-gray-900"
+							>
+								<span>Learn</span>
+								<ChevronDown
+									className={`w-5 h-5 transition-transform ${
+										expandedSection === 'learn' ? 'rotate-180' : ''
+									}`}
+								/>
+							</button>
+							{expandedSection === 'learn' && (
+								<div className="pb-4 space-y-2">
+									{learnItems.main.map((item, index) => (
+										<div key={index}>{renderMobileMenuItem(item)}</div>
+									))}
+									<div className="mt-4 pt-4 border-t border-gray-200">
+										<h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-4">
+											Guides
+										</h5>
+										{learnItems.guides.map((guide, index) => (
+											<Link
+												key={index}
+												href={guide.href}
+												onClick={closeMobileMenu}
+												className="flex items-start gap-3 p-4 rounded-xl hover:bg-gray-50 transition-colors"
+											>
+												<guide.icon className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+												<p className="text-sm font-medium text-gray-900">{guide.title}</p>
+											</Link>
+										))}
+									</div>
+								</div>
+							)}
+						</div>
+
+						{/* Gear Section */}
+						<div className="border-b border-gray-200">
+							<button
+								onClick={() => toggleSection('gear')}
+								className="w-full flex items-center justify-between py-4 font-bold text-gray-900"
+							>
+								<span>Gear</span>
+								<ChevronDown
+									className={`w-5 h-5 transition-transform ${
+										expandedSection === 'gear' ? 'rotate-180' : ''
+									}`}
+								/>
+							</button>
+							{expandedSection === 'gear' && (
+								<div className="pb-4 space-y-2">
+									{gearItems.featured.map((item, index) => (
+										<div key={index}>{renderMobileMenuItem(item)}</div>
+									))}
+									<div className="mt-4 pt-4 border-t border-gray-200">
+										<h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-4">
+											Gear Guides
+										</h5>
+										{gearItems.guides.map((guide, index) => (
+											<Link
+												key={index}
+												href={guide.href}
+												onClick={closeMobileMenu}
+												className="flex items-start gap-3 p-4 rounded-xl hover:bg-gray-50 transition-colors"
+											>
+												<ShoppingBag className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+												<p className="text-sm font-medium text-gray-900">{guide.title}</p>
+											</Link>
+										))}
+									</div>
+								</div>
+							)}
+						</div>
+					</div>
+
+					{/* Mobile User Profile (if logged in) */}
+					{user && (
+						<div className="mt-8 pt-8 border-t border-gray-200">
+							<UserProfileDropdown user={user} compact={compact} />
+						</div>
+					)}
+				</div>
+			</div>
 		</>
 	);
 };
