@@ -35,6 +35,9 @@ interface UserLocation {
 	longitude: number;
 }
 
+const DEFAULT_CITY = 'Mandaluyong';
+const DEFAULT_COUNTRY = 'Philippines';
+
 // Custom debounce hook
 function useDebounce<T>(value: T, delay: number): T {
 	const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -145,6 +148,8 @@ export function HeroSection() {
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [isFocused, setIsFocused] = useState(false);
 	const [userLocation, setUserLocation] = useState<UserLocation | undefined>();
+	const [userCity, setUserCity] = useState<string | null>(null);
+	const [userCountry, setUserCountry] = useState<string | null>(null);
 	const searchRef = useRef<HTMLDivElement>(null);
 	const router = useRouter();
 
@@ -203,6 +208,58 @@ export function HeroSection() {
 		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, []);
 
+	// Reverse geocode function using a free API
+	// In your HeroSection component, update the reverseGeocode function:
+
+	const reverseGeocode = async (lat: number, lon: number) => {
+		try {
+			const response = await fetch(
+				`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`
+			);
+			const data = await response.json();
+
+			// Clean up country name - remove "(the)" and other parenthetical content
+			const cleanCountryName = (name: string) => {
+				if (!name) return name;
+				return name.replace(/\s*\([^)]*\)/g, '').trim();
+			};
+
+			return {
+				city: data.city || data.locality || data.principalSubdivision,
+				country: cleanCountryName(data.countryName),
+			};
+		} catch (error) {
+			console.error('Reverse geocoding failed:', error);
+			return null;
+		}
+	};
+
+	// Get user's location and convert to city/country on mount
+	useEffect(() => {
+		if ('geolocation' in navigator) {
+			navigator.geolocation.getCurrentPosition(
+				async (position) => {
+					const coords = {
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude,
+					};
+					setUserLocation(coords);
+
+					// Reverse geocode to get city and country
+					const location = await reverseGeocode(coords.latitude, coords.longitude);
+
+					if (location) {
+						setUserCity(location.city);
+						setUserCountry(location.country);
+					}
+				},
+				(error) => {
+					console.log('Geolocation error:', error.message);
+				}
+			);
+		}
+	}, []);
+
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (searchQuery.trim()) {
@@ -230,8 +287,15 @@ export function HeroSection() {
 	};
 
 	const handleViewAll = () => {
-		router.push('/search');
 		setShowDropdown(false);
+
+		// Use reverse-geocoded city/country if available, otherwise use defaults
+		const city = userCity || DEFAULT_CITY;
+		const country = userCountry || DEFAULT_COUNTRY;
+
+		router.push(
+			`/city/${encodeURIComponent(city)}?country=${encodeURIComponent(country)}`
+		);
 	};
 
 	// Helper for rendering places with animation
@@ -543,7 +607,7 @@ export function HeroSection() {
 					{/* View All Link */}
 					<button
 						onClick={handleViewAll}
-						className="text-white hover:text-white/90 transition-all duration-200 flex items-center gap-2 mx-auto group backdrop-blur-sm bg-white/10 px-6 py-2.5 rounded-full hover:bg-white/20"
+						className="text-white hover:text-white/90 transition-all duration-200 flex items-center gap-2 mx-auto group backdrop-blur-sm bg-white/10 px-6 py-2.5 rounded-full hover:bg-white/20 cursor-pointer"
 					>
 						<span className="text-sm font-medium">
 							Or see all nearby places to play

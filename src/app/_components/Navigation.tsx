@@ -11,7 +11,6 @@ import {
 	NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import {
-	Users,
 	Calendar,
 	Search,
 	Trophy,
@@ -28,17 +27,16 @@ import {
 	ShoppingBag,
 	Award,
 	Target,
-	Grid3x3,
 	ArrowRight,
 	Menu,
 	X,
 	ChevronDown,
-	ChevronRight,
 } from 'lucide-react';
 import Link from 'next/link';
-import { UserProfileDropdown } from '../profile/_components/UserProfileDropdown';
+
 import { useAuth } from '@/src/hooks/useAuth';
 import { useMobileAppModal } from '@/src/hooks/useMobileAppModal';
+import { UserProfileDropdown } from '../profile/_components/UserProfileDropdown';
 
 const Navigation = ({ offset = 0, compact = false }) => {
 	const { user, loading } = useAuth();
@@ -563,7 +561,7 @@ const Navigation = ({ offset = 0, compact = false }) => {
 						{loading ? (
 							<div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
 						) : user ? (
-							<UserProfileDropdown user={user} compact={compact} />
+							<UserProfileDropdown user={user} />
 						) : (
 							<>
 								<Link
@@ -586,17 +584,25 @@ const Navigation = ({ offset = 0, compact = false }) => {
 					</div>
 
 					{/* Mobile Hamburger Button */}
-					<button
-						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-						className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-						aria-label="Toggle menu"
-					>
-						{mobileMenuOpen ? (
-							<X className="w-6 h-6 text-gray-900" />
-						) : (
-							<Menu className="w-6 h-6 text-gray-900" />
+					<div className="flex items-center gap-4">
+						{/* Mobile User Profile (if logged in) */}
+						{user && (
+							<div className="lg:hidden">
+								<UserProfileDropdown user={user} mobile={true} />
+							</div>
 						)}
-					</button>
+						<button
+							onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+							className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+							aria-label="Toggle menu"
+						>
+							{mobileMenuOpen ? (
+								<X className="w-6 h-6 text-gray-900" />
+							) : (
+								<Menu className="w-6 h-6 text-gray-900" />
+							)}
+						</button>
+					</div>
 				</div>
 			</nav>
 
@@ -790,13 +796,6 @@ const Navigation = ({ offset = 0, compact = false }) => {
 							)}
 						</div>
 					</div>
-
-					{/* Mobile User Profile (if logged in) */}
-					{user && (
-						<div className="mt-8 pt-8 border-t border-gray-200">
-							<UserProfileDropdown user={user} compact={compact} />
-						</div>
-					)}
 				</div>
 			</div>
 		</>

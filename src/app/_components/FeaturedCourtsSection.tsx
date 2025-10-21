@@ -1,11 +1,11 @@
-// src/app/_components/FeaturedCourtsSection.tsx
+'use client';
 
-'use client'; // 1. Add 'use client' directive
-
+import { useState, useEffect } from 'react';
 import { Building2, Grid3x3, Minus } from 'lucide-react';
-import { useMobileAppModal } from '@/src/hooks/useMobileAppModal'; // 2. Import the hook
+import { useMobileAppModal } from '@/src/hooks/useMobileAppModal';
+import { cacheTag } from 'next/dist/server/use-cache/cache-tag';
 
-const courts = [
+const mockData = [
 	{
 		name: 'Alpharetta North Park',
 		image: '/outdoor-pickleball-courts-sunny.jpg',
@@ -29,23 +29,60 @@ const courts = [
 	},
 ];
 
+const API_BASE_URL = process.env.IP_CONFIG || 'https://paddle-api.vercel.app';
+
 export function FeaturedCourtsSection() {
-	const { openModal, ModalComponent } = useMobileAppModal(); // 3. Instantiate the hook
+	const { openModal, ModalComponent } = useMobileAppModal();
+	const [featuredCourts, setFeaturedCourts] = useState<any[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		async function fetchFeaturedCourts() {
+			try {
+				const res = await fetch(`${API_BASE_URL}/api/web/courts/featured-courts`);
+				if (!res.ok) throw new Error('Fetch failed');
+				const data = await res.json();
+
+				if (data.featuredClubs?.length > 0) {
+					// Map each unique club ONCE
+					const mapped = data.featuredClubs.map((fc: any) => {
+						const courtsArr = fc.club?.courts || [];
+						return {
+							name: fc.club?.name ?? 'Unknown Club',
+							image: fc.club?.images?.length ? fc.club.images[0] : '/placeholder.svg',
+							courts: courtsArr.length || 1, // Count of sub-courts/facility
+							permLines: courtsArr.every((c: any) => c.permLines), // true if all have permanent lines
+							permNets: courtsArr.every((c: any) => c.permNets), // true if all have perm nets
+						};
+					});
+					setFeaturedCourts(mapped);
+				} else {
+					setFeaturedCourts(mockData);
+				}
+			} catch {
+				setFeaturedCourts(mockData);
+			} finally {
+				setLoading(false);
+			}
+		}
+		fetchFeaturedCourts();
+	}, []);
+
+	console.log(featuredCourts, 'featuredCourts');
 
 	return (
 		<>
-			<ModalComponent /> {/* 5. Render the modal component */}
+			<ModalComponent />
 			<section className="bg-light-blue1/50 py-16">
 				<div className="container mx-auto px-4">
 					<h2 className="text-3xl md:text-4xl font-bold text-dark-slate mb-12">
 						Featured Courts
 					</h2>
-
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 						{/* Court Cards */}
-						{courts.map((court) => (
+						{(loading ? mockData : featuredCourts)?.map((court, i) => (
 							<div
-								key={court.name}
+								key={court.name + i}
 								className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group"
 							>
 								<div className="relative h-48 overflow-hidden">
@@ -80,7 +117,6 @@ export function FeaturedCourtsSection() {
 								</div>
 							</div>
 						))}
-
 						{/* CTA Card */}
 						<div className="bg-white rounded-lg p-8 shadow-sm flex flex-col items-center justify-center text-center">
 							<div className="w-16 h-16 mb-4 text-teal">
@@ -104,7 +140,6 @@ export function FeaturedCourtsSection() {
 							<p className="text-sm text-slate-gray mb-6 leading-relaxed">
 								Attract more players to your pickleball court by listing it on paddlx
 							</p>
-							{/* 4. Add the onClick handler */}
 							<button
 								onClick={() => openModal('list your court')}
 								className="bg-coral hover:bg-coral/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors cursor-pointer"
@@ -114,8 +149,6 @@ export function FeaturedCourtsSection() {
 						</div>
 					</div>
 				</div>
-
-				{/* Dotted separator */}
 				<div className="mt-16 border-t border-dashed border-light-gray" />
 			</section>
 		</>

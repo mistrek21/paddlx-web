@@ -121,7 +121,7 @@ export function GamesSection() {
 							// Fetch games near location
 							await fetchGamesNearby(latitude, longitude);
 						} catch (error) {
-							console.error('Error fetching location data:', error);
+							// console.error('Error fetching location data:', error);
 						} finally {
 							setIsLoadingLocation(false);
 						}
@@ -143,7 +143,7 @@ export function GamesSection() {
 								errorMessage = 'Unknown error occurred';
 						}
 
-						console.error('Geolocation error:', errorMessage, error.message);
+						// console.error('Geolocation error:', errorMessage, error.message);
 						setIsLoadingLocation(false);
 						fetchGamesNearby(14.5995, 120.9842);
 					}
@@ -173,7 +173,7 @@ export function GamesSection() {
 				setGamesCount(fallbackGames.length);
 			}
 		} catch (error) {
-			console.error('Error fetching games:', error);
+			// console.error('Error fetching games:', error);
 			setGames([]); // fallback
 			setGamesCount(fallbackGames.length);
 		} finally {

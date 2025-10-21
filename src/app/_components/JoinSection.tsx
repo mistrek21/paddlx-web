@@ -67,7 +67,7 @@ export function JoinSection() {
 							{/* 3. Replace Link with button and add onClick handler */}
 							<button
 								onClick={() => openModal('join for free')}
-								className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 transition-colors text-white font-bold px-8 py-3 rounded-lg text-lg shadow-lg shadow-teal-200/20"
+								className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 transition-colors text-white font-bold px-8 py-3 rounded-lg text-lg shadow-lg shadow-teal-200/20 cursor-pointer"
 							>
 								Join paddlX Now
 								<ArrowRight size={20} />
