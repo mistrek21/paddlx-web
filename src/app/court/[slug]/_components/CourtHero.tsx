@@ -101,12 +101,12 @@ export default function CourtHero({ court }: { court: CourtDetail }) {
 									)}
 								</div>
 								{cityDetails.description && (
-									<p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+									<p className="text-sm text-gray-600  line-clamp-2">
 										{cityDetails.description}
 									</p>
 								)}
 								{cityDetails.communityVibe && (
-									<p className="text-sm text-gray-500 dark:text-gray-500 mt-1 italic">
+									<p className="text-sm text-gray-500  mt-1 italic">
 										{cityDetails.communityVibe}
 									</p>
 								)}
@@ -119,7 +119,7 @@ export default function CourtHero({ court }: { court: CourtDetail }) {
 										<MapPin className="w-4 h-4 text-teal-500" />
 									</div>
 									<div>
-										<div className="text-xs text-gray-500 dark:text-gray-400">Clubs</div>
+										<div className="text-xs text-gray-500 ">Clubs</div>
 										<div className="font-semibold">{cityDetails.totalClubs}</div>
 									</div>
 								</div>
@@ -129,9 +129,7 @@ export default function CourtHero({ court }: { court: CourtDetail }) {
 										<Users className="w-4 h-4 text-blue-500" />
 									</div>
 									<div>
-										<div className="text-xs text-gray-500 dark:text-gray-400">
-											Players
-										</div>
+										<div className="text-xs text-gray-500 ">Players</div>
 										<div className="font-semibold">{cityDetails.totalPlayers}</div>
 									</div>
 								</div>
@@ -141,9 +139,7 @@ export default function CourtHero({ court }: { court: CourtDetail }) {
 										<Calendar className="w-4 h-4 text-purple-500" />
 									</div>
 									<div>
-										<div className="text-xs text-gray-500 dark:text-gray-400">
-											Sessions
-										</div>
+										<div className="text-xs text-gray-500 ">Sessions</div>
 										<div className="font-semibold">{cityDetails.totalActiveSessions}</div>
 									</div>
 								</div>
@@ -153,9 +149,7 @@ export default function CourtHero({ court }: { court: CourtDetail }) {
 										<TrendingUp className="w-4 h-4 text-green-500" />
 									</div>
 									<div>
-										<div className="text-xs text-gray-500 dark:text-gray-400">
-											Activity
-										</div>
+										<div className="text-xs text-gray-500 ">Activity</div>
 										<div className="font-semibold">{cityDetails.activityScore}/100</div>
 									</div>
 								</div>
@@ -166,12 +160,10 @@ export default function CourtHero({ court }: { court: CourtDetail }) {
 						{(cityDetails.totalGamesPlayed > 0 ||
 							cityDetails.totalCoaches > 0 ||
 							cityDetails.totalActiveTournaments > 0) && (
-							<div className="flex flex-wrap gap-6 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+							<div className="flex flex-wrap gap-6 mt-4 pt-4 border-t border-gray-200 ">
 								{cityDetails.totalGamesPlayed > 0 && (
 									<div className="text-sm">
-										<span className="text-gray-500 dark:text-gray-400">
-											Games Played:
-										</span>{' '}
+										<span className="text-gray-500 ">Games Played:</span>{' '}
 										<span className="font-semibold">
 											{cityDetails.totalGamesPlayed.toLocaleString()}
 										</span>
@@ -180,18 +172,14 @@ export default function CourtHero({ court }: { court: CourtDetail }) {
 								{cityDetails.totalCoaches > 0 && (
 									<div className="text-sm flex items-center gap-1">
 										<Dumbbell className="w-4 h-4 text-orange-500" />
-										<span className="text-gray-500 dark:text-gray-400">
-											Coaches:
-										</span>{' '}
+										<span className="text-gray-500 ">Coaches:</span>{' '}
 										<span className="font-semibold">{cityDetails.totalCoaches}</span>
 									</div>
 								)}
 								{cityDetails.totalActiveTournaments > 0 && (
 									<div className="text-sm flex items-center gap-1">
 										<Trophy className="w-4 h-4 text-yellow-500" />
-										<span className="text-gray-500 dark:text-gray-400">
-											Active Tournaments:
-										</span>{' '}
+										<span className="text-gray-500 ">Active Tournaments:</span>{' '}
 										<span className="font-semibold">
 											{cityDetails.totalActiveTournaments}
 										</span>
@@ -206,7 +194,7 @@ export default function CourtHero({ court }: { court: CourtDetail }) {
 								{cityDetails.features.slice(0, 4).map((feature) => (
 									<div
 										key={feature.id}
-										className="px-3 py-1.5 bg-white dark:bg-gray-800 rounded-full text-xs font-medium border border-gray-200 dark:border-gray-700 flex items-center gap-1.5"
+										className="px-3 py-1.5 bg-white  rounded-full text-xs font-medium border border-gray-200  flex items-center gap-1.5"
 										title={feature.description || undefined}
 									>
 										{feature.icon && <span>{feature.icon}</span>}
@@ -218,7 +206,7 @@ export default function CourtHero({ court }: { court: CourtDetail }) {
 
 						{/* Climate & Best Time Info */}
 						{(cityDetails.climateType || cityDetails.bestTimeToVisit) && (
-							<div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-600 dark:text-gray-400">
+							<div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-600 ">
 								{cityDetails.climateType && <span>🌤️ {cityDetails.climateType}</span>}
 								{cityDetails.averageTemp && (
 									<span>🌡️ Avg: {cityDetails.averageTemp}°C</span>

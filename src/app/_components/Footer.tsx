@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Facebook, Instagram, Youtube, Apple, Download } from 'lucide-react';
+import { DownloadButtons } from './DownloadButtons';
 
 export function Footer() {
 	return (
@@ -19,9 +20,9 @@ export function Footer() {
 						<Image
 							src="/paddlx-logo-no-text.png"
 							alt="paddlX - Book Pickleball Courts and Find Players"
-							width={40}
-							height={40}
-							className="h-12 w-12 rounded-full object-contain bg-white shadow-lg"
+							width={120}
+							height={120}
+							className="h-48 w-48 rounded-full object-contain bg-white shadow-lg"
 							priority
 						/>
 						<span
@@ -41,48 +42,7 @@ export function Footer() {
 					</div>
 
 					{/* App Download Section */}
-					<div className="space-y-4">
-						<p className="text-sm font-semibold text-primary-light uppercase tracking-widest">
-							Download the app
-						</p>
-						<div className="flex flex-col sm:flex-row gap-4">
-							{/* App Store Button */}
-							<Link
-								href="https://apps.apple.com/app/paddlx"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group flex items-center gap-3 px-6 py-3 bg-white text-slate-900 rounded-xl font-semibold transition-all duration-300 hover:shadow-xl hover:scale-105 active:scale-95"
-								aria-label="Download paddlX on the Apple App Store"
-							>
-								<Apple
-									className="h-6 w-6 group-hover:scale-110 transition-transform"
-									aria-hidden="true"
-								/>
-								<div className="flex flex-col">
-									<span className="text-xs text-slate-600">Download on</span>
-									<span className="text-sm font-bold">App Store</span>
-								</div>
-							</Link>
-
-							{/* Google Play Button */}
-							<Link
-								href="https://play.google.com/store/apps/details?id=com.paddlx"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="group flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-white rounded-xl font-semibold transition-all duration-300 hover:shadow-xl hover:scale-105 active:scale-95"
-								aria-label="Get paddlX on Google Play Store"
-							>
-								<Download
-									className="h-6 w-6 group-hover:scale-110 transition-transform"
-									aria-hidden="true"
-								/>
-								<div className="flex flex-col">
-									<span className="text-xs text-primary-light">Get it on</span>
-									<span className="text-sm font-bold">Google Play</span>
-								</div>
-							</Link>
-						</div>
-					</div>
+					<DownloadButtons />
 				</div>
 
 				{/* Divider */}

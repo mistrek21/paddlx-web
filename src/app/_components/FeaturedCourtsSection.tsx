@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Building2, Grid3x3, Minus } from 'lucide-react';
 import { useMobileAppModal } from '@/src/hooks/useMobileAppModal';
 import { cacheTag } from 'next/dist/server/use-cache/cache-tag';
+import Link from 'next/link';
 
 const mockData = [
 	{
@@ -50,6 +51,7 @@ export function FeaturedCourtsSection() {
 						return {
 							name: fc.club?.name ?? 'Unknown Club',
 							image: fc.club?.images?.length ? fc.club.images[0] : '/placeholder.svg',
+							slug: fc.club?.slug,
 							courts: courtsArr.length || 1, // Count of sub-courts/facility
 							permLines: courtsArr.every((c: any) => c.permLines), // true if all have permanent lines
 							permNets: courtsArr.every((c: any) => c.permNets), // true if all have perm nets
@@ -81,7 +83,8 @@ export function FeaturedCourtsSection() {
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 						{/* Court Cards */}
 						{(loading ? mockData : featuredCourts)?.map((court, i) => (
-							<div
+							<Link
+								href={`/court/${court.slug}`}
 								key={court.name + i}
 								className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group"
 							>
@@ -115,7 +118,7 @@ export function FeaturedCourtsSection() {
 										)}
 									</div>
 								</div>
-							</div>
+							</Link>
 						))}
 						{/* CTA Card */}
 						<div className="bg-white rounded-lg p-8 shadow-sm flex flex-col items-center justify-center text-center">

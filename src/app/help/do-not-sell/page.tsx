@@ -92,7 +92,7 @@ export default function DoNotSellPage() {
 							className="bg-slate-700 hover:bg-slate-800 text-white flex items-center justify-center mx-auto"
 							asChild
 						>
-							<a href="/settings/consent/do-not-sell">
+							<a href="/profile/settings/consent/do-not-sell">
 								<LinkIcon className="w-5 h-5 mr-2" />
 								Submit Opt-Out Request
 							</a>
