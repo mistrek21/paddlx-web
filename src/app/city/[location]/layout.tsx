@@ -25,27 +25,16 @@ async function getCityData(location: string, country?: string) {
 			url.searchParams.set('country', country);
 		}
 
-		console.log('🔍 Fetching:', url.toString());
-
 		const response = await fetch(url.toString(), {
 			// Don't cache at all - let the API handle caching
 			cache: 'no-store',
 		});
 
-		console.log('📡 Response status:', response.status);
-
 		if (!response.ok) {
-			console.log('❌ Response not OK');
 			return null;
 		}
 
 		const data = await response.json();
-		console.log(
-			'✅ Data received:',
-			data?.name,
-			'AI Generated:',
-			data?.isAiGenerated
-		);
 
 		return data;
 	} catch (error) {

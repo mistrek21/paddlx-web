@@ -17,12 +17,6 @@ export const getCityDataCached = cache(
 			location
 		)}?${params.toString()}`;
 
-		console.log('📦 [getCityDataCached] Fetching city data:', {
-			location,
-			country,
-			url,
-		});
-
 		// First fetch to check AI status
 		const response = await fetch(url, {
 			cache: 'no-store', // Always check fresh first
@@ -45,12 +39,6 @@ export const getCityDataCached = cache(
 
 		const data: CityData = await response.json();
 
-		console.log('✅ [getCityDataCached] City data received:', {
-			name: data.name,
-			isAiGenerated: data.isAiGenerated,
-			aiGeneratedAt: data.aiGeneratedAt,
-		});
-
 		// Check if city needs AI enhancement
 		const needsEnhancement =
 			!data.isAiGenerated ||
@@ -63,14 +51,10 @@ export const getCityDataCached = cache(
 			!data.elevation;
 
 		if (needsEnhancement) {
-			console.log(`🤖 [Enhancement] City needs enhancement, triggering...`);
-
 			// Trigger enhancement and WAIT for it
 			const enhanced = await enhanceCity(data.id);
 
 			if (enhanced) {
-				console.log('✅ [Enhancement] Success! Fetching fresh data...');
-
 				// Fetch the updated data immediately
 				const updatedResponse = await fetch(url, {
 					cache: 'no-store',
@@ -78,11 +62,10 @@ export const getCityDataCached = cache(
 
 				if (updatedResponse.ok) {
 					const updatedData: CityData = await updatedResponse.json();
-					console.log('✅ [Enhancement] Returning enhanced data');
+
 					return updatedData;
 				}
 			} else {
-				console.warn('⚠️ [Enhancement] Failed, returning basic data');
 			}
 		}
 
@@ -104,8 +87,6 @@ export async function getCityDataFresh(
 		const url = `${config.API_BASE_URL}/api/web/cities/${encodeURIComponent(
 			location
 		)}?${params.toString()}`;
-
-		console.log('🔍 [getCityDataFresh] Fetching from:', url);
 
 		const response = await fetch(url, {
 			cache: 'no-store',
@@ -138,8 +119,6 @@ export async function getCityDataEnhanced(
 // ============================================
 async function enhanceCity(cityId: string): Promise<boolean> {
 	try {
-		console.log(`🤖 [enhanceCity] Starting enhancement for: ${cityId}`);
-
 		const response = await fetch(
 			`${config.API_BASE_URL}/api/web/cities/${cityId}/enhance`,
 			{
@@ -161,12 +140,8 @@ async function enhanceCity(cityId: string): Promise<boolean> {
 		const result = await response.json();
 
 		if (result.alreadyGenerated) {
-			console.log(`✅ [enhanceCity] Already enhanced on ${result.aiGeneratedAt}`);
 			return true;
 		} else if (result.success) {
-			console.log(
-				`✅ [enhanceCity] Enhanced with ${result.fieldsUpdated} fields and ${result.featuresCreated} features`
-			);
 			return true;
 		}
 
@@ -190,8 +165,6 @@ export async function getCityStatsOnly(
 	const url = `${config.API_BASE_URL}/api/web/cities/${encodeURIComponent(
 		location
 	)}/stats?${params.toString()}`;
-
-	console.log('⚡ [getCityStatsOnly] Fetching fresh stats');
 
 	const response = await fetch(url, {
 		cache: 'no-store',

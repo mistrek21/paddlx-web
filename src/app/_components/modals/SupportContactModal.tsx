@@ -24,10 +24,6 @@ export function SupportContactModal({
 }: SupportContactModalProps) {
 	const { isOpen, close, data } = useSupportModalAdvanced();
 
-	useEffect(() => {
-		console.log('isOpen', isOpen);
-	}, [isOpen]);
-
 	// Determine the color scheme - prioritize data, fallback to props
 	const chosenScheme: ColorSchemeKey = useMemo(() => {
 		return (data?.colorScheme as ColorSchemeKey) || colorScheme;

@@ -70,8 +70,6 @@ export function FeaturedCourtsSection() {
 		fetchFeaturedCourts();
 	}, []);
 
-	console.log(featuredCourts, 'featuredCourts');
-
 	return (
 		<>
 			<ModalComponent />

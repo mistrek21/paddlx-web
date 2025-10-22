@@ -163,9 +163,7 @@ export function HeroSection() {
 						longitude: position.coords.longitude,
 					});
 				},
-				(error) => {
-					console.log('Geolocation error:', error.message);
-				}
+				(error) => {}
 			);
 		}
 	}, []);
@@ -253,9 +251,7 @@ export function HeroSection() {
 						setUserCountry(location.country);
 					}
 				},
-				(error) => {
-					console.log('Geolocation error:', error.message);
-				}
+				(error) => {}
 			);
 		}
 	}, []);
@@ -267,24 +263,6 @@ export function HeroSection() {
 			setShowDropdown(false);
 		}
 	};
-
-	// const handleSelectPlace = (place: Place) => {
-	// 	setSearchQuery(`${place.name}, ${place.country}`);
-	// 	setShowDropdown(false);
-	// 	// Route to city page instead of search
-	// 	router.push(
-	// 		`/city/${encodeURIComponent(place.name)}?country=${encodeURIComponent(
-	// 			place.country
-	// 		)}`
-	// 	);
-	// };
-
-	// const handleSelectCourt = (court: Court) => {
-	// 	setSearchQuery(court.name);
-	// 	setShowDropdown(false);
-	// 	// Use the slug (or ID as fallback) from the API
-	// 	router.push(`/court/${court.id}`);
-	// };
 
 	const handleSelectPlace = async (place: Place) => {
 		setSearchQuery(`${place.name}, ${place.country}`);

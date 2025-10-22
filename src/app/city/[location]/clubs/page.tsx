@@ -11,13 +11,10 @@ const getCity = cache(async (rawLocation: string) => {
 	const cleanLocation = decodeURIComponent(rawLocation);
 	const url = `${API_BASE_URL}/api/web/cities/${cleanLocation}`;
 
-	console.log('🔍 Fetching:', url);
 	const res = await fetch(url, {
 		next: { revalidate },
 		cache: 'force-cache',
 	});
-
-	console.log('📡 Response status:', res.status);
 
 	if (!res.ok) {
 		console.error('❌ Response not OK');
@@ -25,7 +22,7 @@ const getCity = cache(async (rawLocation: string) => {
 	}
 
 	const data = await res.json();
-	console.log('✅ Data received:', data.name, 'Clubs:', data.clubs?.length || 0);
+
 	return data;
 });
 

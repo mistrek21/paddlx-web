@@ -55,7 +55,6 @@ export default async function CourtsSection({
 
 		const data = await response.json();
 		// Debug log for troubleshooting:
-		// console.log("Courts fetched from API:", data.courts);
 
 		const courts: Court[] = data.courts || [];
 
