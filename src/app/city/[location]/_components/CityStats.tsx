@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import {
 	Calendar,
@@ -11,6 +13,7 @@ import {
 	Activity,
 	Target,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export interface CityStatsData {
 	totalCourts: number;
@@ -45,6 +48,8 @@ interface StatCardProps {
 	trend?: number;
 	badges?: Badge[];
 	delay: number;
+	onClick?: () => void;
+	href?: string;
 }
 
 function StatCard({
@@ -59,13 +64,31 @@ function StatCard({
 	trend,
 	badges = [],
 	delay,
+	onClick,
+	href,
 }: StatCardProps) {
+	const handleClick = () => {
+		if (onClick) onClick();
+	};
+
 	return (
 		<div
-			className="group relative rounded-2xl shadow-lg overflow-hidden flex flex-col select-none bg-gradient-to-br from-white via-slate-50 to-slate-100 border border-slate-200/70 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+			className={`
+		  group relative rounded-2xl shadow-lg overflow-hidden flex flex-col select-none bg-gradient-to-br 
+		  from-white via-slate-50 to-slate-100 border border-slate-200/70 transition-all duration-300 
+		  hover:scale-[1.02] hover:shadow-xl cursor-pointer
+		  ${onClick || href ? 'cursor-pointer' : ''}
+		`}
+			onClick={onClick}
 			style={{
 				animation: `cardEnter 0.6s cubic-bezier(0.53,1.33,0.41,0.95) ${delay}s both`,
 				minHeight: 158,
+			}}
+			tabIndex={onClick || href ? 0 : undefined}
+			role={onClick || href ? 'button' : undefined}
+			onKeyDown={(e) => {
+				if ((onClick || href) && (e.key === 'Enter' || e.key === ' '))
+					handleClick();
 			}}
 		>
 			<div className={`absolute top-0 left-0 w-full h-1.5 ${bar} opacity-90`} />
@@ -122,7 +145,15 @@ function StatCard({
 	);
 }
 
-function CityStats({ data }: { data: CityStatsData }) {
+function CityStats({
+	data,
+	locationSlug,
+}: {
+	data: CityStatsData;
+	locationSlug: string;
+}) {
+	const router = useRouter();
+
 	// Calculate engagement metrics
 	const avgPlayersPerCourt =
 		data.totalCourts > 0 ? Math.round(data.totalPlayers / data.totalCourts) : 0;
@@ -180,6 +211,9 @@ function CityStats({ data }: { data: CityStatsData }) {
 			statColor: 'text-orange-800',
 			bar: 'bg-orange-100',
 			trend: 15,
+			onClick: () =>
+				router.push(`/city/${encodeURIComponent(locationSlug)}/games`),
+
 			badges: [
 				{
 					text: `${data.totalActiveSessions} Sessions`,

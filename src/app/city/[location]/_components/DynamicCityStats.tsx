@@ -13,5 +13,5 @@ export default async function DynamicCityStats({
 	// Fetch ONLY the stats, always fresh
 	const statsData = await getCityStatsOnly(location, country);
 
-	return <CityStats data={statsData} />;
+	return <CityStats data={statsData} locationSlug={location} />;
 }

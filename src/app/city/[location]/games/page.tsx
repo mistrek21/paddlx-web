@@ -1,4 +1,5 @@
 // src/app/city/[location]/games/page.tsx
+
 import { Metadata } from 'next';
 import AllGamesWrapper from './_components/AllGamesWrapper';
 

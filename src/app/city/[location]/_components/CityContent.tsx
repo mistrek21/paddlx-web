@@ -1,6 +1,5 @@
 // src/app/city/[location]/_components/CityContent.tsx
 import Link from 'next/link';
-import CityStats from './CityStats';
 import {
 	Clock,
 	MapIcon,
@@ -44,10 +43,10 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 	const { country } = await searchParams;
 	const decodedLocation = decodeURIComponent(location);
 
+	const encodedLocation = encodeURIComponent(decodedLocation);
+
 	// Fetch CACHED data for hero and static sections (1 hour cache)
 	const cityData = await getCityDataCached(decodedLocation, country);
-
-	console.log('Location:', decodedLocation, 'Country:', country);
 
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-cool-gray via-slate-50 to-cool-gray">
@@ -724,9 +723,7 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 							<p className="text-slate-gray">Explore the best pickleball facilities</p>
 						</div>
 						<Link
-							href={`/search?location=${encodeURIComponent(decodedLocation)}${
-								country ? `&country=${encodeURIComponent(country)}` : ''
-							}`}
+							href={`/city/${location}/clubs`}
 							className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-dark font-medium text-sm transition-all shadow hover:shadow-md active:scale-95"
 						>
 							<span>View All</span>
@@ -743,6 +740,36 @@ async function CityContent({ params, searchParams }: CityPageProps) {
 					{/* <div>
 						<pre>{JSON.stringify(cityData.courts, null, 2)}</pre>
 					</div> */}
+
+					{/* Upcoming Events */}
+
+					{/* View All Matches Card */}
+					<Link
+						href={`/city/${encodedLocation}/games`}
+						className="block group mt-10"
+					>
+						<div className="bg-primary hover:bg-primary-dark rounded-2xl shadow-xl p-6 border border-primary/30 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98]">
+							<div className="flex items-center gap-4 mb-4">
+								<div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl group-hover:bg-white/30 transition-colors">
+									<Target className="w-7 h-7 text-white" />
+								</div>
+								<div className="flex-1">
+									<h4 className="font-bold text-white text-lg mb-1">
+										Browse All Matches
+									</h4>
+									<p className="text-blue-100 text-sm">
+										Find games and connect with players
+									</p>
+								</div>
+								<Navigation className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
+							</div>
+							<div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+								<p className="text-white/90 text-sm text-center font-medium">
+									View upcoming matches in {cityData.name}
+								</p>
+							</div>
+						</div>
+					</Link>
 				</div>
 
 				{/* SEO Schema Section (hidden, for search engines) */}

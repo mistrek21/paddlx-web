@@ -45,7 +45,7 @@ export default function CourtGroups({ court }: { court: CourtDetail }) {
 										<div className="relative shrink-0">
 											{group.imageUrl ? (
 												<img
-													src={group.imageUrl}
+													src={group.imageUrl || ''}
 													alt={group.name}
 													className="w-16 h-16 rounded-xl object-cover ring-2 ring-white shadow-md"
 												/>

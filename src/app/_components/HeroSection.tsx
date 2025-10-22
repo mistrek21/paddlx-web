@@ -268,10 +268,28 @@ export function HeroSection() {
 		}
 	};
 
-	const handleSelectPlace = (place: Place) => {
+	// const handleSelectPlace = (place: Place) => {
+	// 	setSearchQuery(`${place.name}, ${place.country}`);
+	// 	setShowDropdown(false);
+	// 	// Route to city page instead of search
+	// 	router.push(
+	// 		`/city/${encodeURIComponent(place.name)}?country=${encodeURIComponent(
+	// 			place.country
+	// 		)}`
+	// 	);
+	// };
+
+	// const handleSelectCourt = (court: Court) => {
+	// 	setSearchQuery(court.name);
+	// 	setShowDropdown(false);
+	// 	// Use the slug (or ID as fallback) from the API
+	// 	router.push(`/court/${court.id}`);
+	// };
+
+	const handleSelectPlace = async (place: Place) => {
 		setSearchQuery(`${place.name}, ${place.country}`);
 		setShowDropdown(false);
-		// Route to city page instead of search
+		await new Promise((r) => setTimeout(r, 30)); // Small delay
 		router.push(
 			`/city/${encodeURIComponent(place.name)}?country=${encodeURIComponent(
 				place.country
@@ -279,10 +297,10 @@ export function HeroSection() {
 		);
 	};
 
-	const handleSelectCourt = (court: Court) => {
+	const handleSelectCourt = async (court: Court) => {
 		setSearchQuery(court.name);
 		setShowDropdown(false);
-		// Use the slug (or ID as fallback) from the API
+		await new Promise((r) => setTimeout(r, 30));
 		router.push(`/court/${court.id}`);
 	};
 
