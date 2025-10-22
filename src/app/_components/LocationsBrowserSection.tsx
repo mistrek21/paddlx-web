@@ -440,16 +440,34 @@ export function LocationsBrowserSection() {
 					</div>
 
 					{/* Tabs */}
-					<div className="flex justify-center gap-8 mb-14 border-b border-gray-200 overflow-x-auto hide-scrollbar">
+					<div
+						className="
+    flex 
+    gap-4 
+    mb-14 
+    border-b border-gray-200 
+    overflow-x-auto 
+    hide-scrollbar 
+    snap-x snap-mandatory 
+    pl-4       // padding for mobile
+    justify-start // left-aligned by default
+    md:pl-0    // remove padding for medium and up
+    md:justify-center // center on md and up
+"
+					>
 						{tabs.map((tab) => (
 							<button
 								key={tab}
 								onClick={() => setActiveTab(tab)}
-								className={`pb-4 px-2 text-sm font-bold transition-all duration-300 relative whitespace-nowrap cursor-pointer ${
-									activeTab === tab
-										? 'text-gray-900'
-										: 'text-gray-500 hover:text-gray-900'
-								}`}
+								className={`
+                pb-4 px-2 text-sm font-bold transition-all duration-300 
+                relative whitespace-nowrap cursor-pointer snap-start
+                ${
+																	activeTab === tab
+																		? 'text-gray-900'
+																		: 'text-gray-500 hover:text-gray-900'
+																}
+            `}
 							>
 								{tab}
 								{activeTab === tab && (

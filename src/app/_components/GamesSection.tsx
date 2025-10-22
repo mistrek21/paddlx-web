@@ -6,6 +6,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { GameCard } from './GameCard';
 import { GameCardSkeleton } from './GameCardSkeleton';
+import Link from 'next/link';
 
 const IP_CONFIG =
 	process.env.NEXT_PUBLIC_IP_CONFIG || 'https://paddle-api.vercel.app';
@@ -198,8 +199,16 @@ export function GamesSection() {
 	return (
 		<section className="bg-white py-16 px-4">
 			<div className="max-w-7xl mx-auto">
-				<div className="flex items-center justify-between mb-8">
-					<h2 className="text-3xl md:text-4xl font-bold text-dark-slate">
+				<div
+					className="
+    flex flex-col md:flex-row 
+    md:items-center 
+    md:justify-between 
+    mb-8
+    gap-4
+"
+				>
+					<h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-slate order-1 md:order-none">
 						<span className="font-extrabold">
 							{isLoadingGames ? '...' : gamesCount}
 						</span>{' '}
@@ -208,7 +217,8 @@ export function GamesSection() {
 							{isLoadingLocation ? 'locating...' : cityName}
 						</span>
 					</h2>
-					<div className="flex items-center gap-4">
+					<div className="flex flex-row md:flex-row items-center gap-2 md:gap-4 order-2 md:order-none justify-between w-full md:w-auto">
+						{/* Scroll buttons, only on md+ */}
 						<div className="hidden md:flex items-center gap-2">
 							<button
 								onClick={() => scroll('left')}
@@ -225,8 +235,25 @@ export function GamesSection() {
 								<ChevronRight className="w-5 h-5 text-dark-slate" />
 							</button>
 						</div>
-						<button className="flex items-center gap-2 text-primary hover:text-primary-dark transition-colors group">
-							<span className="font-semibold">See all</span>
+						{/* See all button, always last, full width on mobile */}
+						<button
+							className="
+            flex items-center gap-2 
+            text-primary hover:text-primary-dark 
+            transition-colors group
+            w-auto md:w-auto
+            ml-auto md:ml-0
+            px-2 py-2
+        "
+						>
+							<Link
+								href={`/city/${encodeURIComponent(cityName)}/games`}
+								className="your-classes-here"
+							>
+								<span className="font-semibold">See all</span>
+								<ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+							</Link>
+
 							<ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
 						</button>
 					</div>
