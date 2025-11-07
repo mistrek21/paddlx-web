@@ -169,7 +169,7 @@ export async function getCityStatsOnly(
 			location
 		)}/stats?${params.toString()}`;
 
-		console.log('🔍 [getCityStatsOnly] Fetching:', url);
+		// console.log('🔍 [getCityStatsOnly] Fetching:', url);
 
 		const response = await fetch(url, {
 			cache: 'no-store',
@@ -177,20 +177,20 @@ export async function getCityStatsOnly(
 		});
 
 		if (!response.ok) {
-			console.error('❌ [getCityStatsOnly] Failed:', response.status);
+			// console.error('❌ [getCityStatsOnly] Failed:', response.status);
 
 			const errorText = await response.text().catch(() => 'No error body');
-			console.error('❌ [getCityStatsOnly] Error details:', errorText);
+			// console.error('❌ [getCityStatsOnly] Error details:', errorText);
 
 			// ✅ Return null, DON'T throw
 			return null;
 		}
 
 		const data = await response.json();
-		console.log('✅ [getCityStatsOnly] Success');
+		// console.log('✅ [getCityStatsOnly] Success');
 		return data;
 	} catch (error) {
-		console.error('❌ [getCityStatsOnly] Exception:', error);
+		// console.error('❌ [getCityStatsOnly] Exception:', error);
 		// ✅ Return null, DON'T throw
 		return null;
 	}
