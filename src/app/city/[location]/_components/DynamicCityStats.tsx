@@ -10,8 +10,15 @@ export default async function DynamicCityStats({
 	location: string;
 	country?: string;
 }) {
-	// Fetch ONLY the stats, always fresh
 	const statsData = await getCityStatsOnly(location, country);
+
+	// ✅ If null, return null (don't render anything)
+	if (!statsData) {
+		console.warn(
+			'⚠️ [DynamicCityStats] No stats data available, skipping render'
+		);
+		return null;
+	}
 
 	return <CityStats data={statsData} locationSlug={location} />;
 }

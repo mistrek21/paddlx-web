@@ -155,27 +155,45 @@ async function enhanceCity(cityId: string): Promise<boolean> {
 // ============================================
 // STATS ONLY - Always fresh
 // ============================================
+// src/app/city/[location]/_components/fetch/fetch.ts
+
 export async function getCityStatsOnly(
 	location: string,
 	country?: string
-): Promise<CityStatsData> {
-	const params = new URLSearchParams();
-	if (country) params.set('country', country);
+): Promise<CityStatsData | null> {
+	try {
+		const params = new URLSearchParams();
+		if (country) params.set('country', country);
 
-	const url = `${config.API_BASE_URL}/api/web/cities/${encodeURIComponent(
-		location
-	)}/stats?${params.toString()}`;
+		const url = `${config.API_BASE_URL}/api/web/cities/${encodeURIComponent(
+			location
+		)}/stats?${params.toString()}`;
 
-	const response = await fetch(url, {
-		cache: 'no-store',
-	});
+		console.log('🔍 [getCityStatsOnly] Fetching:', url);
 
-	if (!response.ok) {
-		console.error('❌ [getCityStatsOnly] Failed:', response.status);
-		throw new Error('Failed to fetch stats');
+		const response = await fetch(url, {
+			cache: 'no-store',
+			next: { revalidate: 0 },
+		});
+
+		if (!response.ok) {
+			console.error('❌ [getCityStatsOnly] Failed:', response.status);
+
+			const errorText = await response.text().catch(() => 'No error body');
+			console.error('❌ [getCityStatsOnly] Error details:', errorText);
+
+			// ✅ Return null, DON'T throw
+			return null;
+		}
+
+		const data = await response.json();
+		console.log('✅ [getCityStatsOnly] Success');
+		return data;
+	} catch (error) {
+		console.error('❌ [getCityStatsOnly] Exception:', error);
+		// ✅ Return null, DON'T throw
+		return null;
 	}
-
-	return await response.json();
 }
 
 // ============================================
