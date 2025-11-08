@@ -59,13 +59,14 @@ export default function LoginPage() {
 				);
 
 				if (response.status === 404) {
-					// User doesn't exist in your database, redirect to onboarding
+					// User doesn't exist in database, redirect to onboarding
 					router.push(
-						'login'
-						// `/onboarding?email=${authData.user.email}&id=${authData.user.id}`
+						`/onboarding?email=${encodeURIComponent(authData.user.email || '')}&id=${
+							authData.user.id
+						}`
 					);
 				} else {
-					// Successful login, redirect to dashboard
+					// Successful login, redirect to profile
 					router.push('/profile');
 				}
 			}
@@ -150,7 +151,6 @@ export default function LoginPage() {
 				</div>
 
 				<form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-					{/* Email Field */}
 					<div>
 						<label
 							htmlFor="email"
@@ -177,7 +177,6 @@ export default function LoginPage() {
 						)}
 					</div>
 
-					{/* Password Field */}
 					<div>
 						<div className="flex items-center justify-between mb-2">
 							<label
@@ -226,7 +225,6 @@ export default function LoginPage() {
 						)}
 					</div>
 
-					{/* Remember Me Checkbox */}
 					<div className="flex items-center justify-between">
 						<div className="flex items-center">
 							<input
